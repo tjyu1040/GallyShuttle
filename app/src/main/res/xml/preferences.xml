@@ -1,0 +1,49 @@
+<PreferenceScreen xmlns:android="http://schemas.android.com/apk/res/android">
+
+    <PreferenceCategory
+        android:key="pref_alarms"
+        android:title="Alarms">
+
+        <ListPreference
+            android:defaultValue="5"
+            android:entries="@array/minutes"
+            android:entryValues="@array/minutes_values"
+            android:key="pref_reminder_length"
+            android:title="@string/pref_reminder_title"/>
+
+        <RingtonePreference
+            android:key="pref_ringtone"
+            android:title="@string/pref_ringtone_title"
+            android:ringtoneType="alarm"
+            android:showSilent="true"
+            android:defaultValue=""/>
+
+        <CheckBoxPreference
+            android:key="pref_vibrate"
+            android:title="@string/pref_vibrate_title"
+            android:summary="@string/pref_vibrate_summary_enabled"
+            android:defaultValue="true"/>
+
+    </PreferenceCategory>
+
+    <PreferenceCategory
+        android:key="pref_options"
+        android:title="Options">
+
+        <Preference
+            android:key="pref_clear_cache"
+            android:title="@string/pref_clear_cache_title"/>
+
+    </PreferenceCategory>
+
+    <PreferenceCategory
+        android:key="pref_other"
+        android:title="Other">
+
+        <Preference
+            android:key="pref_share"
+            android:title="Share Application"/>
+
+    </PreferenceCategory>
+
+</PreferenceScreen>

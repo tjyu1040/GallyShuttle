@@ -1,0 +1,106 @@
+<ScrollView
+    xmlns:android="http://schemas.android.com/apk/res/android"
+    xmlns:tools="http://schemas.android.com/tools"
+    android:layout_width="match_parent"
+    android:layout_height="match_parent"
+    tools:context="com.ephemeraldreams.gallaudetshuttle.ui.AboutFragment">
+
+    <LinearLayout
+        android:layout_width="match_parent"
+        android:layout_height="wrap_content"
+        android:gravity="center_horizontal"
+        android:orientation="vertical"
+        android:weightSum="1">
+
+        <ImageView
+            android:id="@+id/logoImageView"
+            android:layout_width="150dp"
+            android:layout_height="150dp"
+            android:layout_marginBottom="@dimen/activity_vertical_margin"
+            android:layout_marginTop="@dimen/activity_vertical_margin"
+            android:contentDescription="@string/logo_description"
+            android:src="@drawable/ic_launcher"/>
+
+        <TextView
+            android:id="@+id/versionTextView"
+            android:layout_width="wrap_content"
+            android:layout_height="wrap_content"
+            android:text="@string/version"/>
+
+        <TextView
+            android:id="@+id/copyrightTextView"
+            android:layout_width="wrap_content"
+            android:layout_height="wrap_content"
+            android:text="@string/copyright"/>
+
+        <TextView
+            android:id="@+id/creditsTextView"
+            android:layout_width="wrap_content"
+            android:layout_height="wrap_content"
+            android:background="?android:attr/selectableItemBackground"
+            android:clickable="true"
+            android:padding="@dimen/about_textview_padding"
+            android:text="@string/underlined_credits"/>
+
+        <TextView
+            android:id="@+id/rateApplicationTextView"
+            android:layout_width="wrap_content"
+            android:layout_height="wrap_content"
+            android:background="?android:attr/selectableItemBackground"
+            android:clickable="true"
+            android:padding="@dimen/about_textview_padding"
+            android:text="@string/underlined_rate_application"/>
+
+        <TextView
+            android:id="@+id/supportTextView"
+            android:layout_width="wrap_content"
+            android:layout_height="wrap_content"
+            android:background="?android:attr/selectableItemBackground"
+            android:clickable="true"
+            android:padding="@dimen/about_textview_padding"
+            android:text="@string/underlined_support"/>
+
+        <View
+            android:layout_width="250dp"
+            android:layout_height="1dp"
+            android:layout_marginBottom="@dimen/activity_vertical_margin"
+            android:layout_marginTop="@dimen/activity_vertical_margin"
+            android:background="@color/accent_material_light"/>
+
+        <TextView
+            android:id="@+id/messageTextView"
+            android:layout_width="wrap_content"
+            android:layout_height="wrap_content"
+            android:padding="@dimen/about_textview_padding"
+            android:text="@string/about_message"/>
+
+        <TextView
+            android:id="@+id/openSourceLicensesTextView"
+            android:layout_width="wrap_content"
+            android:layout_height="wrap_content"
+            android:background="?android:attr/selectableItemBackground"
+            android:clickable="true"
+            android:padding="@dimen/about_textview_padding"
+            android:text="@string/underlined_open_source_licenses"/>
+
+        <TextView
+            android:id="@+id/termsOfServiceTextView"
+            android:layout_width="wrap_content"
+            android:layout_height="wrap_content"
+            android:background="?android:attr/selectableItemBackground"
+            android:clickable="true"
+            android:padding="@dimen/about_textview_padding"
+            android:text="@string/underlined_terms_of_service"/>
+
+        <TextView
+            android:id="@+id/privacyTextView"
+            android:layout_width="wrap_content"
+            android:layout_height="wrap_content"
+            android:background="?android:attr/selectableItemBackground"
+            android:clickable="true"
+            android:padding="@dimen/about_textview_padding"
+            android:text="@string/underlined_privacy_policy"/>
+
+    </LinearLayout>
+
+</ScrollView>

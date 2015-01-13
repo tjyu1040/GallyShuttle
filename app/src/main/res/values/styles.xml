@@ -1,0 +1,20 @@
+<resources>
+
+    <style name="GallaudetTheme" parent="GallaudetTheme.Base"/>
+
+    <!-- Base application theme. -->
+    <style name="GallaudetTheme.Base" parent="Theme.AppCompat.Light.NoActionBar">
+        <item name="colorPrimary">@color/blue</item>
+        <item name="colorPrimaryDark">@color/darker_blue</item>
+        <!-- <item name="android:windowBackground">@color/buff</item> -->
+
+        <item name="drawerArrowStyle">@style/GallaudetTheme.Base.DrawerArrowStyle</item>
+        <item name="android:windowDrawsSystemBarBackgrounds">true</item>
+    </style>
+
+    <style name="GallaudetTheme.Base.DrawerArrowStyle" parent="Widget.AppCompat.DrawerArrowToggle">
+        <item name="spinBars">true</item>
+        <item name="color">@android:color/white</item>
+    </style>
+
+</resources>
