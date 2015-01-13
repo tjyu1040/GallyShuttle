@@ -28,6 +28,7 @@ import android.text.TextUtils;
 import com.ephemeraldreams.gallyshuttle.R;
 import com.ephemeraldreams.gallyshuttle.ShuttleApplication;
 import com.ephemeraldreams.gallyshuttle.ui.SettingsFragment;
+import com.nispok.snackbar.SnackbarManager;
 
 import javax.inject.Inject;
 
@@ -68,5 +69,10 @@ public class AlarmReceiver extends BroadcastReceiver {
             builder.setSound(ringtoneUri);
         }
         mNotificationManager.notify(0, builder.build());
+        SharedPreferences sharedPreferences = context.getSharedPreferences(SettingsFragment.REMINDER_PREFERENCES, Context.MODE_PRIVATE);
+        SharedPreferences.Editor editor = sharedPreferences.edit();
+        editor.putBoolean(SettingsFragment.KEY_PREF_REMINDER_SET, false);
+        editor.apply();
+        SnackbarManager.dismiss();
     }
 }

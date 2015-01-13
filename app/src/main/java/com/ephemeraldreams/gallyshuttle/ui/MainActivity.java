@@ -140,7 +140,7 @@ public class MainActivity extends BaseActivity implements ListView.OnItemClickLi
 
         // Display a reminder snackbar if there exists any reminder
         mAlarmPendingIntent = PendingIntent.getBroadcast(this, 0, new Intent(this, AlarmReceiver.class), 0);
-        SharedPreferences sharedPreferences = getPreferences(MODE_PRIVATE);
+        SharedPreferences sharedPreferences = getSharedPreferences(SettingsFragment.REMINDER_PREFERENCES, Context.MODE_PRIVATE);
         boolean reminderSet = sharedPreferences.getBoolean(SettingsFragment.KEY_PREF_REMINDER_SET, false);
         if (reminderSet) {
             mReminderMessage = sharedPreferences.getString(SettingsFragment.KEY_PREF_REMINDER_TIME_MESSAGE, "");
@@ -396,7 +396,7 @@ public class MainActivity extends BaseActivity implements ListView.OnItemClickLi
                             @Override
                             public void onActionClicked(Snackbar snackbar) {
                                 mAlarmManager.cancel(mAlarmPendingIntent);
-                                SharedPreferences sharedPreferences = getPreferences(Context.MODE_PRIVATE);
+                                SharedPreferences sharedPreferences = getSharedPreferences(SettingsFragment.REMINDER_PREFERENCES, Context.MODE_PRIVATE);
                                 SharedPreferences.Editor editor = sharedPreferences.edit();
                                 editor.putBoolean(SettingsFragment.KEY_PREF_REMINDER_SET, false);
                                 editor.apply();

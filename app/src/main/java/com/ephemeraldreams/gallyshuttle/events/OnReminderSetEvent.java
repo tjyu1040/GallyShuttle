@@ -32,7 +32,7 @@ public class OnReminderSetEvent {
         this.reminderMessage = "Reminder for " + timeMessage + "!";
         this.alarmIntent = alarmIntent;
 
-        SharedPreferences sharedPreferences = activity.getPreferences(Context.MODE_PRIVATE);
+        SharedPreferences sharedPreferences = activity.getSharedPreferences(SettingsFragment.REMINDER_PREFERENCES, Context.MODE_PRIVATE);
         SharedPreferences.Editor editor = sharedPreferences.edit();
         editor.putBoolean(SettingsFragment.KEY_PREF_REMINDER_SET, true);
         editor.putString(SettingsFragment.KEY_PREF_REMINDER_TIME_MESSAGE, reminderMessage);
