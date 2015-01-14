@@ -4,6 +4,8 @@ This is an Android project to get schedules of Gallaudet University shuttles and
 arrival/departure times. This project is still under development, but Gallaudet students, feel free
 to fork and contribute to this project! View the change log for this project [here] (CHANGELOG.md).
 
+[![Google Play link](https://developer.android.com/images/brand/en_generic_rgb_wo_60.png)] (https://play.google.com/store/apps/details?id=com.ephemeraldreams.gallyshuttle)
+
 Importing This Project
 ----------------------
 Clone this project or download this project in a .zip file and unzip it. Import this project using

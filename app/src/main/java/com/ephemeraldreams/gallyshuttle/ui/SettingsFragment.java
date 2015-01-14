@@ -49,6 +49,7 @@ import timber.log.Timber;
  */
 public class SettingsFragment extends PreferenceFragment implements SharedPreferences.OnSharedPreferenceChangeListener {
 
+    public final static String REMINDER_PREFERENCES = "reminder preferences";
     public final static String KEY_PREF_REMINDER_LENGTH = "pref_reminder_length";
     public final static String KEY_PREF_RINGTONE = "pref_ringtone";
     public final static String KEY_PREF_VIBRATE = "pref_vibrate";

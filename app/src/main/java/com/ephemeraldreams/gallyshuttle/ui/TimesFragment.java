@@ -126,7 +126,7 @@ public class TimesFragment extends BaseFragment implements RecyclerViewListener.
 
     @Override
     public void onItemClick(View view, int position) {
-        SharedPreferences sharedPreferences = getActivity().getPreferences(Context.MODE_PRIVATE);
+        SharedPreferences sharedPreferences = getActivity().getSharedPreferences(SettingsFragment.REMINDER_PREFERENCES, Context.MODE_PRIVATE);
         boolean reminderSet = sharedPreferences.getBoolean(SettingsFragment.KEY_PREF_REMINDER_SET, false);
         if (!reminderSet){
             TextView timeTextView = ButterKnife.findById(view, R.id.timeTextView);
@@ -202,7 +202,7 @@ public class TimesFragment extends BaseFragment implements RecyclerViewListener.
     private void displayReminderSetSnackBar(){
         final String timeMessage = mDateFormat.format(mCalendarAlarm.getTime()) + mSetDay;
         final String reminderMessage = "Reminder set for " + timeMessage + "!";
-        SharedPreferences sharedPreferences = getActivity().getPreferences(Context.MODE_PRIVATE);
+        SharedPreferences sharedPreferences = getActivity().getSharedPreferences(SettingsFragment.REMINDER_PREFERENCES, Context.MODE_PRIVATE);
         SharedPreferences.Editor editor = sharedPreferences.edit();
         editor.putBoolean(SettingsFragment.KEY_PREF_REMINDER_SET, true);
         editor.apply();
@@ -241,7 +241,7 @@ public class TimesFragment extends BaseFragment implements RecyclerViewListener.
                             @Override
                             public void onActionClicked(Snackbar snackbar) {
                                 mAlarmManager.cancel(mAlarmPendingIntent);
-                                SharedPreferences sharedPreferences = getActivity().getPreferences(Context.MODE_PRIVATE);
+                                SharedPreferences sharedPreferences = getActivity().getSharedPreferences(SettingsFragment.REMINDER_PREFERENCES, Context.MODE_PRIVATE);
                                 SharedPreferences.Editor editor = sharedPreferences.edit();
                                 editor.putBoolean(SettingsFragment.KEY_PREF_REMINDER_SET, false);
                                 editor.apply();
