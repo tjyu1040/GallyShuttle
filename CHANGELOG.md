@@ -1,7 +1,11 @@
 Change Log
 ==========
 
-1.0.0 (Release Version!)
+1.0.1 (January 13, 2015)
+------------------------
+* Quick hotfix for application crashing when settings clicked on pre-Kitkat devices.
+
+1.0.0 (Release Version! January 13, 2015)
 ------------------------
 * Added design and art resources.
 * Reworked theme style.
