@@ -80,6 +80,7 @@ public class SettingsFragment extends PreferenceFragment implements SharedPrefer
 
         getActivity().setTitle("Settings");
         addPreferencesFromResource(R.xml.preferences);
+        setPreferences();
 
         if (Build.VERSION.SDK_INT < Build.VERSION_CODES.KITKAT) {
             PreferenceScreen preferenceScreen = getPreferenceScreen();
@@ -93,6 +94,17 @@ public class SettingsFragment extends PreferenceFragment implements SharedPrefer
         updateReminderSummary();
         setCacheClearPreference();
         setSharePreference();
+    }
+
+    /**
+     * Set up preferences.
+     */
+    private void setPreferences(){
+        mReminderPreference = (ListPreference) findPreference(KEY_PREF_REMINDER_LENGTH);
+        mRingtonePreference = (RingtonePreference) findPreference(KEY_PREF_RINGTONE);
+        mVibratePreference = (CheckBoxPreference) findPreference(KEY_PREF_VIBRATE);
+        mClearCachePreference = findPreference(KEY_PREF_CLEAR_CACHE);
+        mSharePreference = findPreference(KEY_PREF_SHARE);
     }
 
     @Override
@@ -144,7 +156,6 @@ public class SettingsFragment extends PreferenceFragment implements SharedPrefer
      * Update reminder length in minutes.
      */
     private void updateReminderSummary() {
-        mReminderPreference = (ListPreference) findPreference(KEY_PREF_REMINDER_LENGTH);
         mReminderPreference.setSummary(mReminderPreference.getEntry());
     }
 
@@ -162,7 +173,6 @@ public class SettingsFragment extends PreferenceFragment implements SharedPrefer
             Ringtone ringtone = RingtoneManager.getRingtone(mContext, ringtoneUri);
             ringtoneName = ringtone.getTitle(mContext);
         }
-        mRingtonePreference = (RingtonePreference) findPreference(KEY_PREF_RINGTONE);
         mRingtonePreference.setSummary(ringtoneName);
     }
 
@@ -170,7 +180,6 @@ public class SettingsFragment extends PreferenceFragment implements SharedPrefer
      * Update enabled or disabled vibration.
      */
     private void updateVibrateSummary() {
-        mVibratePreference = (CheckBoxPreference) findPreference(KEY_PREF_VIBRATE);
         if (mVibratePreference.isChecked()) {
             mVibratePreference.setSummary(getResources().getString(R.string.pref_vibrate_summary_enabled));
         } else {
@@ -189,7 +198,6 @@ public class SettingsFragment extends PreferenceFragment implements SharedPrefer
         }
         String cacheSummary = files.length + " files (" + (directorySize / 1000) + " KB)";
 
-        mClearCachePreference = findPreference(KEY_PREF_CLEAR_CACHE);
         mClearCachePreference.setSummary(cacheSummary);
     }
 
@@ -197,7 +205,6 @@ public class SettingsFragment extends PreferenceFragment implements SharedPrefer
      * Set up click listener for clearing cache.
      */
     private void setCacheClearPreference() {
-        mClearCachePreference = findPreference(KEY_PREF_CLEAR_CACHE);
         mClearCachePreference.setOnPreferenceClickListener(new Preference.OnPreferenceClickListener() {
             @Override
             public boolean onPreferenceClick(Preference preference) {
@@ -236,7 +243,6 @@ public class SettingsFragment extends PreferenceFragment implements SharedPrefer
      * Set up click listener for sharing.
      */
     private void setSharePreference() {
-        mSharePreference = findPreference(KEY_PREF_SHARE);
         mSharePreference.setOnPreferenceClickListener(new Preference.OnPreferenceClickListener() {
             @Override
             public boolean onPreferenceClick(Preference preference) {
