@@ -18,24 +18,76 @@ package com.ephemeraldreams.gallyshuttle.events;
 
 import android.app.Activity;
 import android.app.PendingIntent;
-import android.content.Context;
+import android.content.Intent;
 import android.content.SharedPreferences;
+import android.preference.PreferenceManager;
 
+import com.ephemeraldreams.gallyshuttle.receivers.AlarmReceiver;
 import com.ephemeraldreams.gallyshuttle.ui.SettingsFragment;
+import com.ephemeraldreams.gallyshuttle.util.ScheduleTimeFormatter;
+
+import java.text.DateFormat;
+import java.text.SimpleDateFormat;
+import java.util.Calendar;
+import java.util.Date;
 
 public class OnReminderSetEvent {
 
-    public String reminderMessage;
-    public PendingIntent alarmIntent;
+    private static final DateFormat TIME_FORMAT = new SimpleDateFormat("h:mm aa");
 
-    public OnReminderSetEvent(Activity activity, String timeMessage, PendingIntent alarmIntent){
-        this.reminderMessage = "Reminder for " + timeMessage + "!";
-        this.alarmIntent = alarmIntent;
+    public Calendar alarmCalendar;
+    public String reminderDialogMessage;
+    public String undoSnackbarMessage;
+    public String persistentSnackbarMessage;
+    public PendingIntent alarmPendingIntent;
 
-        SharedPreferences sharedPreferences = activity.getSharedPreferences(SettingsFragment.REMINDER_PREFERENCES, Context.MODE_PRIVATE);
-        SharedPreferences.Editor editor = sharedPreferences.edit();
-        editor.putBoolean(SettingsFragment.KEY_PREF_REMINDER_SET, true);
-        editor.putString(SettingsFragment.KEY_PREF_REMINDER_TIME_MESSAGE, reminderMessage);
-        editor.apply();
+    private Activity activity;
+    private String time;
+
+    public OnReminderSetEvent(Activity activity, String time) {
+        this.activity = activity;
+        this.time = time;
+        prepareAlarmAndReminderMessages();
+    }
+
+    /**
+     * Set up calendar alarm and messages.
+     */
+    private void prepareAlarmAndReminderMessages() {
+        alarmCalendar = Calendar.getInstance();
+        alarmCalendar.setTime(ScheduleTimeFormatter.parseToDate(time));
+        SharedPreferences sharedPreferences = PreferenceManager.getDefaultSharedPreferences(activity);
+        int prefReminderLength = Integer.parseInt(sharedPreferences.getString(SettingsFragment.KEY_PREF_REMINDER_LENGTH, "5"));
+        alarmCalendar.add(Calendar.MINUTE, -prefReminderLength);
+
+        Calendar currentCalendar = Calendar.getInstance();
+        Date currentDate = new Date();
+        currentCalendar.setTime(currentDate);
+
+        String setDay;
+        if (alarmCalendar.before(currentCalendar)) {
+            alarmCalendar.add(Calendar.DATE, 1);
+            setDay = " tomorrow";
+        } else {
+            setDay = " today";
+        }
+
+        String timeMessage = TIME_FORMAT.format(alarmCalendar.getTime()) + setDay;
+        reminderDialogMessage = "Set reminder for " + timeMessage + "?";
+        undoSnackbarMessage = "Reminder set for " + timeMessage + "!";
+        persistentSnackbarMessage = "Reminder for " + timeMessage + "!";
+
+        setAlarmPendingIntent(prefReminderLength);
+    }
+
+    /**
+     * Set up the alarm pending intent.
+     *
+     * @param prefReminderLength Reminder length.
+     */
+    private void setAlarmPendingIntent(int prefReminderLength) {
+        Intent alarmIntent = new Intent(activity, AlarmReceiver.class);
+        alarmIntent.putExtra(AlarmReceiver.EXTRA_REMINDER, prefReminderLength);
+        alarmPendingIntent = PendingIntent.getBroadcast(activity, 0, alarmIntent, 0);
     }
 }

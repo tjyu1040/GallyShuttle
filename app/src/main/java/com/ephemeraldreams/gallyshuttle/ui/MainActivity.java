@@ -52,6 +52,7 @@ import com.ephemeraldreams.gallyshuttle.ui.base.BaseActivity;
 import com.nispok.snackbar.Snackbar;
 import com.nispok.snackbar.SnackbarManager;
 import com.nispok.snackbar.listeners.ActionClickListener;
+import com.nispok.snackbar.listeners.EventListener;
 import com.squareup.otto.Bus;
 import com.squareup.otto.Subscribe;
 
@@ -87,8 +88,8 @@ public class MainActivity extends BaseActivity implements ListView.OnItemClickLi
     @Inject ConnectivityManager mConnectivityManager;
     @Inject AlarmManager mAlarmManager;
 
-    private String mReminderMessage;
-    private PendingIntent mAlarmPendingIntent;
+    private SharedPreferences mSharedPreferences;
+    private PendingIntent mCancelAlarmPendingIntent;
     private final Handler mDrawerHandler = new Handler();
     private int mPrevPosition;
 
@@ -101,6 +102,7 @@ public class MainActivity extends BaseActivity implements ListView.OnItemClickLi
         getSupportActionBar().setDisplayHomeAsUpEnabled(true);
         getSupportActionBar().setDisplayShowHomeEnabled(true);
 
+        // Set up navigation drawer
         mActionBarDrawerToggle = new ActionBarDrawerToggle(
                 this,
                 mDrawerLayout,
@@ -117,34 +119,36 @@ public class MainActivity extends BaseActivity implements ListView.OnItemClickLi
         ));
         mLeftDrawerListView.setOnItemClickListener(this);
 
-        if(savedInstanceState != null){
+        if (savedInstanceState != null) {
+            // Replace fragments on configuration change
             mCurrentFragment = mFragmentManager.getFragment(savedInstanceState, KEY_FRAGMENT_INSTANCE);
-            if(mCurrentFragment instanceof MainFragment){
+            if (mCurrentFragment instanceof MainFragment) {
                 setCurrentNavigationItem(0);
-            } else if (mCurrentFragment instanceof ScheduleFragment){
+            } else if (mCurrentFragment instanceof ScheduleFragment) {
                 setDrawerItemSelected(0);
                 replaceContainer(mCurrentFragment);
-            } else if (mCurrentFragment instanceof PoliciesFragment){
+            } else if (mCurrentFragment instanceof PoliciesFragment) {
                 setCurrentNavigationItem(1);
-            } else if (mCurrentFragment instanceof SettingsFragment){
+            } else if (mCurrentFragment instanceof SettingsFragment) {
                 setCurrentNavigationItem(2);
-            } else if (mCurrentFragment instanceof AboutFragment){
+            } else if (mCurrentFragment instanceof AboutFragment) {
                 setCurrentNavigationItem(3);
             } else {
                 setCurrentNavigationItem(0);
             }
-
         } else {
             setCurrentNavigationItem(0);
         }
 
+        // Prepare an intent to cancel alarm if needed.
+        mCancelAlarmPendingIntent = PendingIntent.getBroadcast(this, 0, new Intent(this, AlarmReceiver.class), 0);
+
         // Display a reminder snackbar if there exists any reminder
-        mAlarmPendingIntent = PendingIntent.getBroadcast(this, 0, new Intent(this, AlarmReceiver.class), 0);
-        SharedPreferences sharedPreferences = getSharedPreferences(SettingsFragment.REMINDER_PREFERENCES, Context.MODE_PRIVATE);
-        boolean reminderSet = sharedPreferences.getBoolean(SettingsFragment.KEY_PREF_REMINDER_SET, false);
+        mSharedPreferences = getSharedPreferences(SettingsFragment.REMINDER_PREFERENCES, Context.MODE_PRIVATE);
+        boolean reminderSet = mSharedPreferences.getBoolean(SettingsFragment.KEY_PREF_REMINDER_SET, false);
         if (reminderSet) {
-            mReminderMessage = sharedPreferences.getString(SettingsFragment.KEY_PREF_REMINDER_TIME_MESSAGE, "");
-            displayReminderSnackbar();
+            String reminderMessage = mSharedPreferences.getString(SettingsFragment.KEY_PREF_REMINDER_TIME_MESSAGE, "");
+            displayPersistentReminderSnackbar(reminderMessage);
         }
     }
 
@@ -198,6 +202,7 @@ public class MainActivity extends BaseActivity implements ListView.OnItemClickLi
 
     /**
      * Store previously selected drawer item on another drawer item clicked.
+     *
      * @param selectedPosition Selected position of clicked drawer item.
      */
     private void setDrawerItemSelected(int selectedPosition) {
@@ -229,6 +234,7 @@ public class MainActivity extends BaseActivity implements ListView.OnItemClickLi
 
     /**
      * Set current navigation drawer item position and display corresponding fragment.
+     *
      * @param position Position of navigation drawer item.
      */
     private void setCurrentNavigationItem(int position) {
@@ -254,6 +260,7 @@ public class MainActivity extends BaseActivity implements ListView.OnItemClickLi
 
     /**
      * Replace main container with a fragment.
+     *
      * @param fragment Fragment to display
      */
     private void replaceContainer(Fragment fragment) {
@@ -266,6 +273,7 @@ public class MainActivity extends BaseActivity implements ListView.OnItemClickLi
 
     /**
      * Check if device is connected to the Internet or not.
+     *
      * @return true if connected, false otherwise.
      */
     private boolean isConnected() {
@@ -358,7 +366,6 @@ public class MainActivity extends BaseActivity implements ListView.OnItemClickLi
     private void createCacheFile(Schedule schedule) {
         try {
             // Create cached file.
-            //File tempFile = File.createTempFile(schedule.name, ".json", getCacheDir());
             File tempFile = new File(getCacheDir(), schedule.name + ".json");
             FileWriter fileWriter = new FileWriter(tempFile);
             String json = GsonHelper.toJsonString(schedule);
@@ -371,38 +378,135 @@ public class MainActivity extends BaseActivity implements ListView.OnItemClickLi
     }
 
     /**
-     * Display reminder snackbar.
+     * Show dialog, display undo snackbar, and display a persistent snackbar.
      *
-     * @param event Event with stored message and PendingIntent to use for alarm cancellation.
+     * @param event Event with stored alarm details and reminder messages to display in snackbars.
      */
     @Subscribe
-    public void onReminderSet(final OnReminderSetEvent event) {
-        mReminderMessage = event.reminderMessage;
-        mAlarmPendingIntent = event.alarmIntent;
-        displayReminderSnackbar();
+    public void onReminderSet(OnReminderSetEvent event) {
+        buildReminderSetDialog(event);
     }
 
     /**
-     * Display current existing reminder in a snackbar with a cancel option.
+     * Build and show a dialog to set a reminder.
+     *
+     * @param event Event passed along. alarmCalendar and alarmPendingIntent are retrieved from event.
      */
-    private void displayReminderSnackbar() {
+    private void buildReminderSetDialog(final OnReminderSetEvent event) {
+        AlertDialog.Builder builder = new AlertDialog.Builder(this);
+        builder.setTitle("Reminder")
+                .setMessage(event.reminderDialogMessage)
+                .setPositiveButton(android.R.string.ok, new DialogInterface.OnClickListener() {
+                    @Override
+                    public void onClick(DialogInterface dialog, int which) {
+                        mAlarmManager.set(AlarmManager.RTC_WAKEUP, event.alarmCalendar.getTimeInMillis(), event.alarmPendingIntent);
+                        displayUndoReminderSnackbar(event);
+                    }
+                })
+                .setNegativeButton(android.R.string.cancel, new DialogInterface.OnClickListener() {
+                    @Override
+                    public void onClick(DialogInterface dialog, int which) {
+
+                    }
+                });
+        AlertDialog setReminderDialog = builder.create();
+        setReminderDialog.show();
+    }
+
+    /**
+     * Display an undo reminder snackbar.
+     *
+     * @param event Event passed along. undoSnackbarMessage, persistentSnackbarMessage, and
+     *              alarmPendingIntent retrieved from event.
+     */
+    private void displayUndoReminderSnackbar(final OnReminderSetEvent event) {
         SnackbarManager.show(
                 Snackbar.with(this)
-                        .text(mReminderMessage)
+                        .text(event.undoSnackbarMessage)
+                        .duration(Snackbar.SnackbarDuration.LENGTH_SHORT)
+                        .eventListener(new EventListener() {
+                            @Override
+                            public void onShow(Snackbar snackbar) {
+
+                            }
+
+                            @Override
+                            public void onShown(Snackbar snackbar) {
+
+                            }
+
+                            @Override
+                            public void onDismiss(Snackbar snackbar) {
+
+                            }
+
+                            @Override
+                            public void onDismissed(Snackbar snackbar) {
+                                // Show persistent reminder after undo snackbar is dismissed.
+                                saveReminderSetPreference(true);
+                                saveReminderMessagePreference(event.persistentSnackbarMessage);
+                                displayPersistentReminderSnackbar(event.persistentSnackbarMessage);
+                                Timber.d(event.undoSnackbarMessage);
+                            }
+                        })
+                        .actionLabel("UNDO")
+                        .actionColorResource(R.color.light_blue)
+                        .actionListener(new ActionClickListener() {
+                            @Override
+                            public void onActionClicked(Snackbar snackbar) {
+                                mAlarmManager.cancel(event.alarmPendingIntent);
+                                saveReminderSetPreference(false);
+                                Timber.d("Undo Snackbar - Reminder cancelled.");
+                            }
+                        }),
+                this
+        );
+    }
+
+    /**
+     * Display a persistent reminder snackbar.
+     *
+     * @param persistentReminderMessage Message to display in snackbar.
+     */
+    private void displayPersistentReminderSnackbar(String persistentReminderMessage) {
+        SnackbarManager.show(
+                Snackbar.with(this)
+                        .text(persistentReminderMessage)
                         .duration(Snackbar.SnackbarDuration.LENGTH_INDEFINITE)
                         .actionLabel("CANCEL")
                         .actionColorResource(R.color.light_blue)
                         .actionListener(new ActionClickListener() {
                             @Override
                             public void onActionClicked(Snackbar snackbar) {
-                                mAlarmManager.cancel(mAlarmPendingIntent);
-                                SharedPreferences sharedPreferences = getSharedPreferences(SettingsFragment.REMINDER_PREFERENCES, Context.MODE_PRIVATE);
-                                SharedPreferences.Editor editor = sharedPreferences.edit();
-                                editor.putBoolean(SettingsFragment.KEY_PREF_REMINDER_SET, false);
-                                editor.apply();
+                                mAlarmManager.cancel(mCancelAlarmPendingIntent);
+                                saveReminderSetPreference(false);
+                                Timber.d("Persistent snackbar - Reminder cancelled.");
                             }
                         }),
                 this
         );
+    }
+
+    /**
+     * Save whether reminder has been set or not, to ensure that it is not lost when MainActivity is
+     * recreated.
+     *
+     * @param reminderSet true if set, false otherwise
+     */
+    private void saveReminderSetPreference(boolean reminderSet) {
+        SharedPreferences.Editor editor = mSharedPreferences.edit();
+        editor.putBoolean(SettingsFragment.KEY_PREF_REMINDER_SET, reminderSet);
+        editor.apply();
+    }
+
+    /**
+     * Save persistent snackbar message to ensure that it is not lost when MainActivity is recreated.
+     *
+     * @param persistentReminderMessage Message to save.
+     */
+    private void saveReminderMessagePreference(String persistentReminderMessage) {
+        SharedPreferences.Editor editor = mSharedPreferences.edit();
+        editor.putString(SettingsFragment.KEY_PREF_REMINDER_TIME_MESSAGE, persistentReminderMessage);
+        editor.apply();
     }
 }

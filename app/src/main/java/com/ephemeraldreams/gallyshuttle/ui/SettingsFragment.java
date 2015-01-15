@@ -31,7 +31,6 @@ import android.preference.CheckBoxPreference;
 import android.preference.ListPreference;
 import android.preference.Preference;
 import android.preference.PreferenceFragment;
-import android.preference.PreferenceScreen;
 import android.preference.RingtonePreference;
 import android.text.TextUtils;
 
@@ -78,19 +77,12 @@ public class SettingsFragment extends PreferenceFragment implements SharedPrefer
         ((BaseActivity) getActivity()).inject(this);
         setRetainInstance(true);
 
-        getActivity().setTitle("Settings");
+        getActivity().setTitle(getResources().getString(R.string.settings_fragment_title));
         addPreferencesFromResource(R.xml.preferences);
         setPreferences();
 
-        if (Build.VERSION.SDK_INT < Build.VERSION_CODES.KITKAT) {
-            PreferenceScreen preferenceScreen = getPreferenceScreen();
-            preferenceScreen.removePreference(mRingtonePreference);
-            preferenceScreen.removePreference(mVibratePreference);
-        } else {
-            updateRingtoneSummary();
-            updateVibrateSummary();
-        }
-
+        updateRingtoneSummary();
+        updateVibrateSummary();
         updateReminderSummary();
         setCacheClearPreference();
         setSharePreference();
@@ -99,7 +91,7 @@ public class SettingsFragment extends PreferenceFragment implements SharedPrefer
     /**
      * Set up preferences.
      */
-    private void setPreferences(){
+    private void setPreferences() {
         mReminderPreference = (ListPreference) findPreference(KEY_PREF_REMINDER_LENGTH);
         mRingtonePreference = (RingtonePreference) findPreference(KEY_PREF_RINGTONE);
         mVibratePreference = (CheckBoxPreference) findPreference(KEY_PREF_VIBRATE);

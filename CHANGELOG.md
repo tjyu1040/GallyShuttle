@@ -1,6 +1,11 @@
 Change Log
 ==========
 
+1.0.2 (January 14, 2015)
+------------------------
+* Snackbar bugs fixed.
+* Settings bugs fixed.
+
 1.0.1 (January 13, 2015)
 ------------------------
 * Quick hotfix for application crashing when settings clicked on pre-Kitkat devices.
