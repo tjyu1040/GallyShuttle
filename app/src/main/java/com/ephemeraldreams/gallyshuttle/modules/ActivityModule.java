@@ -36,7 +36,7 @@ import dagger.Provides;
 
 /**
  * A module for dependencies that exists only for the scope of a single activity. Also applies to
- * the fragment attached to the activity.
+ * fragments attached to the activity.
  */
 @Module(
         injects = {
@@ -45,7 +45,6 @@ import dagger.Provides;
                 ScheduleFragment.class,
                 TimesFragment.class,
                 AboutDialogFragment.class,
-                //LicensesFragment.class,
                 PoliciesFragment.class,
                 SettingsFragment.class
         },

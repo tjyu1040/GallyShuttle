@@ -50,12 +50,12 @@ public class AlarmReceiver extends BroadcastReceiver {
     }
 
     private void remindNotification(Context context, Intent intent) {
-        int reminder_length = intent.getIntExtra(EXTRA_REMINDER, 5);
+        int reminderLength = intent.getIntExtra(EXTRA_REMINDER, 5);
 
         NotificationCompat.Builder builder = new NotificationCompat.Builder(context)
                 .setSmallIcon(R.drawable.ic_directions_bus_white_48dp)
                 .setContentTitle("Gally Shuttle Reminder!")
-                .setContentText("Your shuttle will be arriving in " + reminder_length + " minutes!")
+                .setContentText("Your shuttle will be arriving in " + reminderLength + " minutes!")
                 .setAutoCancel(true);
 
         boolean vibrationEnabled = mSharedPreferences.getBoolean(SettingsFragment.KEY_PREF_VIBRATE, true);

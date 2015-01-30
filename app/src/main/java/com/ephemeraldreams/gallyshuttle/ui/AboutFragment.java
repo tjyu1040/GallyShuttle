@@ -25,7 +25,6 @@ import android.view.LayoutInflater;
 import android.view.View;
 import android.view.ViewGroup;
 import android.widget.TextView;
-import android.widget.Toast;
 
 import com.ephemeraldreams.gallyshuttle.BuildConfig;
 import com.ephemeraldreams.gallyshuttle.R;
@@ -95,7 +94,6 @@ public class AboutFragment extends Fragment {
     @OnClick(R.id.creditsTextView)
     public void getCredits() {
         AboutDialogFragment.displayDialogFragment(getFragmentManager(), R.string.dialog_credits_title, R.raw.credits);
-        Toast.makeText(getActivity(), "Credits", Toast.LENGTH_SHORT).show();
     }
 
     /**
