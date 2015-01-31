@@ -24,7 +24,7 @@ import android.os.Bundle;
  */
 public class BaseFragment extends Fragment {
 
-    public CharSequence mTitle;
+    public CharSequence activityTitle;
 
     @Override
     public void onActivityCreated(Bundle savedInstanceState) {
@@ -39,12 +39,12 @@ public class BaseFragment extends Fragment {
     @Override
     public void onResume() {
         super.onResume();
-        mTitle = ((BaseActivity) getActivity()).getSupportActionBar().getTitle();
+        activityTitle = ((BaseActivity) getActivity()).getSupportActionBar().getTitle();
     }
 
     @Override
     public void onDestroy() {
         super.onDestroy();
-        ((BaseActivity) getActivity()).getSupportActionBar().setTitle(mTitle);
+        ((BaseActivity) getActivity()).getSupportActionBar().setTitle(activityTitle);
     }
 }

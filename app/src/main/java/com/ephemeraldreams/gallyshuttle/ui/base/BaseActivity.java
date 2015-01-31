@@ -33,15 +33,15 @@ import dagger.ObjectGraph;
  */
 public class BaseActivity extends ActionBarActivity {
 
-    private ObjectGraph activityGraph;
+    private ObjectGraph mActivityGraph;
 
     @Override
     protected void onCreate(Bundle savedInstanceState) {
         super.onCreate(savedInstanceState);
 
         ShuttleApplication application = (ShuttleApplication) getApplication();
-        activityGraph = application.getApplicationGraph().plus(getModules().toArray());
-        activityGraph.inject(this);
+        mActivityGraph = application.getApplicationGraph().plus(getModules().toArray());
+        mActivityGraph.inject(this);
     }
 
     @Override
@@ -53,7 +53,7 @@ public class BaseActivity extends ActionBarActivity {
     @Override
     protected void onDestroy() {
         super.onDestroy();
-        activityGraph = null;
+        mActivityGraph = null;
     }
 
     protected List<Object> getModules() {
@@ -61,6 +61,6 @@ public class BaseActivity extends ActionBarActivity {
     }
 
     public void inject(Object object) {
-        activityGraph.inject(object);
+        mActivityGraph.inject(object);
     }
 }

@@ -27,7 +27,7 @@ import java.io.BufferedReader;
  */
 public class GsonHelper {
 
-    public static final Gson GSON = new Gson();
+    private static final Gson GSON = new Gson();
 
     public static String toJsonString(Schedule schedule) {
         return GSON.toJson(schedule);
