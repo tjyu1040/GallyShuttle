@@ -34,10 +34,10 @@ import butterknife.InjectView;
  */
 public class TimesRecyclerViewAdapter extends RecyclerView.Adapter<TimesRecyclerViewAdapter.TimeViewHolder> {
 
-    private ArrayList<String> times;
+    private ArrayList<String> mTimes;
 
     public TimesRecyclerViewAdapter(ArrayList<String> times) {
-        this.times = times;
+        mTimes = times;
     }
 
     @Override
@@ -48,12 +48,12 @@ public class TimesRecyclerViewAdapter extends RecyclerView.Adapter<TimesRecycler
 
     @Override
     public void onBindViewHolder(TimeViewHolder timeViewHolder, int position) {
-        timeViewHolder.timeTextView.setText(times.get(position));
+        timeViewHolder.timeTextView.setText(mTimes.get(position));
     }
 
     @Override
     public int getItemCount() {
-        return times.size();
+        return mTimes.size();
     }
 
     public static final class TimeViewHolder extends RecyclerView.ViewHolder {

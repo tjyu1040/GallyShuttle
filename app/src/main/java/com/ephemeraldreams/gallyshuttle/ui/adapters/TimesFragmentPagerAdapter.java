@@ -31,25 +31,25 @@ import java.util.Locale;
  */
 public class TimesFragmentPagerAdapter extends FragmentPagerAdapter {
 
-    private Schedule schedule;
+    private Schedule mSchedule;
 
     public TimesFragmentPagerAdapter(FragmentManager fm, Schedule schedule) {
         super(fm);
-        this.schedule = schedule;
+        mSchedule = schedule;
     }
 
     @Override
     public Fragment getItem(int position) {
-        return TimesFragment.newInstance(schedule.times.get(position));
+        return TimesFragment.newInstance(mSchedule.times.get(position));
     }
 
     @Override
     public int getCount() {
-        return schedule.stops.size();
+        return mSchedule.stops.size();
     }
 
     @Override
     public CharSequence getPageTitle(int position) {
-        return schedule.stops.get(position).toUpperCase(Locale.getDefault());
+        return mSchedule.stops.get(position).toUpperCase(Locale.getDefault());
     }
 }
