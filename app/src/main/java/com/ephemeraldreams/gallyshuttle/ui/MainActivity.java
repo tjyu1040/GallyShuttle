@@ -63,6 +63,7 @@ import java.io.FileNotFoundException;
 import java.io.FileWriter;
 import java.io.IOException;
 import java.io.InputStreamReader;
+import java.util.Stack;
 
 import javax.inject.Inject;
 
@@ -81,8 +82,6 @@ public class MainActivity extends BaseActivity implements ListView.OnItemClickLi
     @InjectView(R.id.left_drawer_listview) ListView mLeftDrawerListView;
     private ActionBarDrawerToggle mActionBarDrawerToggle;
 
-    private Fragment mCurrentFragment;
-
     @Inject Bus mBus;
     @Inject FragmentManager mFragmentManager;
     @Inject ConnectivityManager mConnectivityManager;
@@ -91,7 +90,8 @@ public class MainActivity extends BaseActivity implements ListView.OnItemClickLi
     private SharedPreferences mSharedPreferences;
     private PendingIntent mCancelAlarmPendingIntent;
     private final Handler mDrawerHandler = new Handler();
-    private int mPrevPosition;
+
+    private Stack<Fragment> mFragmentHistoryStack;
 
     @Override
     protected void onCreate(Bundle savedInstanceState) {
@@ -119,23 +119,13 @@ public class MainActivity extends BaseActivity implements ListView.OnItemClickLi
         ));
         mLeftDrawerListView.setOnItemClickListener(this);
 
+        mFragmentHistoryStack = new Stack<>();
+
         if (savedInstanceState != null) {
             // Replace fragments on configuration change
-            mCurrentFragment = mFragmentManager.getFragment(savedInstanceState, KEY_FRAGMENT_INSTANCE);
-            if (mCurrentFragment instanceof MainFragment) {
-                setCurrentNavigationItem(0);
-            } else if (mCurrentFragment instanceof ScheduleFragment) {
-                setDrawerItemSelected(0);
-                replaceContainer(mCurrentFragment);
-            } else if (mCurrentFragment instanceof PoliciesFragment) {
-                setCurrentNavigationItem(1);
-            } else if (mCurrentFragment instanceof SettingsFragment) {
-                setCurrentNavigationItem(2);
-            } else if (mCurrentFragment instanceof AboutFragment) {
-                setCurrentNavigationItem(3);
-            } else {
-                setCurrentNavigationItem(0);
-            }
+            Fragment currentFragment = mFragmentManager.getFragment(savedInstanceState, KEY_FRAGMENT_INSTANCE);
+            int position = getNavigationFragmentPosition(currentFragment);
+            setCurrentNavigationItem(position);
         } else {
             setCurrentNavigationItem(0);
         }
@@ -165,6 +155,15 @@ public class MainActivity extends BaseActivity implements ListView.OnItemClickLi
     }
 
     @Override
+    protected void onDestroy() {
+        super.onDestroy();
+        // Clean up fragment history.
+        while (!mFragmentHistoryStack.empty()) {
+            mFragmentHistoryStack.pop();
+        }
+    }
+
+    @Override
     protected void onPostCreate(Bundle savedInstanceState) {
         super.onPostCreate(savedInstanceState);
         mActionBarDrawerToggle.syncState();
@@ -173,7 +172,9 @@ public class MainActivity extends BaseActivity implements ListView.OnItemClickLi
     @Override
     protected void onSaveInstanceState(Bundle outState) {
         super.onSaveInstanceState(outState);
-        mFragmentManager.putFragment(outState, KEY_FRAGMENT_INSTANCE, mCurrentFragment);
+        if (!(mFragmentHistoryStack.peek() instanceof ScheduleFragment)) {
+            mFragmentManager.putFragment(outState, KEY_FRAGMENT_INSTANCE, mFragmentHistoryStack.peek());
+        }
     }
 
     @Override
@@ -185,36 +186,6 @@ public class MainActivity extends BaseActivity implements ListView.OnItemClickLi
     @Override
     public boolean onOptionsItemSelected(MenuItem item) {
         return mActionBarDrawerToggle.onOptionsItemSelected(item) || super.onOptionsItemSelected(item);
-    }
-
-    @Override
-    public void onBackPressed() {
-        if (mDrawerLayout.isDrawerOpen(Gravity.START)) {
-            mDrawerLayout.closeDrawers();
-        } else if (mFragmentManager.getBackStackEntryCount() > 1) {
-            mFragmentManager.popBackStack();
-            Timber.d("B - Previous: " + mPrevPosition);
-            mLeftDrawerListView.setItemChecked(mPrevPosition, true);
-        } else {
-            super.onBackPressed();
-        }
-    }
-
-    /**
-     * Store previously selected drawer item on another drawer item clicked.
-     *
-     * @param selectedPosition Selected position of clicked drawer item.
-     */
-    private void setDrawerItemSelected(int selectedPosition) {
-        // TODO: fix navigation back bug
-        mPrevPosition = mLeftDrawerListView.getSelectedItemPosition();
-        if (mPrevPosition == -1) {
-            mPrevPosition = 0;
-        }
-        Timber.d("A - Previous: " + mPrevPosition);
-        mLeftDrawerListView.setItemChecked(selectedPosition, true);
-        Timber.d("A - Selected: " + selectedPosition);
-
     }
 
     @Override
@@ -232,16 +203,29 @@ public class MainActivity extends BaseActivity implements ListView.OnItemClickLi
         }
     }
 
+    @Override
+    public void onBackPressed() {
+        if (mDrawerLayout.isDrawerOpen(Gravity.START)) {
+            mDrawerLayout.closeDrawers();
+        } else if (!mFragmentHistoryStack.empty() && mFragmentHistoryStack.size() > 1) {
+            mFragmentManager.beginTransaction()
+                    .remove(mFragmentHistoryStack.pop())
+                    .add(R.id.container, mFragmentHistoryStack.peek())
+                    .commit();
+            int position = getNavigationFragmentPosition(mFragmentHistoryStack.peek());
+            mLeftDrawerListView.setItemChecked(position, true);
+        } else {
+            super.onBackPressed();
+        }
+    }
+
     /**
      * Set current navigation drawer item position and display corresponding fragment.
      *
      * @param position Position of navigation drawer item.
      */
     private void setCurrentNavigationItem(int position) {
-        if (mFragmentManager.getBackStackEntryCount() > 1) {
-            mFragmentManager.popBackStack();
-        }
-        setDrawerItemSelected(position);
+        mLeftDrawerListView.setItemChecked(position, true);
         switch (position) {
             case 0:
                 replaceContainer(MainFragment.newInstance());
@@ -259,15 +243,36 @@ public class MainActivity extends BaseActivity implements ListView.OnItemClickLi
     }
 
     /**
+     * Get position based on fragment instance.
+     *
+     * @param fragment Fragment to check.
+     * @return Corresponding navigation drawer item position.
+     */
+    private int getNavigationFragmentPosition(Fragment fragment) {
+        if (fragment instanceof MainFragment) {
+            return 0;
+        } else if (fragment instanceof PoliciesFragment) {
+            return 1;
+        } else if (fragment instanceof SettingsFragment) {
+            return 2;
+        } else if (fragment instanceof AboutFragment) {
+            return 3;
+        } else if (fragment instanceof ScheduleFragment) {
+            return 4;
+        } else {
+            return -1;
+        }
+    }
+
+    /**
      * Replace main container with a fragment.
      *
      * @param fragment Fragment to display
      */
     private void replaceContainer(Fragment fragment) {
-        mCurrentFragment = fragment;
+        mFragmentHistoryStack.push(fragment);
         mFragmentManager.beginTransaction()
                 .replace(R.id.container, fragment)
-                .addToBackStack("fragmentStack")
                 .commit();
     }
 
