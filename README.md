@@ -1,3 +1,11 @@
+NOTICE!
+=======
+Gallaudet University has drastically changed the way they display shuttle schedules. Previously, the schedules
+were hard-coded into the html pages, but now the schedules are retrieved dynamically from a JSON web
+service. This has completely broken the application (at least the data retrieval process), and the
+whole data retrieval process will need to be rewritten from scratch. I do not know when I will have
+the time to go into this more in depth, but this project is on hold for now.
+
 GallyShuttle
 ============
 This is an Android project to get schedules of Gallaudet University shuttles and to notify users of
