@@ -6,13 +6,13 @@
     tools:context="com.ephemeraldreams.gallyshuttle.ui.PoliciesFragment">
 
     <WebView
-        android:id="@+id/policiesWebView"
+        android:id="@+id/policies_web_view"
         android:layout_width="match_parent"
         android:layout_height="match_parent"
         android:visibility="invisible"/>
 
     <ProgressBar
-        android:id="@+id/licensesProgressBar"
+        android:id="@+id/licenses_progress_bar"
         android:layout_width="wrap_content"
         android:layout_height="wrap_content"
         android:layout_centerInParent="true"

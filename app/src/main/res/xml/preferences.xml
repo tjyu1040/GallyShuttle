@@ -1,26 +1,26 @@
 <PreferenceScreen xmlns:android="http://schemas.android.com/apk/res/android">
 
     <PreferenceCategory
-        android:key="pref_alarms"
-        android:title="Alarms">
+        android:title="@string/pref_title_alarms"
+        android:key="@string/pref_key_alarms">
 
         <ListPreference
+            android:title="@string/pref_reminder_title"
+            android:key="@string/pref_key_reminder_length"
             android:defaultValue="5"
             android:entries="@array/minutes"
-            android:entryValues="@array/minutes_values"
-            android:key="pref_reminder_length"
-            android:title="@string/pref_reminder_title"/>
+            android:entryValues="@array/minutes_values"/>
 
         <RingtonePreference
             android:key="pref_ringtone"
-            android:title="@string/pref_ringtone_title"
+            android:title="@string/pref_title_ringtone"
             android:ringtoneType="alarm"
             android:showSilent="true"
             android:defaultValue=""/>
 
         <CheckBoxPreference
             android:key="pref_vibrate"
-            android:title="@string/pref_vibrate_title"
+            android:title="@string/pref_title_vibrate"
             android:summary="@string/pref_vibrate_summary_enabled"
             android:defaultValue="true"/>
 
@@ -32,7 +32,7 @@
 
         <Preference
             android:key="pref_clear_cache"
-            android:title="@string/pref_clear_cache_title"/>
+            android:title="@string/pref_title_clear_cache"/>
 
     </PreferenceCategory>
 

@@ -13,7 +13,7 @@
     card_view:cardElevation="4dp">
 
     <TextView
-        android:id="@+id/timeTextView"
+        android:id="@+id/time_text_view"
         android:layout_width="wrap_content"
         android:layout_height="wrap_content"
         android:layout_gravity="center"

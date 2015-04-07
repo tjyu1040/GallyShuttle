@@ -1,0 +1,19 @@
+<?xml version="1.0" encoding="utf-8"?>
+<resources>
+
+    <!-- Categories -->
+    <string name="category_ui_action">UI Action</string>
+    <string name="category_ui_timing">UI Timing</string>
+
+    <!-- Actions -->
+    <string name="action_button_press">Button Pressed</string>
+    <string name="alarm_set">Alarm Set</string>
+
+    <!-- Variables -->
+    <string name="variable_viewing_time">Viewing Time</string>
+
+    <!-- Labels -->
+    <string name="label_continuous_button">Continuous Button</string>
+    <string name="label_policies_view_time">Policies Viewing Time</string>
+
+</resources>

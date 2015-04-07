@@ -16,28 +16,28 @@
         android:text="@string/intro_message"/>
 
     <Button
-        android:id="@+id/continuousButton"
+        android:id="@+id/continuous_button"
         android:layout_width="@dimen/button_width_length"
         android:layout_height="wrap_content"
         android:padding="@dimen/main_fragment_button_padding"
         android:text="@string/continuous_schedule"/>
 
     <Button
-        android:id="@+id/lateNightButton"
+        android:id="@+id/late_night_button"
         android:layout_width="@dimen/button_width_length"
         android:layout_height="wrap_content"
         android:padding="@dimen/main_fragment_button_padding"
         android:text="@string/late_night_schedule"/>
 
     <Button
-        android:id="@+id/weekendButton"
+        android:id="@+id/weekend_button"
         android:layout_width="@dimen/button_width_length"
         android:layout_height="wrap_content"
         android:padding="@dimen/main_fragment_button_padding"
         android:text="@string/weekend_schedule"/>
 
     <Button
-        android:id="@+id/modifiedButton"
+        android:id="@+id/modified_button"
         android:layout_width="@dimen/button_width_length"
         android:layout_height="wrap_content"
         android:padding="@dimen/main_fragment_button_padding"
