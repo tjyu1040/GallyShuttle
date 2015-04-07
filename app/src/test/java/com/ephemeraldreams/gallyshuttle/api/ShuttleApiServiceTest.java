@@ -6,6 +6,7 @@ import com.ephemeraldreams.gallyshuttle.api.models.Entry;
 import org.junit.Before;
 import org.junit.Test;
 
+import retrofit.RestAdapter;
 import retrofit.client.OkClient;
 import rx.functions.Action1;
 import rx.schedulers.Schedulers;
@@ -14,15 +15,19 @@ import static org.junit.Assert.assertEquals;
 import static org.junit.Assert.assertNotNull;
 import static org.junit.Assert.assertNull;
 
+/**
+ * Class to test service operations such as fetching schedules' data.
+ */
 public class ShuttleApiServiceTest {
 
-    public boolean allowSystemPrint = false;
-    public ShuttleApiService shuttleApiService;
+    private boolean allowSystemPrint = false;    // Change to true to see schedules downloaded.
+    private ShuttleApiService shuttleApiService;
 
     @Before
     public void setUp() throws Exception {
         ApiModule apiModule = new ApiModule();
-        shuttleApiService = apiModule.provideShuttleApiService(apiModule.provideRestAdapter(new OkClient()));
+        RestAdapter restAdapter = apiModule.provideRestAdapter(new OkClient());
+        shuttleApiService = apiModule.provideShuttleApiService(restAdapter);
     }
 
     @Test
@@ -41,7 +46,10 @@ public class ShuttleApiServiceTest {
                         assertNotNull(apiResponse);
                         assertNotNull(apiResponse.feed);
                         assertNotNull(apiResponse.feed.title);
+
+                        // Yes, there is a spelling error in expected title and I assume it is a human error.
                         assertEquals("Continous", apiResponse.feed.title.toString());
+
                         assertNotNull(apiResponse.feed.entries);
                         for (Entry entry : apiResponse.feed.entries) {
                             assertNotNull(entry);
@@ -81,7 +89,10 @@ public class ShuttleApiServiceTest {
                         assertNotNull(apiResponse);
                         assertNotNull(apiResponse.feed);
                         assertNotNull(apiResponse.feed.title);
+
+                        // Yes, there is a spelling error in expected title and I assume it is a human error.
                         assertEquals("Alternative Continous", apiResponse.feed.title.toString());
+
                         assertNotNull(apiResponse.feed.entries);
                         for (Entry entry : apiResponse.feed.entries) {
                             assertNotNull(entry);
