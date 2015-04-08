@@ -20,27 +20,34 @@
         android:layout_width="@dimen/button_width_length"
         android:layout_height="wrap_content"
         android:padding="@dimen/main_fragment_button_padding"
-        android:text="@string/continuous_schedule"/>
+        android:text="@string/schedule_title_continuous"/>
+
+    <Button
+        android:id="@+id/alt_continuous_button"
+        android:layout_width="@dimen/button_width_length"
+        android:layout_height="wrap_content"
+        android:padding="@dimen/main_fragment_button_padding"
+        android:text="@string/schedule_title_alt_continuous"/>
 
     <Button
         android:id="@+id/late_night_button"
         android:layout_width="@dimen/button_width_length"
         android:layout_height="wrap_content"
         android:padding="@dimen/main_fragment_button_padding"
-        android:text="@string/late_night_schedule"/>
+        android:text="@string/schedule_title_late_night"/>
 
     <Button
         android:id="@+id/weekend_button"
         android:layout_width="@dimen/button_width_length"
         android:layout_height="wrap_content"
         android:padding="@dimen/main_fragment_button_padding"
-        android:text="@string/weekend_schedule"/>
+        android:text="@string/schedule_title_weekend"/>
 
     <Button
         android:id="@+id/modified_button"
         android:layout_width="@dimen/button_width_length"
         android:layout_height="wrap_content"
         android:padding="@dimen/main_fragment_button_padding"
-        android:text="@string/modified_schedule"/>
+        android:text="@string/schedule_title_modified"/>
 
 </LinearLayout>
