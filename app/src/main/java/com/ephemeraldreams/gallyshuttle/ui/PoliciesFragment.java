@@ -1,21 +1,22 @@
 /*
- * Copyright (C) 2014 Timothy Yu
+ *  Copyright (C) 2014 Timothy Yu
  *
- * Licensed under the Apache License, Version 2.0 (the "License");
- * you may not use this file except in compliance with the License.
- * You may obtain a copy of the License at
+ *  Licensed under the Apache License, Version 2.0 (the "License");
+ *  you may not use this file except in compliance with the License.
+ *  You may obtain a copy of the License at
  *
- *     http://www.apache.org/licenses/LICENSE-2.0
+ *       http://www.apache.org/licenses/LICENSE-2.0
  *
- * Unless required by applicable law or agreed to in writing, software
- * distributed under the License is distributed on an "AS IS" BASIS,
- * WITHOUT WARRANTIES OR CONDITIONS OF ANY KIND, either express or implied.
- * See the License for the specific language governing permissions and
- * limitations under the License.
+ *  Unless required by applicable law or agreed to in writing, software
+ *  distributed under the License is distributed on an "AS IS" BASIS,
+ *  WITHOUT WARRANTIES OR CONDITIONS OF ANY KIND, either express or implied.
+ *  See the License for the specific language governing permissions and
+ *  limitations under the License.
  */
 
 package com.ephemeraldreams.gallyshuttle.ui;
 
+import android.app.Fragment;
 import android.os.Bundle;
 import android.text.TextUtils;
 import android.view.LayoutInflater;
@@ -25,10 +26,8 @@ import android.webkit.WebView;
 import android.widget.ProgressBar;
 
 import com.ephemeraldreams.gallyshuttle.R;
-import com.ephemeraldreams.gallyshuttle.events.OnLoadHtmlFileEvent;
-import com.ephemeraldreams.gallyshuttle.tasks.LoadHtmlFileTask;
-import com.ephemeraldreams.gallyshuttle.ui.base.BaseActivity;
-import com.ephemeraldreams.gallyshuttle.ui.base.BaseFragment;
+import com.ephemeraldreams.gallyshuttle.ui.events.OnHtmlFileLoadedEvent;
+import com.ephemeraldreams.gallyshuttle.ui.tasks.LoadHtmlFileTask;
 import com.squareup.otto.Bus;
 import com.squareup.otto.Subscribe;
 
@@ -36,19 +35,18 @@ import javax.inject.Inject;
 
 import butterknife.ButterKnife;
 import butterknife.InjectView;
-import timber.log.Timber;
 
 /**
  * Fragment to display Gallaudet University's shuttle policies. Policies can be found in
  * "/res/raw/policies.html"
  */
-public class PoliciesFragment extends BaseFragment {
+public class PoliciesFragment extends Fragment {
 
-    @InjectView(R.id.policiesWebView) WebView mPoliciesWebView;
-    @InjectView(R.id.licensesProgressBar) ProgressBar mLicensesProgressBar;
+    @InjectView(R.id.policies_web_view) WebView webView;
+    @InjectView(R.id.licenses_progress_bar) ProgressBar progressBar;
 
-    @Inject Bus mBus;
-    private LoadHtmlFileTask mLoadPoliciesTask;
+    @Inject Bus bus;
+    private LoadHtmlFileTask loadHtmlFileTask;
 
     public PoliciesFragment() {
         // Required empty public constructor
@@ -59,23 +57,28 @@ public class PoliciesFragment extends BaseFragment {
     }
 
     @Override
+    public void onCreate(Bundle savedInstanceState) {
+        super.onCreate(savedInstanceState);
+        ((BaseActivity) getActivity()).inject(this);
+    }
+
+    @Override
     public void onResume() {
         super.onResume();
-        mBus.register(this);
-        ((BaseActivity) getActivity()).getSupportActionBar().setTitle(R.string.policies_fragment_title);
+        bus.register(this);
     }
 
     @Override
     public void onPause() {
         super.onPause();
-        mBus.unregister(this);
+        bus.unregister(this);
     }
 
     @Override
     public void onDestroy() {
         super.onDestroy();
-        if (mLoadPoliciesTask != null) {
-            mLoadPoliciesTask.cancel(true);
+        if (loadHtmlFileTask != null) {
+            loadHtmlFileTask.cancel(true);
         }
     }
 
@@ -95,17 +98,16 @@ public class PoliciesFragment extends BaseFragment {
     @Override
     public void onActivityCreated(Bundle savedInstanceState) {
         super.onActivityCreated(savedInstanceState);
-        mLoadPoliciesTask = new LoadHtmlFileTask(getActivity(), R.raw.policies, mBus);
-        mLoadPoliciesTask.execute();
+        loadHtmlFileTask = new LoadHtmlFileTask(getActivity(), bus, R.raw.policies);
+        loadHtmlFileTask.execute();
     }
 
     @Subscribe
-    public void onHtmlFileLoad(OnLoadHtmlFileEvent event) {
-        Timber.d("Event received.");
+    public void onHtmlFileLoaded(OnHtmlFileLoadedEvent event) {
         if (!TextUtils.isEmpty(event.html)) {
-            mLicensesProgressBar.setVisibility(View.INVISIBLE);
-            mPoliciesWebView.setVisibility(View.VISIBLE);
-            mPoliciesWebView.loadDataWithBaseURL(null, event.html, "text/html", "utf-8", null);
+            progressBar.setVisibility(View.INVISIBLE);
+            webView.setVisibility(View.VISIBLE);
+            webView.loadData(event.html, "text/html", "utf-8");
         }
     }
 }
