@@ -2,16 +2,21 @@
 <resources>
 
     <string name="app_name">Gally Shuttle</string>
-    <string name="logo_description">Gally Shuttle logo</string>
+    <string name="title_activity_schedule">ScheduleActivity</string>
+    <string name="activity_title_settings">Settings</string>
+
+    <string name="about_fragment_title">About</string>
+    <string name="settings_fragment_title">Settings</string>
+    <string name="policies_fragment_title">Policies</string>
+
     <string name="main_fragment_title">Schedules</string>
     <string name="schedule_title_continuous">Continuous Schedule</string>
     <string name="schedule_title_alt_continuous">Alternative Continuous Schedule</string>
     <string name="schedule_title_late_night">Late Night Schedule</string>
     <string name="schedule_title_weekend">Weekend Schedule</string>
     <string name="schedule_title_modified">Modified Schedule</string>
-    <string name="about_fragment_title">About</string>
-    <string name="settings_fragment_title">Settings</string>
-    <string name="policies_fragment_title">Policies</string>
+
+    <string name="action_settings">Settings</string>
 
     <string name="loading">Loading…</string>
 
@@ -58,10 +63,6 @@
 
     <!-- MainFragment text -->
     <string name="intro_message">Choose a schedule to view:</string>
-    <string name="continuous_schedule">Continuous Shuttle Schedule</string>
-    <string name="late_night_schedule">Late Night Shuttle Schedule</string>
-    <string name="weekend_schedule">Weekend Shuttle Schedule</string>
-    <string name="modified_schedule">Modified Shuttle Schedule</string>
 
     <!-- Dialog messages -->
     <string name="no_connection_dialog_title">No connection!</string>
@@ -77,9 +78,8 @@
         <item>About</item>
     </string-array>
 
-
     <!-- AboutFragment text -->
-    <string name="version">1.0.0</string>
+    <string name="logo_description">Gally Shuttle logo</string>
     <string name="copyright">Copyright © 2014 Timothy Yu</string>
     <string name="underlined_credits"><u>Credits</u></string>
     <string name="underlined_rate_application"><u>Rate Application</u></string>
@@ -94,10 +94,5 @@
     <string name="dialog_credits_title">Credits</string>
     <string name="dialog_terms_of_service_title">Terms of Service</string>
     <string name="dialog_privacy_policy_title">Privacy Policy</string>
-    <string name="title_activity_snooze">SnoozeActivity</string>
-
-    <string name="hello_world">Hello world!</string>
-    <string name="action_settings">Settings</string>
-    <string name="title_activity_schedule">ScheduleActivity</string>
 
 </resources>

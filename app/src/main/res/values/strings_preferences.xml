@@ -37,4 +37,7 @@
     <string name="share_subject">Check out this application!</string>
     <string name="share_message">https://play.google.com/store/apps/details?id=com.ephemeraldreams.gallyshuttle</string>
 
+    <string name="dialog_title_clear_cache">Clear Cache</string>
+    <string name="dialog_message_clear_cache">Clear cache?</string>
+
 </resources>
