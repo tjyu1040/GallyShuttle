@@ -1,23 +1,22 @@
 /*
- * Copyright (C) 2014 Timothy Yu
+ *  Copyright (C) 2014 Timothy Yu
  *
- * Licensed under the Apache License, Version 2.0 (the "License");
- * you may not use this file except in compliance with the License.
- * You may obtain a copy of the License at
+ *  Licensed under the Apache License, Version 2.0 (the "License");
+ *  you may not use this file except in compliance with the License.
+ *  You may obtain a copy of the License at
  *
- *     http://www.apache.org/licenses/LICENSE-2.0
+ *       http://www.apache.org/licenses/LICENSE-2.0
  *
- * Unless required by applicable law or agreed to in writing, software
- * distributed under the License is distributed on an "AS IS" BASIS,
- * WITHOUT WARRANTIES OR CONDITIONS OF ANY KIND, either express or implied.
- * See the License for the specific language governing permissions and
- * limitations under the License.
+ *  Unless required by applicable law or agreed to in writing, software
+ *  distributed under the License is distributed on an "AS IS" BASIS,
+ *  WITHOUT WARRANTIES OR CONDITIONS OF ANY KIND, either express or implied.
+ *  See the License for the specific language governing permissions and
+ *  limitations under the License.
  */
 
 package com.ephemeraldreams.gallyshuttle.ui;
 
-import android.content.Context;
-import android.content.SharedPreferences;
+import android.app.Fragment;
 import android.os.Bundle;
 import android.support.annotation.Nullable;
 import android.support.v7.widget.LinearLayoutManager;
@@ -25,16 +24,16 @@ import android.support.v7.widget.RecyclerView;
 import android.view.LayoutInflater;
 import android.view.View;
 import android.view.ViewGroup;
-import android.widget.TextView;
 
 import com.ephemeraldreams.gallyshuttle.R;
-import com.ephemeraldreams.gallyshuttle.events.OnReminderSetEvent;
+import com.ephemeraldreams.gallyshuttle.annotations.qualifiers.ReminderLength;
+import com.ephemeraldreams.gallyshuttle.data.preferences.StringPreference;
 import com.ephemeraldreams.gallyshuttle.ui.adapters.TimesRecyclerViewAdapter;
-import com.ephemeraldreams.gallyshuttle.ui.base.BaseFragment;
-import com.ephemeraldreams.gallyshuttle.ui.listeners.RecyclerViewListener;
+import com.ephemeraldreams.gallyshuttle.ui.events.PrepareAlarmReminderEvent;
 import com.squareup.otto.Bus;
 
 import java.util.ArrayList;
+import java.util.List;
 
 import javax.inject.Inject;
 
@@ -44,22 +43,15 @@ import butterknife.InjectView;
 /**
  * Fragment to display times for a specific stop.
  */
-public class TimesFragment extends BaseFragment implements RecyclerViewListener.OnItemClickListener {
+public class TimesFragment extends Fragment implements TimesRecyclerViewAdapter.OnTimeClickListener {
 
     private static final String ARG_TIMES = "times";
 
-    @InjectView(R.id.timesRecyclerView) RecyclerView mTimesRecyclerView;
-    private TimesRecyclerViewAdapter mTimesRecyclerViewAdapter;
-    private ArrayList<String> mTimes;
+    @InjectView(R.id.times_recycler_view) RecyclerView timesRecyclerView;
+    private TimesRecyclerViewAdapter timesRecyclerViewAdapter;
 
-    @Inject Bus mBus;
-
-    /**
-     * Required empty public constructor
-     */
-    public TimesFragment() {
-
-    }
+    @Inject Bus bus;
+    @Inject @ReminderLength StringPreference reminderLengthStringPreference;
 
     public static TimesFragment newInstance(ArrayList<String> times) {
         TimesFragment fragment = new TimesFragment();
@@ -72,24 +64,16 @@ public class TimesFragment extends BaseFragment implements RecyclerViewListener.
     @Override
     public void onCreate(Bundle savedInstanceState) {
         super.onCreate(savedInstanceState);
-        if (getArguments() != null) {
-            mTimes = getArguments().getStringArrayList(ARG_TIMES);
-        }
-        mTimesRecyclerViewAdapter = new TimesRecyclerViewAdapter(mTimes);
-    }
+        ((BaseActivity) getActivity()).inject(this);
 
-    @Nullable
-    @Override
-    public View onCreateView(LayoutInflater inflater, ViewGroup container, Bundle savedInstanceState) {
-        View rootView = inflater.inflate(R.layout.fragment_times, container, false);
-        ButterKnife.inject(this, rootView);
-        mTimesRecyclerView.setHasFixedSize(true);
-        RecyclerView.LayoutManager layoutManager = new LinearLayoutManager(getActivity());
-        mTimesRecyclerView.setLayoutManager(layoutManager);
-        mTimesRecyclerView.setAdapter(mTimesRecyclerViewAdapter);
-        RecyclerViewListener timesRecyclerViewListener = new RecyclerViewListener(getActivity(), this);
-        mTimesRecyclerView.addOnItemTouchListener(timesRecyclerViewListener);
-        return rootView;
+        List<String> times;
+        if (getArguments() != null) {
+            times = getArguments().getStringArrayList(ARG_TIMES);
+        } else {
+            times = new ArrayList<>();
+        }
+        timesRecyclerViewAdapter = new TimesRecyclerViewAdapter(times);
+        timesRecyclerViewAdapter.setOnTimeClickListener(this);
     }
 
     @Override
@@ -98,14 +82,22 @@ public class TimesFragment extends BaseFragment implements RecyclerViewListener.
         ButterKnife.reset(this);
     }
 
+    @Nullable
     @Override
-    public void onItemClick(View view, int position) {
-        SharedPreferences sharedPreferences = getActivity().getSharedPreferences(SettingsFragment.REMINDER_PREFERENCES, Context.MODE_PRIVATE);
-        boolean reminderSet = sharedPreferences.getBoolean(SettingsFragment.KEY_PREF_REMINDER_SET, false);
-        if (!reminderSet){
-            TextView timeTextView = ButterKnife.findById(view, R.id.timeTextView);
-            String time = timeTextView.getText().toString();
-            mBus.post(new OnReminderSetEvent(getActivity(), time));
-        }
+    public View onCreateView(LayoutInflater inflater, ViewGroup container, Bundle savedInstanceState) {
+        View rootView = inflater.inflate(R.layout.fragment_times, container, false);
+        ButterKnife.inject(this, rootView);
+
+        timesRecyclerView.setHasFixedSize(true);
+        timesRecyclerView.setLayoutManager(new LinearLayoutManager(getActivity()));
+        timesRecyclerView.setAdapter(timesRecyclerViewAdapter);
+
+        return rootView;
+    }
+
+    @Override
+    public void onTimeClick(String time) {
+        int prefReminderLength = Integer.parseInt(reminderLengthStringPreference.get());
+        bus.post(new PrepareAlarmReminderEvent(time, prefReminderLength));
     }
 }
