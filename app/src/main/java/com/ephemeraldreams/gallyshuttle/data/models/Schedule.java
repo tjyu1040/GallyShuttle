@@ -16,17 +16,28 @@
 
 package com.ephemeraldreams.gallyshuttle.data.models;
 
+import com.google.gson.Gson;
+
+import java.io.BufferedReader;
 import java.util.ArrayList;
 import java.util.LinkedHashMap;
 import java.util.Map;
+
+import hugo.weaving.DebugLog;
 
 /**
  * Plain old Java object model for schedule.
  */
 public class Schedule {
 
+    private static final Gson GSON = new Gson();
+
     public String title;
     public LinkedHashMap<String, ArrayList<String>> stopsTimes;
+
+    public Schedule() {
+        this("Empty", null);
+    }
 
     public Schedule(String title, LinkedHashMap<String, ArrayList<String>> stopsTimes) {
         this.title = title;
@@ -63,7 +74,7 @@ public class Schedule {
     }
 
     /**
-     * Get stop times at specified position.
+     * Get stop times entry at specified position.
      *
      * @param position Position to get times.
      * @return Map entry of stop and times.
@@ -76,5 +87,27 @@ public class Schedule {
             }
         }
         return null;
+    }
+
+    /**
+     * Convert Schedule POJO to JSON string representation.
+     *
+     * @param schedule Schedule to parse.
+     * @return JSON string representation of schedule.
+     */
+    @DebugLog
+    public static String toJsonString(Schedule schedule) {
+        return GSON.toJson(schedule);
+    }
+
+    /**
+     * Convert JSON file to Schedule POJO.
+     *
+     * @param bufferedReader Buffered reader to parse file.
+     * @return Schedule POJO.
+     */
+    @DebugLog
+    public static Schedule fromJsonFile(BufferedReader bufferedReader) {
+        return GSON.fromJson(bufferedReader, Schedule.class);
     }
 }

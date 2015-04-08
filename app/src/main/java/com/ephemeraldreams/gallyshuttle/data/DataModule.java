@@ -131,6 +131,12 @@ public class DataModule {
         return client;
     }
 
+    @Provides
+    @ApplicationScope
+    CacheManager provideCacheManager(Application application, OkHttpClient okHttpClient) {
+        return new CacheManager(application, okHttpClient);
+    }
+
     /**
      * Provide Google Analytics.
      *
