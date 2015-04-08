@@ -25,6 +25,7 @@ import java.text.ParseException;
 import java.text.SimpleDateFormat;
 import java.util.Date;
 
+import hugo.weaving.DebugLog;
 import timber.log.Timber;
 
 /**
@@ -48,6 +49,7 @@ public class DateUtils {
      * @param time String time to parse.
      * @return Date object with time.
      */
+    @DebugLog
     public static Date parseToDate(String time) {
         try {
             LocalTime localTime = new LocalTime(TIME_TWENTY_FOUR_HOURS_FORMATTER.parse(time));
@@ -64,6 +66,7 @@ public class DateUtils {
      * @param time String time to trim and format.
      * @return Trimmed and formatted time.
      */
+    @DebugLog
     public static String trimAndFormat(String time) {
         return time.toUpperCase()
                 .replace("*", "")           // Remove * characters
