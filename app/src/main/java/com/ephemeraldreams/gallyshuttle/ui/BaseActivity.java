@@ -18,17 +18,25 @@ package com.ephemeraldreams.gallyshuttle.ui;
 
 import android.os.Bundle;
 import android.support.v7.app.ActionBarActivity;
+import android.support.v7.widget.Toolbar;
 import android.view.View;
 import android.view.ViewGroup;
 
+import com.ephemeraldreams.gallyshuttle.R;
 import com.ephemeraldreams.gallyshuttle.ShuttleApplication;
 
 import butterknife.ButterKnife;
+import butterknife.InjectView;
+import butterknife.Optional;
+
+import static com.ephemeraldreams.gallyshuttle.ui.SettingsActivity.SettingsFragment;
 
 /**
  * Base activity for dagger usage.
  */
 public class BaseActivity extends ActionBarActivity implements ActivityComponent {
+
+    @Optional @InjectView(R.id.toolbar) Toolbar toolbar;
 
     private static ActivityComponent activityComponent;
 
@@ -46,12 +54,24 @@ public class BaseActivity extends ActionBarActivity implements ActivityComponent
     public void setContentView(int layoutResID) {
         super.setContentView(layoutResID);
         ButterKnife.inject(this);
+
+        if (toolbar != null) {
+            setSupportActionBar(toolbar);
+            getSupportActionBar().setDisplayHomeAsUpEnabled(true);
+            getSupportActionBar().setDisplayShowHomeEnabled(true);
+        }
     }
 
     @Override
     public void setContentView(View view, ViewGroup.LayoutParams params) {
         super.setContentView(view, params);
         ButterKnife.inject(this);
+
+        if (toolbar != null) {
+            setSupportActionBar(toolbar);
+            getSupportActionBar().setDisplayHomeAsUpEnabled(true);
+            getSupportActionBar().setDisplayShowHomeEnabled(true);
+        }
     }
 
     public static ActivityComponent getActivityComponent() {
@@ -66,6 +86,11 @@ public class BaseActivity extends ActionBarActivity implements ActivityComponent
     @Override
     public void inject(ScheduleActivity scheduleActivity) {
         activityComponent.inject(scheduleActivity);
+    }
+
+    @Override
+    public void inject(SettingsActivity settingsActivity) {
+        activityComponent.inject(settingsActivity);
     }
 
     @Override

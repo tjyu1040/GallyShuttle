@@ -28,7 +28,6 @@ import android.provider.AlarmClock;
 import android.support.annotation.IntDef;
 import android.support.v4.view.PagerTabStrip;
 import android.support.v4.view.ViewPager;
-import android.support.v7.widget.Toolbar;
 import android.text.TextUtils;
 import android.view.Menu;
 import android.view.MenuItem;
@@ -85,7 +84,6 @@ public class ScheduleActivity extends BaseActivity implements Observer<ApiRespon
 
     public static final String EXTRA_SCHEDULE = "schedule";
 
-    @InjectView(R.id.toolbar) Toolbar toolbar;
     @InjectView(R.id.schedule_pager_tabs_strip) PagerTabStrip schedulePagerTabStrip;
     @InjectView(R.id.schedule_view_pager) ViewPager scheduleViewPager;
     private TimesFragmentPagerAdapter timesFragmentPagerAdapter;
@@ -130,10 +128,6 @@ public class ScheduleActivity extends BaseActivity implements Observer<ApiRespon
         } else {
             scheduleId = CONTINUOUS;
         }
-
-        setSupportActionBar(toolbar);
-        getSupportActionBar().setDisplayHomeAsUpEnabled(true);
-        getSupportActionBar().setDisplayShowHomeEnabled(true);
 
         schedulePagerTabStrip.setTabIndicatorColor(getResources().getColor(R.color.blue));
 
