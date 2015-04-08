@@ -1,6 +1,6 @@
-<manifest
-    package="com.ephemeraldreams.gallyshuttle"
-    xmlns:android="http://schemas.android.com/apk/res/android">
+<?xml version="1.0" encoding="utf-8"?>
+<manifest xmlns:android="http://schemas.android.com/apk/res/android"
+          package="com.ephemeraldreams.gallyshuttle">
 
     <uses-permission android:name="android.permission.INTERNET"/>
     <uses-permission android:name="android.permission.ACCESS_NETWORK_STATE"/>
@@ -8,26 +8,39 @@
     <uses-permission android:name="android.permission.VIBRATE" />
 
     <application
-        android:name=".ShuttleApplication"
+        android:name="com.ephemeraldreams.gallyshuttle.ShuttleApplication"
         android:allowBackup="true"
         android:icon="@drawable/ic_launcher"
         android:label="@string/app_name"
-        android:supportsRtl="true"
         android:theme="@style/GallaudetTheme">
 
+        <meta-data
+            android:name="com.google.android.gms.version"
+            android:value="@integer/google_play_services_version"/>
+
         <activity
-            android:name=".ui.MainActivity"
+            android:name="com.ephemeraldreams.gallyshuttle.ui.MainActivity"
             android:label="@string/app_name">
             <intent-filter>
                 <action android:name="android.intent.action.MAIN"/>
+
                 <category android:name="android.intent.category.LAUNCHER"/>
             </intent-filter>
         </activity>
+        <activity
+            android:name="com.ephemeraldreams.gallyshuttle.ui.ScheduleActivity"
+            android:label="@string/title_activity_schedule"
+            android:parentActivityName="com.ephemeraldreams.gallyshuttle.ui.MainActivity">
+            <meta-data
+                android:name="android.support.PARENT_ACTIVITY"
+                android:value="com.ephemeraldreams.gallyshuttle.ui.MainActivity"/>
+        </activity>
 
-        <receiver
-            android:name=".receivers.AlarmReceiver"
-            android:icon="@drawable/ic_launcher"
-            android:exported="false" />
+        <activity
+            android:name=".ui.SettingsActivity"
+            android:label="@string/activity_title_settings">
+
+        </activity>
 
     </application>
 
