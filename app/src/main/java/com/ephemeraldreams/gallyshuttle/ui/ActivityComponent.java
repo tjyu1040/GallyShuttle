@@ -21,6 +21,8 @@ import com.ephemeraldreams.gallyshuttle.annotations.scopes.ActivityScope;
 
 import dagger.Component;
 
+import static com.ephemeraldreams.gallyshuttle.ui.SettingsActivity.SettingsFragment;
+
 /**
  * A component whose lifetime is the life of the activity or fragment.
  */
@@ -30,6 +32,8 @@ public interface ActivityComponent {
     void inject(MainActivity mainActivity);
 
     void inject(ScheduleActivity scheduleActivity);
+
+    void inject(SettingsActivity settingsActivity);
 
     void inject(MainFragment mainFragment);
 
