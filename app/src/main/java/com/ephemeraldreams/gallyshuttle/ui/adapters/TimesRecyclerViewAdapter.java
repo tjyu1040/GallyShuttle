@@ -1,17 +1,17 @@
 /*
- * Copyright (C) 2014 Timothy Yu
+ *  Copyright (C) 2014 Timothy Yu
  *
- * Licensed under the Apache License, Version 2.0 (the "License");
- * you may not use this file except in compliance with the License.
- * You may obtain a copy of the License at
+ *  Licensed under the Apache License, Version 2.0 (the "License");
+ *  you may not use this file except in compliance with the License.
+ *  You may obtain a copy of the License at
  *
- *     http://www.apache.org/licenses/LICENSE-2.0
+ *       http://www.apache.org/licenses/LICENSE-2.0
  *
- * Unless required by applicable law or agreed to in writing, software
- * distributed under the License is distributed on an "AS IS" BASIS,
- * WITHOUT WARRANTIES OR CONDITIONS OF ANY KIND, either express or implied.
- * See the License for the specific language governing permissions and
- * limitations under the License.
+ *  Unless required by applicable law or agreed to in writing, software
+ *  distributed under the License is distributed on an "AS IS" BASIS,
+ *  WITHOUT WARRANTIES OR CONDITIONS OF ANY KIND, either express or implied.
+ *  See the License for the specific language governing permissions and
+ *  limitations under the License.
  */
 
 package com.ephemeraldreams.gallyshuttle.ui.adapters;
@@ -24,7 +24,7 @@ import android.widget.TextView;
 
 import com.ephemeraldreams.gallyshuttle.R;
 
-import java.util.ArrayList;
+import java.util.List;
 
 import butterknife.ButterKnife;
 import butterknife.InjectView;
@@ -34,35 +34,58 @@ import butterknife.InjectView;
  */
 public class TimesRecyclerViewAdapter extends RecyclerView.Adapter<TimesRecyclerViewAdapter.TimeViewHolder> {
 
-    private ArrayList<String> mTimes;
+    private List<String> times;
+    private OnTimeClickListener onTimeClickListener;
 
-    public TimesRecyclerViewAdapter(ArrayList<String> times) {
-        mTimes = times;
+    public TimesRecyclerViewAdapter(List<String> times) {
+        this.times = times;
     }
 
     @Override
     public TimeViewHolder onCreateViewHolder(ViewGroup parent, int viewType) {
-        View view = LayoutInflater.from(parent.getContext()).inflate(R.layout.cardview_time, parent, false);
+        View view = LayoutInflater.from(parent.getContext()).inflate(R.layout.card_view_time, parent, false);
         return new TimeViewHolder(view);
     }
 
     @Override
-    public void onBindViewHolder(TimeViewHolder timeViewHolder, int position) {
-        timeViewHolder.timeTextView.setText(mTimes.get(position));
+    public void onBindViewHolder(TimeViewHolder holder, int position) {
+        holder.timeTextView.setText(times.get(position));
     }
 
     @Override
     public int getItemCount() {
-        return mTimes.size();
+        return times.size();
     }
 
-    public static final class TimeViewHolder extends RecyclerView.ViewHolder {
+    public void setOnTimeClickListener(final OnTimeClickListener onTimeClickListener) {
+        this.onTimeClickListener = onTimeClickListener;
+    }
 
-        @InjectView(R.id.timeTextView) public TextView timeTextView;
+    /**
+     * Time view holder.
+     */
+    public class TimeViewHolder extends RecyclerView.ViewHolder implements View.OnClickListener {
 
-        public TimeViewHolder(View itemView) {
-            super(itemView);
-            ButterKnife.inject(this, itemView);
+        @InjectView(R.id.time_text_view) public TextView timeTextView;
+
+        public TimeViewHolder(View view) {
+            super(view);
+            ButterKnife.inject(this, view);
+            view.setOnClickListener(this);
         }
+
+        @Override
+        public void onClick(View view) {
+            if (onTimeClickListener != null) {
+                onTimeClickListener.onTimeClick(times.get(getAdapterPosition()));
+            }
+        }
+    }
+
+    /**
+     * Interface to handle click listener on time selected.
+     */
+    public interface OnTimeClickListener {
+        void onTimeClick(String time);
     }
 }
