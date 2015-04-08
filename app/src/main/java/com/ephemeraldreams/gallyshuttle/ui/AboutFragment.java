@@ -1,17 +1,17 @@
 /*
- * Copyright (C) 2014 Timothy Yu
+ *  Copyright (C) 2014 Timothy Yu
  *
- * Licensed under the Apache License, Version 2.0 (the "License");
- * you may not use this file except in compliance with the License.
- * You may obtain a copy of the License at
+ *  Licensed under the Apache License, Version 2.0 (the "License");
+ *  you may not use this file except in compliance with the License.
+ *  You may obtain a copy of the License at
  *
- *     http://www.apache.org/licenses/LICENSE-2.0
+ *       http://www.apache.org/licenses/LICENSE-2.0
  *
- * Unless required by applicable law or agreed to in writing, software
- * distributed under the License is distributed on an "AS IS" BASIS,
- * WITHOUT WARRANTIES OR CONDITIONS OF ANY KIND, either express or implied.
- * See the License for the specific language governing permissions and
- * limitations under the License.
+ *  Unless required by applicable law or agreed to in writing, software
+ *  distributed under the License is distributed on an "AS IS" BASIS,
+ *  WITHOUT WARRANTIES OR CONDITIONS OF ANY KIND, either express or implied.
+ *  See the License for the specific language governing permissions and
+ *  limitations under the License.
  */
 
 package com.ephemeraldreams.gallyshuttle.ui;
@@ -28,7 +28,6 @@ import android.widget.TextView;
 
 import com.ephemeraldreams.gallyshuttle.BuildConfig;
 import com.ephemeraldreams.gallyshuttle.R;
-import com.ephemeraldreams.gallyshuttle.ui.base.BaseActivity;
 
 import butterknife.ButterKnife;
 import butterknife.InjectView;
@@ -39,14 +38,7 @@ import butterknife.OnClick;
  */
 public class AboutFragment extends Fragment {
 
-    @InjectView(R.id.versionTextView) TextView mVersionTextView;
-    @InjectView(R.id.copyrightTextView) TextView mCopyrightTextView;
-    @InjectView(R.id.creditsTextView) TextView mCreditsTextView;
-    @InjectView(R.id.rateApplicationTextView) TextView mRateApplicationTextView;
-    @InjectView(R.id.supportTextView) TextView mSupportTextView;
-    @InjectView(R.id.openSourceLicensesTextView) TextView mOpenSourceLicensesTextView;
-    @InjectView(R.id.termsOfServiceTextView) TextView mTermsOfServiceTextView;
-    @InjectView(R.id.privacyTextView) TextView mPrivacyTextView;
+    @InjectView(R.id.versionTextView) TextView versionTextView;
 
     /**
      * Required empty public constructor
@@ -60,9 +52,9 @@ public class AboutFragment extends Fragment {
     }
 
     @Override
-    public void onResume() {
-        super.onResume();
-        ((BaseActivity) getActivity()).getSupportActionBar().setTitle(R.string.about_fragment_title);
+    public void onCreate(Bundle savedInstanceState) {
+        super.onCreate(savedInstanceState);
+        ((BaseActivity) getActivity()).inject(this);
     }
 
     @Nullable
@@ -72,13 +64,13 @@ public class AboutFragment extends Fragment {
         ButterKnife.inject(this, rootView);
 
         String buildType;
-        if (BuildConfig.DEBUG){
+        if (BuildConfig.DEBUG) {
             buildType = "Debug ";
         } else {
             buildType = "Release ";
         }
 
-        mVersionTextView.setText(buildType + "Version " + BuildConfig.VERSION_NAME);
+        versionTextView.setText(buildType + "Version " + BuildConfig.VERSION_NAME);
         return rootView;
     }
 
@@ -92,7 +84,7 @@ public class AboutFragment extends Fragment {
      * Display credits.
      */
     @OnClick(R.id.creditsTextView)
-    public void getCredits() {
+    public void displayCredits() {
         AboutDialogFragment.displayDialogFragment(getFragmentManager(), R.string.dialog_credits_title, R.raw.credits);
     }
 
@@ -110,7 +102,7 @@ public class AboutFragment extends Fragment {
      * Send a support email to developer.
      */
     @OnClick(R.id.supportTextView)
-    public void getSupport() {
+    public void sendSupportEmail() {
         Intent emailIntent = new Intent(Intent.ACTION_SENDTO);
         String emailUriText = "mailto:" + Uri.encode("ephemeral.dreams.mobile@gmail.com") +
                 "?subject=" + Uri.encode("Gally Shuttle Android Application Support") +
@@ -124,7 +116,7 @@ public class AboutFragment extends Fragment {
      * Display open source licenses.
      */
     @OnClick(R.id.openSourceLicensesTextView)
-    public void getOpenSourceLicenses() {
+    public void displayOpenSourceLicenses() {
         AboutDialogFragment.displayDialogFragment(getFragmentManager(), R.string.dialog_licenses_title, R.raw.licenses);
     }
 
@@ -132,7 +124,7 @@ public class AboutFragment extends Fragment {
      * Display terms of services.
      */
     @OnClick(R.id.termsOfServiceTextView)
-    public void getToS() {
+    public void displayTermsOfServices() {
         AboutDialogFragment.displayDialogFragment(getFragmentManager(), R.string.dialog_terms_of_service_title, R.raw.terms_of_use);
     }
 
@@ -140,7 +132,7 @@ public class AboutFragment extends Fragment {
      * Display privacy policy.
      */
     @OnClick(R.id.privacyTextView)
-    public void getPrivacyPolicy() {
+    public void displayPrivacyPolicy() {
         AboutDialogFragment.displayDialogFragment(getFragmentManager(), R.string.dialog_privacy_policy_title, R.raw.privacy);
     }
 }

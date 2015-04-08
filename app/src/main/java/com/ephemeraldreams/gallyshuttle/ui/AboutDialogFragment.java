@@ -1,17 +1,17 @@
 /*
- * Copyright (C) 2014 Timothy Yu
+ *  Copyright (C) 2014 Timothy Yu
  *
- * Licensed under the Apache License, Version 2.0 (the "License");
- * you may not use this file except in compliance with the License.
- * You may obtain a copy of the License at
+ *  Licensed under the Apache License, Version 2.0 (the "License");
+ *  you may not use this file except in compliance with the License.
+ *  You may obtain a copy of the License at
  *
- *     http://www.apache.org/licenses/LICENSE-2.0
+ *       http://www.apache.org/licenses/LICENSE-2.0
  *
- * Unless required by applicable law or agreed to in writing, software
- * distributed under the License is distributed on an "AS IS" BASIS,
- * WITHOUT WARRANTIES OR CONDITIONS OF ANY KIND, either express or implied.
- * See the License for the specific language governing permissions and
- * limitations under the License.
+ *  Unless required by applicable law or agreed to in writing, software
+ *  distributed under the License is distributed on an "AS IS" BASIS,
+ *  WITHOUT WARRANTIES OR CONDITIONS OF ANY KIND, either express or implied.
+ *  See the License for the specific language governing permissions and
+ *  limitations under the License.
  */
 
 package com.ephemeraldreams.gallyshuttle.ui;
@@ -23,6 +23,9 @@ import android.app.FragmentManager;
 import android.app.FragmentTransaction;
 import android.os.Bundle;
 import android.support.annotation.Nullable;
+import android.support.annotation.RawRes;
+import android.support.annotation.StringRes;
+import android.text.TextUtils;
 import android.view.LayoutInflater;
 import android.view.View;
 import android.view.ViewGroup;
@@ -30,9 +33,8 @@ import android.webkit.WebView;
 import android.widget.ProgressBar;
 
 import com.ephemeraldreams.gallyshuttle.R;
-import com.ephemeraldreams.gallyshuttle.events.OnLoadHtmlFileEvent;
-import com.ephemeraldreams.gallyshuttle.tasks.LoadHtmlFileTask;
-import com.ephemeraldreams.gallyshuttle.ui.base.BaseActivity;
+import com.ephemeraldreams.gallyshuttle.ui.events.OnHtmlFileLoadedEvent;
+import com.ephemeraldreams.gallyshuttle.ui.tasks.LoadHtmlFileTask;
 import com.squareup.otto.Bus;
 import com.squareup.otto.Subscribe;
 
@@ -43,28 +45,24 @@ import butterknife.InjectView;
 
 public class AboutDialogFragment extends DialogFragment {
 
-    public static final String ARG_TITLE_ID = "string title id";
+    private static final String FRAGMENT_TAG = "com.ephemeraldreams.gallyshuttle.ui.AboutDialogFragment";
+    public static final String ARG_TITLE_ID = "string title resource id";
     public static final String ARG_RAW_RESOURCE_ID = "raw resource id";
 
-    @InjectView(R.id.dialogWebView) WebView mDialogWebView;
-    @InjectView(R.id.dialogProgressBar) ProgressBar mDialogProgressBar;
-    private LoadHtmlFileTask mLoadHtmlFileTask;
+    @InjectView(R.id.dialog_web_view) WebView webView;
+    @InjectView(R.id.dialog_progress_bar) ProgressBar progressBar;
+    private LoadHtmlFileTask loadHtmlFileTask;
 
-    @Inject Bus mBus;
+    @Inject Bus bus;
 
-    private int mResStringTitleId;
-    private int mResRawResourceId;
+    @StringRes private int resStringTitleId;
+    @RawRes private int resRawResourceId;
 
-    private static final String FRAGMENT_TAG = "com.ephemeraldreams.gallyshuttle.ui.AboutDialogFragment";
-
-    /**
-     * Required empty public constructor
-     */
     public AboutDialogFragment() {
 
     }
 
-    public static AboutDialogFragment newInstance(int resStringTitleId, int resRawResourceId) {
+    public static AboutDialogFragment newInstance(@StringRes int resStringTitleId, @RawRes int resRawResourceId) {
         AboutDialogFragment fragment = new AboutDialogFragment();
         Bundle args = new Bundle();
         args.putInt(ARG_TITLE_ID, resStringTitleId);
@@ -77,8 +75,8 @@ public class AboutDialogFragment extends DialogFragment {
     public void onCreate(Bundle savedInstanceState) {
         super.onCreate(savedInstanceState);
         if (getArguments() != null) {
-            mResStringTitleId = getArguments().getInt(ARG_TITLE_ID);
-            mResRawResourceId = getArguments().getInt(ARG_RAW_RESOURCE_ID);
+            resStringTitleId = getArguments().getInt(ARG_TITLE_ID);
+            resRawResourceId = getArguments().getInt(ARG_RAW_RESOURCE_ID);
         }
     }
 
@@ -92,29 +90,29 @@ public class AboutDialogFragment extends DialogFragment {
     @Override
     public void onResume() {
         super.onResume();
-        mBus.register(this);
+        bus.register(this);
     }
 
     @Override
     public void onPause() {
         super.onPause();
-        mBus.unregister(this);
+        bus.unregister(this);
     }
 
     @Override
     public void onDestroy() {
         super.onDestroy();
-        if (mLoadHtmlFileTask != null) {
-            mLoadHtmlFileTask.cancel(true);
+        if (loadHtmlFileTask != null) {
+            loadHtmlFileTask.cancel(true);
         }
     }
 
     @Nullable
     @Override
     public View onCreateView(LayoutInflater inflater, ViewGroup container, Bundle savedInstanceState) {
-        getDialog().setTitle(getResources().getText(mResStringTitleId));
         View rootView = inflater.inflate(R.layout.fragment_about_dialog, container, false);
         ButterKnife.inject(this, rootView);
+        getDialog().setTitle(getResources().getText(resStringTitleId));
         return rootView;
     }
 
@@ -128,25 +126,26 @@ public class AboutDialogFragment extends DialogFragment {
     public void onActivityCreated(Bundle savedInstanceState) {
         super.onActivityCreated(savedInstanceState);
         ((BaseActivity) getActivity()).inject(this);
-        mLoadHtmlFileTask = new LoadHtmlFileTask(getActivity(), mResRawResourceId, mBus);
-        mLoadHtmlFileTask.execute();
+        loadHtmlFileTask = new LoadHtmlFileTask(getActivity(), bus, resRawResourceId);
+        loadHtmlFileTask.execute();
     }
 
-    public static void displayDialogFragment(FragmentManager fragmentManager, int resStringTitleId, int resRawResourceId) {
+    @Subscribe
+    public void onHtmlFileLoaded(OnHtmlFileLoadedEvent event) {
+        if (!TextUtils.isEmpty(event.html)) {
+            progressBar.setVisibility(View.INVISIBLE);
+            webView.setVisibility(View.VISIBLE);
+            webView.loadData(event.html, "text/html", "utf-8");
+        }
+    }
+
+    public static void displayDialogFragment(FragmentManager fragmentManager, @StringRes int resStringTitleId, @RawRes int resRawResourceId) {
         FragmentTransaction fragmentTransaction = fragmentManager.beginTransaction();
         Fragment prevFragment = fragmentManager.findFragmentByTag(FRAGMENT_TAG);
         if (prevFragment != null) {
             fragmentTransaction.remove(prevFragment);
         }
         fragmentTransaction.addToBackStack(null);
-        DialogFragment newFragment = AboutDialogFragment.newInstance(resStringTitleId, resRawResourceId);
-        newFragment.show(fragmentTransaction, FRAGMENT_TAG);
-    }
-
-    @Subscribe
-    public void onHtmlFileLoad(OnLoadHtmlFileEvent event) {
-        mDialogProgressBar.setVisibility(View.INVISIBLE);
-        mDialogWebView.setVisibility(View.VISIBLE);
-        mDialogWebView.loadDataWithBaseURL(null, event.html, "text/html", "utf-8", null);
+        AboutDialogFragment.newInstance(resStringTitleId, resRawResourceId).show(fragmentTransaction, FRAGMENT_TAG);
     }
 }
