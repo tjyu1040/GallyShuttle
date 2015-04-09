@@ -22,6 +22,7 @@ import android.app.NotificationManager;
 import android.content.SharedPreferences;
 import android.content.res.Resources;
 import android.net.ConnectivityManager;
+import android.view.LayoutInflater;
 
 import com.ephemeraldreams.gallyshuttle.annotations.qualifiers.ReminderLength;
 import com.ephemeraldreams.gallyshuttle.annotations.qualifiers.RingtoneChoice;
@@ -46,32 +47,34 @@ public interface AppComponent {
     void inject(ShuttleApplication shuttleApplication);
 
     // Exported for children components
-    Application provideApplication();
+    Application injectApplication();
 
-    ConnectivityManager provideConnectivityManager();
+    LayoutInflater injectLayoutInflater();
 
-    AlarmManager provideAlarmManager();
+    ConnectivityManager injectConnectivityManager();
 
-    NotificationManager provideNotificationManager();
+    AlarmManager injectAlarmManager();
 
-    Resources provideResources();
+    NotificationManager injectNotificationManager();
 
-    SharedPreferences provideSharedPreferences();
+    Resources injectResources();
 
-    OkHttpClient provideOkHttpClient();
+    SharedPreferences injectSharedPreferences();
 
-    CacheManager provideCacheManager();
+    OkHttpClient injectOkHttpClient();
 
-    RestAdapter provideRestAdapter();
+    CacheManager injectCacheManager();
 
-    ShuttleApiService provideShuttleApiService();
+    RestAdapter injectRestAdapter();
+
+    ShuttleApiService injectShuttleApiService();
 
     @ReminderLength
-    StringPreference provideReminderLengthPreference();
+    StringPreference injectReminderLengthPreference();
 
     @RingtoneChoice
-    StringPreference provideRingtonePreference();
+    StringPreference injectRingtonePreference();
 
     @VibrationEnabled
-    BooleanPreference provideVibrateEnabledPreference();
+    BooleanPreference injectVibrateEnabledPreference();
 }

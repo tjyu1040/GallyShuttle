@@ -21,6 +21,7 @@ import android.app.Application;
 import android.app.NotificationManager;
 import android.content.Context;
 import android.net.ConnectivityManager;
+import android.view.LayoutInflater;
 
 import com.ephemeraldreams.gallyshuttle.annotations.scopes.ApplicationScope;
 import com.ephemeraldreams.gallyshuttle.data.DataModule;
@@ -49,6 +50,12 @@ public class AppModule {
     @ApplicationScope
     Application provideApplication() {
         return application;
+    }
+
+    @Provides
+    @ApplicationScope
+    LayoutInflater provideLayoutInflater() {
+        return (LayoutInflater) application.getSystemService(Context.LAYOUT_INFLATER_SERVICE);
     }
 
     /**

@@ -20,12 +20,15 @@ import android.app.Activity;
 import android.app.AlertDialog;
 import android.app.FragmentManager;
 import android.app.ProgressDialog;
+import android.content.BroadcastReceiver;
+import android.content.Context;
 import android.content.DialogInterface;
 import android.content.Intent;
+import android.content.IntentFilter;
+import android.net.ConnectivityManager;
 import android.os.Build;
 import android.os.Bundle;
 import android.provider.AlarmClock;
-import android.support.annotation.IntDef;
 import android.support.v4.view.PagerTabStrip;
 import android.support.v4.view.ViewPager;
 import android.text.TextUtils;
@@ -51,8 +54,6 @@ import com.squareup.otto.Bus;
 import com.squareup.otto.Subscribe;
 
 import java.io.FileNotFoundException;
-import java.lang.annotation.Retention;
-import java.lang.annotation.RetentionPolicy;
 import java.util.ArrayList;
 import java.util.LinkedHashMap;
 import java.util.List;
@@ -71,16 +72,13 @@ import timber.log.Timber;
  */
 public class ScheduleActivity extends BaseActivity implements Observer<ApiResponse> {
 
-    @IntDef({CONTINUOUS, ALT_CONTINUOUS, LATE_NIGHT, MODIFIED, WEEKEND})
-    @Retention(RetentionPolicy.RUNTIME)
-    public @interface ScheduleId {
-    }
-
-    public static final int CONTINUOUS = R.array.continuous_stations;
-    public static final int ALT_CONTINUOUS = R.array.alt_continuous_stations;
-    public static final int LATE_NIGHT = R.array.late_night_stations;
-    public static final int MODIFIED = R.array.modified_stations;
-    public static final int WEEKEND = R.array.weekend_stations;
+    public static final int[] SCHEDULE_IDS = {
+            R.array.continuous_stations,
+            R.array.alt_continuous_stations,
+            R.array.late_night_stations,
+            R.array.modified_stations,
+            R.array.weekend_stations
+    };
 
     public static final String EXTRA_SCHEDULE = "schedule";
 
@@ -91,6 +89,8 @@ public class ScheduleActivity extends BaseActivity implements Observer<ApiRespon
     @Inject ShuttleApiService shuttleApiService;
     @Inject CacheManager cacheManager;
     private ProgressDialog progressDialog;
+    private BroadcastReceiver networkStateBroadCastReceiver;
+    private boolean isNetworkStateBroadcastReceiverRegistered;
 
     private int scheduleId;
     private Schedule schedule;
@@ -105,15 +105,10 @@ public class ScheduleActivity extends BaseActivity implements Observer<ApiRespon
      *
      * @param activity   Activity to launch from.
      * @param scheduleId Schedule to display.
-     * @see #CONTINUOUS
-     * @see #ALT_CONTINUOUS
-     * @see #LATE_NIGHT
-     * @see #MODIFIED
-     * @see #WEEKEND
      */
-    public static void launchActivity(Activity activity, @ScheduleId int scheduleId) {
+    public static void launchActivity(Activity activity, int scheduleId) {
         Intent intent = new Intent(activity, ScheduleActivity.class);
-        intent.putExtra(EXTRA_SCHEDULE, scheduleId);
+        intent.putExtra(EXTRA_SCHEDULE, SCHEDULE_IDS[scheduleId]);
         activity.startActivity(intent);
     }
 
@@ -124,9 +119,9 @@ public class ScheduleActivity extends BaseActivity implements Observer<ApiRespon
         inject(this);
 
         if (getIntent() != null) {
-            scheduleId = getIntent().getIntExtra(EXTRA_SCHEDULE, CONTINUOUS);
+            scheduleId = getIntent().getIntExtra(EXTRA_SCHEDULE, SCHEDULE_IDS[0]);
         } else {
-            scheduleId = CONTINUOUS;
+            scheduleId = SCHEDULE_IDS[0];
         }
 
         schedulePagerTabStrip.setTabIndicatorColor(getResources().getColor(R.color.blue));
@@ -138,12 +133,18 @@ public class ScheduleActivity extends BaseActivity implements Observer<ApiRespon
     public void onResume() {
         super.onResume();
         bus.register(this);
+        if (networkStateBroadCastReceiver != null && !isNetworkStateBroadcastReceiverRegistered) {
+            registerNetworkBroadcastReceiver();
+        }
     }
 
     @Override
     public void onPause() {
         super.onPause();
         bus.unregister(this);
+        if (networkStateBroadCastReceiver != null && isNetworkStateBroadcastReceiverRegistered) {
+            unregisterNetworkBroadcastReceiver();
+        }
     }
 
     @Override
@@ -156,7 +157,7 @@ public class ScheduleActivity extends BaseActivity implements Observer<ApiRespon
     public boolean onOptionsItemSelected(MenuItem item) {
         switch (item.getItemId()) {
             case R.id.action_settings:
-                startActivity(new Intent(this, SettingsActivity.class));
+                SettingsActivity.launchActivity(this);
                 return true;
             default:
                 return super.onOptionsItemSelected(item);
@@ -164,7 +165,7 @@ public class ScheduleActivity extends BaseActivity implements Observer<ApiRespon
     }
 
     /**
-     * Attempt to load from cache or download schedule.
+     * Attempt to load from cache or download schedule from web.
      */
     private void loadSchedule() {
 
@@ -179,27 +180,30 @@ public class ScheduleActivity extends BaseActivity implements Observer<ApiRespon
             onCompleted();
         } catch (FileNotFoundException e) {
             Timber.e(e, "Cached file for " + title + " schedule not found.");
-            downloadScheduleFromWeb();
+            loadScheduleFromWeb();
         }
     }
 
-    private void downloadScheduleFromWeb() {
+    /**
+     * Download schedule data from web.
+     */
+    private void loadScheduleFromWeb() {
         Observable<ApiResponse> apiResponseObservable;
         switch (scheduleId) {
-            case CONTINUOUS:
+            case R.array.continuous_stations:
                 apiResponseObservable = shuttleApiService.getContinuousSchedule();
                 break;
-            case ALT_CONTINUOUS:
+            case R.array.alt_continuous_stations:
                 apiResponseObservable = shuttleApiService.getAlternativeContinuousSchedule();
                 break;
-            case LATE_NIGHT:
+            case R.array.late_night_stations:
                 apiResponseObservable = shuttleApiService.getLateNightSchedule();
                 break;
-            case MODIFIED:
-                apiResponseObservable = shuttleApiService.getModifiedSchedule();
-                break;
-            case WEEKEND:
+            case R.array.weekend_stations:
                 apiResponseObservable = shuttleApiService.getWeekendSchedule();
+                break;
+            case R.array.modified_stations:
+                apiResponseObservable = shuttleApiService.getModifiedSchedule();
                 break;
             default:
                 apiResponseObservable = shuttleApiService.getContinuousSchedule();
@@ -231,6 +235,34 @@ public class ScheduleActivity extends BaseActivity implements Observer<ApiRespon
     public void onError(Throwable e) {
         Timber.e(e, "Error downloading schedule.");
         Toast.makeText(this, "Error loading schedule. Please check your Internet connection.", Toast.LENGTH_LONG).show();
+        registerNetworkBroadcastReceiver();
+    }
+
+    /**
+     * Register a {@link #networkStateBroadCastReceiver}, which monitor for Internet connection
+     * re-establishment.
+     */
+    private void registerNetworkBroadcastReceiver() {
+        networkStateBroadCastReceiver = new BroadcastReceiver() {
+            @Override
+            public void onReceive(Context context, Intent intent) {
+                // Internet connection has been re-established.
+                unregisterNetworkBroadcastReceiver();
+            }
+        };
+        registerReceiver(networkStateBroadCastReceiver, new IntentFilter(ConnectivityManager.CONNECTIVITY_ACTION));
+        isNetworkStateBroadcastReceiverRegistered = true;
+    }
+
+    /**
+     * Unregister {@link #networkStateBroadCastReceiver} and try loading schedule from web.
+     */
+    private void unregisterNetworkBroadcastReceiver() {
+        loadScheduleFromWeb();
+        unregisterReceiver(networkStateBroadCastReceiver);
+        isNetworkStateBroadcastReceiverRegistered = false;
+        networkStateBroadCastReceiver = null;
+        Timber.d("Network broadcast receiver dismissed.");
     }
 
     /**
@@ -239,17 +271,17 @@ public class ScheduleActivity extends BaseActivity implements Observer<ApiRespon
      * @param scheduleId Schedule id.
      * @return Title of schedule.
      */
-    private String getScheduleTitle(@ScheduleId int scheduleId) {
+    private String getScheduleTitle(int scheduleId) {
         switch (scheduleId) {
-            case CONTINUOUS:
+            case R.array.continuous_stations:
                 return getString(R.string.schedule_title_continuous);
-            case ALT_CONTINUOUS:
+            case R.array.alt_continuous_stations:
                 return getString(R.string.schedule_title_alt_continuous);
-            case LATE_NIGHT:
+            case R.array.late_night_stations:
                 return getString(R.string.schedule_title_late_night);
-            case WEEKEND:
+            case R.array.weekend_stations:
                 return getString(R.string.schedule_title_weekend);
-            case MODIFIED:
+            case R.array.modified_stations:
                 return getString(R.string.schedule_title_modified);
             default:
                 return getString(R.string.schedule_title_continuous);

@@ -34,6 +34,7 @@ import android.preference.PreferenceFragment;
 import android.preference.PreferenceGroup;
 import android.preference.RingtonePreference;
 import android.text.TextUtils;
+import android.view.MenuItem;
 
 import com.ephemeraldreams.gallyshuttle.R;
 import com.ephemeraldreams.gallyshuttle.annotations.qualifiers.RingtoneChoice;
@@ -49,10 +50,24 @@ import timber.log.Timber;
  */
 public class SettingsActivity extends BaseActivity {
 
+    public static void launchActivity(Activity activity) {
+        Intent intent = new Intent(activity, SettingsActivity.class);
+        activity.startActivity(intent);
+    }
+
     @Override
     protected void onCreate(Bundle savedInstanceState) {
         super.onCreate(savedInstanceState);
         setContentView(R.layout.activity_settings);
+    }
+
+    @Override
+    public boolean onOptionsItemSelected(MenuItem item) {
+        switch (item.getItemId()) {
+            case android.R.id.home:
+                finish();
+        }
+        return super.onOptionsItemSelected(item);
     }
 
     /**

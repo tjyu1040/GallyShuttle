@@ -16,44 +16,48 @@
 
 package com.ephemeraldreams.gallyshuttle.ui;
 
-import android.app.Fragment;
 import android.app.FragmentManager;
-import android.content.Intent;
 import android.content.SharedPreferences;
 import android.content.res.Configuration;
 import android.net.ConnectivityManager;
-import android.net.NetworkInfo;
 import android.os.Bundle;
 import android.os.Handler;
 import android.support.v4.widget.DrawerLayout;
 import android.support.v7.app.ActionBarDrawerToggle;
 import android.support.v7.widget.Toolbar;
 import android.view.Gravity;
+import android.view.LayoutInflater;
+import android.view.Menu;
 import android.view.MenuItem;
 import android.view.View;
-import android.widget.AdapterView;
-import android.widget.ArrayAdapter;
-import android.widget.ListView;
+import android.widget.ExpandableListView;
 
 import com.ephemeraldreams.gallyshuttle.R;
 import com.ephemeraldreams.gallyshuttle.api.ShuttleApiService;
+import com.ephemeraldreams.gallyshuttle.ui.adapters.NavigationDrawerAdapter;
+
+import java.util.Arrays;
+import java.util.HashMap;
+import java.util.List;
 
 import javax.inject.Inject;
 
 import butterknife.InjectView;
+import timber.log.Timber;
 
 /**
  * Activity to handle navigation.
  */
-public class MainActivity extends BaseActivity implements ListView.OnItemClickListener {
+public class MainActivity extends BaseActivity implements ExpandableListView.OnGroupClickListener, ExpandableListView.OnChildClickListener {
 
     @InjectView(R.id.toolbar) Toolbar toolbar;
     @InjectView(R.id.drawer_layout) DrawerLayout drawerLayout;
-    @InjectView(R.id.left_drawer_list_view) ListView leftDrawerListView;
+    @InjectView(R.id.left_drawer_expandable_list_view) ExpandableListView leftExpandableListView;
     private ActionBarDrawerToggle actionBarDrawerToggle;
     private final Handler drawerHandler = new Handler();
 
     @Inject FragmentManager fragmentManager;
+    @Inject LayoutInflater layoutInflater;
     @Inject ConnectivityManager connectivityManager;
     @Inject SharedPreferences sharedPreferences;
     @Inject ShuttleApiService shuttleApiService;
@@ -73,14 +77,8 @@ public class MainActivity extends BaseActivity implements ListView.OnItemClickLi
                 R.string.app_name
         );
         drawerLayout.setDrawerListener(actionBarDrawerToggle);
-        String[] navigationItems = getResources().getStringArray(R.array.navigation_items);
-        leftDrawerListView.setAdapter(new ArrayAdapter<>(
-                this,
-                R.layout.drawer_list_item,
-                navigationItems
-        ));
-        leftDrawerListView.setOnItemClickListener(this);
-        setCurrentNavigationItem(0);
+
+        setNavigationDrawer();
     }
 
     @Override
@@ -96,76 +94,128 @@ public class MainActivity extends BaseActivity implements ListView.OnItemClickLi
     }
 
     @Override
+    public boolean onCreateOptionsMenu(Menu menu) {
+        getMenuInflater().inflate(R.menu.global, menu);
+        return true;
+    }
+
+    @Override
     public boolean onOptionsItemSelected(MenuItem item) {
-        return actionBarDrawerToggle.onOptionsItemSelected(item) || super.onOptionsItemSelected(item);
+        switch (item.getItemId()) {
+            case R.id.action_settings:
+                SettingsActivity.launchActivity(this);
+                return true;
+            default:
+                return actionBarDrawerToggle.onOptionsItemSelected(item) || super.onOptionsItemSelected(item);
+        }
+    }
+
+    @Override
+    protected void onResume() {
+        super.onResume();
     }
 
     @Override
     public void onBackPressed() {
         if (drawerLayout.isDrawerOpen(Gravity.START)) {
             drawerLayout.closeDrawers();
-        } else if (fragmentManager.getBackStackEntryCount() != 1) {
-            fragmentManager.popBackStackImmediate();
-            Fragment fragment = fragmentManager.findFragmentById(R.id.container);
-            int position = 0;
-            if (fragment instanceof MainFragment) {
-                position = 0;
-            } else if (fragment instanceof PoliciesFragment) {
-                position = 1;
-            } else if (fragment instanceof AboutFragment) {
-                position = 3;
-            }
-            leftDrawerListView.setItemChecked(position, true);
         } else {
             super.onBackPressed();
         }
     }
 
-    @Override
-    public void onItemClick(AdapterView<?> parent, View view, final int position, long id) {
+    private void setNavigationDrawer() {
+        String[] navigationHeaders = getResources().getStringArray(R.array.navigation_headers);
+        List<String> scheduleTitles = Arrays.asList(getResources().getStringArray(R.array.schedule_titles));
+        Timber.d("schedules: " + scheduleTitles.size());
+
+        HashMap<String, List<String>> navigationItems = new HashMap<>();
+        navigationItems.put(navigationHeaders[0], scheduleTitles);
+        navigationItems.put(navigationHeaders[1], null);
+        navigationItems.put(navigationHeaders[2], null);
+
+        NavigationDrawerAdapter navigationDrawerAdapter = new NavigationDrawerAdapter(layoutInflater, navigationHeaders, navigationItems);
+        leftExpandableListView.setAdapter(navigationDrawerAdapter);
+        leftExpandableListView.expandGroup(0);
+        leftExpandableListView.setOnGroupClickListener(this);
+        leftExpandableListView.setOnChildClickListener(this);
+    }
+
+    /**
+     * Close drawers smoothly with no stutters.
+     *
+     * @param runnable Runnable to run after drawer closed.
+     */
+    private void closeDrawers(Runnable runnable) {
         if (drawerLayout.isDrawerOpen(Gravity.START)) {
             drawerLayout.closeDrawers();
             drawerHandler.removeCallbacksAndMessages(null);
-            drawerHandler.postDelayed(new Runnable() {
-                @Override
-                public void run() {
-                    setCurrentNavigationItem(position);
-                }
-            }, 250);
+            drawerHandler.postDelayed(runnable, 250);
             drawerLayout.closeDrawers();
         }
     }
 
-    private void setCurrentNavigationItem(int position) {
-        if (position != 2) {
-            leftDrawerListView.setItemChecked(position, true);
+    @Override
+    public boolean onGroupClick(ExpandableListView parent, View v, final int groupPosition, long id) {
+        closeDrawers(new Runnable() {
+            @Override
+            public void run() {
+                setSelectedNavigationGroup(groupPosition);
+            }
+        });
+        return true;
+    }
+
+    /**
+     * Handle navigation group clicks. Header 0, "Schedules", has no actions and cannot be clicked.
+     *
+     * @param groupPosition Group to be selected.
+     */
+    private void setSelectedNavigationGroup(int groupPosition) {
+        if (groupPosition != 0) {
+            int position = leftExpandableListView.getFlatListPosition(ExpandableListView.getPackedPositionForGroup(groupPosition));
+            leftExpandableListView.setItemChecked(position, true);
         }
-        switch (position) {
-            case 0:
-                setFragment(MainFragment.newInstance());
-                break;
+        switch (groupPosition) {
             case 1:
-                setFragment(PoliciesFragment.newInstance());
+                fragmentManager.beginTransaction()
+                        .replace(R.id.container, PoliciesFragment.newInstance())
+                        .commit();
                 break;
             case 2:
-                startActivity(new Intent(this, SettingsActivity.class));
+                SettingsActivity.launchActivity(this);
+                leftExpandableListView.setItemChecked(2, false);
                 break;
             case 3:
-                setFragment(AboutFragment.newInstance());
+                fragmentManager.beginTransaction()
+                        .replace(R.id.container, AboutFragment.newInstance())
+                        .commit();
                 break;
         }
     }
 
-    private void setFragment(Fragment fragment) {
-        fragmentManager.beginTransaction()
-                .addToBackStack(null)
-                .replace(R.id.container, fragment)
-                .commit();
-
+    @Override
+    public boolean onChildClick(ExpandableListView parent, View v, final int groupPosition, final int childPosition, long id) {
+        closeDrawers(new Runnable() {
+            @Override
+            public void run() {
+                setSelectedNavigationChild(groupPosition, childPosition);
+            }
+        });
+        return true;
     }
 
-    private boolean isConnected() {
-        NetworkInfo networkInfo = connectivityManager.getActiveNetworkInfo();
-        return networkInfo != null && networkInfo.isConnectedOrConnecting();
+    /**
+     * Handle navigation child clicks. Group 0's children are the only clickable children.
+     *
+     * @param groupPosition Group to find child to be selected.
+     * @param childPosition Child to select.
+     */
+    private void setSelectedNavigationChild(int groupPosition, int childPosition) {
+        if (groupPosition == 0) {
+            int position = leftExpandableListView.getFlatListPosition(ExpandableListView.getPackedPositionForChild(groupPosition, childPosition));
+            leftExpandableListView.setItemChecked(position, false);
+            ScheduleActivity.launchActivity(this, childPosition);
+        }
     }
 }
