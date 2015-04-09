@@ -76,7 +76,7 @@ public class CacheManager {
             BufferedReader bufferedReader = new BufferedReader(new InputStreamReader(new FileInputStream(file)));
             return Schedule.fromJsonFile(bufferedReader);
         } else {
-            return null;
+            throw new FileNotFoundException();
         }
     }
 
