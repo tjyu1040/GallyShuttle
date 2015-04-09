@@ -15,6 +15,13 @@
     <string name="schedule_title_late_night">Late Night Schedule</string>
     <string name="schedule_title_weekend">Weekend Schedule</string>
     <string name="schedule_title_modified">Modified Schedule</string>
+    <string-array name="schedule_titles">
+        <item>Continuous</item>
+        <item>Alternate Continuous</item>
+        <item>Late Night</item>
+        <item>Weekend</item>
+        <item>Modified</item>
+    </string-array>
 
     <string name="action_settings">Settings</string>
 
@@ -71,10 +78,9 @@
     <string name="error_dialog_message">There was a problem downloading data. Please try again.</string>
 
     <!-- Navigation Items text -->
-    <string-array name="navigation_items">
+    <string-array name="navigation_headers">
         <item>Schedules</item>
         <item>Policies</item>
-        <item>Settings</item>
         <item>About</item>
     </string-array>
 

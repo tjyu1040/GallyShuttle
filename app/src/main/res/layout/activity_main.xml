@@ -1,3 +1,4 @@
+<?xml version="1.0" encoding="utf-8"?>
 <LinearLayout
     xmlns:android="http://schemas.android.com/apk/res/android"
     android:layout_width="match_parent"
@@ -19,6 +20,17 @@
             android:layout_width="match_parent"
             android:layout_height="match_parent"/>
 
+        <ExpandableListView
+            android:id="@+id/left_drawer_expandable_list_view"
+            android:layout_width="240dp"
+            android:layout_height="match_parent"
+            android:layout_gravity="start"
+            android:choiceMode="singleChoice"
+            android:divider="@color/darker_blue"
+            android:groupIndicator="@null"
+            android:background="@color/buff"/>
+
+        <!--
         <ListView
             android:id="@+id/left_drawer_list_view"
             android:layout_width="240dp"
@@ -28,6 +40,7 @@
             android:divider="@color/darker_blue"
             android:dividerHeight="0.5dp"
             android:background="@color/buff"/>
+            -->
 
     </android.support.v4.widget.DrawerLayout>
 
