@@ -170,7 +170,7 @@ public class ScheduleActivity extends BaseActivity implements Observer<ApiRespon
     private void loadSchedule() {
 
         progressDialog = new ProgressDialog(this);
-        progressDialog.setMessage(getString(R.string.loading));
+        progressDialog.setMessage(getString(R.string.loading_message));
         progressDialog.show();
 
         String title = getScheduleTitle(scheduleId);
@@ -303,7 +303,7 @@ public class ScheduleActivity extends BaseActivity implements Observer<ApiRespon
         String[] stops = getResources().getStringArray(scheduleId);
         LinkedHashMap<String, ArrayList<String>> stopTimes = new LinkedHashMap<>();
         for (String stop : stops) {
-            stopTimes.put(stop, new ArrayList<String>());
+            stopTimes.put(stop, new ArrayList<>());
         }
 
         String bensonStationName = getString(R.string.benson_station_name);
