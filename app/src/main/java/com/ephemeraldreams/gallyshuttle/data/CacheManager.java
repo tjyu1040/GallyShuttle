@@ -51,7 +51,7 @@ public class CacheManager {
      * @param schedule Schedule to cache.
      */
     public void createScheduleCacheFile(Schedule schedule) {
-        File file = new File(application.getCacheDir(), schedule.title.replace(' ', '_') + ".json");
+        File file = getScheduleFile(schedule.title);
         try {
             FileWriter fileWriter = new FileWriter(file);
             fileWriter.write(Schedule.toJsonString(schedule));
@@ -71,13 +71,23 @@ public class CacheManager {
      */
     @DebugLog
     public Schedule readScheduleCacheFile(String scheduleTitle) throws FileNotFoundException {
-        File file = new File(application.getCacheDir(), scheduleTitle.replace(' ', '_') + ".json");
+        File file = getScheduleFile(scheduleTitle);
         if (scheduleCacheFileExists(file)) {
             BufferedReader bufferedReader = new BufferedReader(new InputStreamReader(new FileInputStream(file)));
             return Schedule.fromJsonFile(bufferedReader);
         } else {
             throw new FileNotFoundException();
         }
+    }
+
+    /**
+     * Get file based on schedule.
+     *
+     * @param scheduleTitle Schedule title to include in file name.
+     * @return Schedule JSON file.
+     */
+    public File getScheduleFile(String scheduleTitle) {
+        return new File(application.getCacheDir(), scheduleTitle.replace(' ', '_') + ".json");
     }
 
     /**

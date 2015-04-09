@@ -175,11 +175,15 @@ public class ScheduleActivity extends BaseActivity implements Observer<ApiRespon
 
         String title = getScheduleTitle(scheduleId);
 
-        try {
-            schedule = cacheManager.readScheduleCacheFile(title);
-            onCompleted();
-        } catch (FileNotFoundException e) {
-            Timber.e(e, "Cached file for " + title + " schedule not found.");
+        if (cacheManager.scheduleCacheFileExists(cacheManager.getScheduleFile(title))) {
+            try {
+                schedule = cacheManager.readScheduleCacheFile(title);
+                onCompleted();
+            } catch (FileNotFoundException e) {
+                Timber.e(e, "Cached file for " + title + " schedule not found.");
+                loadScheduleFromWeb();
+            }
+        } else {
             loadScheduleFromWeb();
         }
     }
