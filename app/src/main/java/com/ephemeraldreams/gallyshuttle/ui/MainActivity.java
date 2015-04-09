@@ -43,7 +43,6 @@ import java.util.List;
 import javax.inject.Inject;
 
 import butterknife.InjectView;
-import timber.log.Timber;
 
 /**
  * Activity to handle navigation.
@@ -127,7 +126,6 @@ public class MainActivity extends BaseActivity implements ExpandableListView.OnG
     private void setNavigationDrawer() {
         String[] navigationHeaders = getResources().getStringArray(R.array.navigation_headers);
         List<String> scheduleTitles = Arrays.asList(getResources().getStringArray(R.array.schedule_titles));
-        Timber.d("schedules: " + scheduleTitles.size());
 
         HashMap<String, List<String>> navigationItems = new HashMap<>();
         navigationItems.put(navigationHeaders[0], scheduleTitles);
@@ -183,10 +181,6 @@ public class MainActivity extends BaseActivity implements ExpandableListView.OnG
                         .commit();
                 break;
             case 2:
-                SettingsActivity.launchActivity(this);
-                leftExpandableListView.setItemChecked(2, false);
-                break;
-            case 3:
                 fragmentManager.beginTransaction()
                         .replace(R.id.container, AboutFragment.newInstance())
                         .commit();
