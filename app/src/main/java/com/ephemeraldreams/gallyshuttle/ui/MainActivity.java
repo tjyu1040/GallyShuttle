@@ -116,11 +116,6 @@ public class MainActivity extends BaseActivity implements ExpandableListView.OnG
     }
 
     @Override
-    protected void onResume() {
-        super.onResume();
-    }
-
-    @Override
     public void onBackPressed() {
         if (drawerLayout.isDrawerOpen(Gravity.START)) {
             drawerLayout.closeDrawers();
@@ -129,6 +124,9 @@ public class MainActivity extends BaseActivity implements ExpandableListView.OnG
         }
     }
 
+    /**
+     * Set up navigation drawer.
+     */
     private void setNavigationDrawer() {
         String[] navigationHeaders = getResources().getStringArray(R.array.navigation_headers);
         List<String> scheduleTitles = Arrays.asList(getResources().getStringArray(R.array.schedule_titles));

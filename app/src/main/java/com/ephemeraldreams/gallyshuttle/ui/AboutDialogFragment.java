@@ -80,11 +80,21 @@ public class AboutDialogFragment extends DialogFragment {
         }
     }
 
+    @Nullable
     @Override
-    public Dialog onCreateDialog(Bundle savedInstanceState) {
-        Dialog dialog = super.onCreateDialog(savedInstanceState);
-        dialog.setCanceledOnTouchOutside(true);
-        return dialog;
+    public View onCreateView(LayoutInflater inflater, ViewGroup container, Bundle savedInstanceState) {
+        View rootView = inflater.inflate(R.layout.fragment_about_dialog, container, false);
+        ButterKnife.inject(this, rootView);
+        getDialog().setTitle(getResources().getText(resStringTitleId));
+        return rootView;
+    }
+
+    @Override
+    public void onActivityCreated(Bundle savedInstanceState) {
+        super.onActivityCreated(savedInstanceState);
+        ((BaseActivity) getActivity()).inject(this);
+        loadHtmlFileTask = new LoadHtmlFileTask(getActivity(), bus, resRawResourceId);
+        loadHtmlFileTask.execute();
     }
 
     @Override
@@ -100,6 +110,12 @@ public class AboutDialogFragment extends DialogFragment {
     }
 
     @Override
+    public void onDestroyView() {
+        super.onDestroyView();
+        ButterKnife.reset(this);
+    }
+
+    @Override
     public void onDestroy() {
         super.onDestroy();
         if (loadHtmlFileTask != null) {
@@ -107,27 +123,11 @@ public class AboutDialogFragment extends DialogFragment {
         }
     }
 
-    @Nullable
     @Override
-    public View onCreateView(LayoutInflater inflater, ViewGroup container, Bundle savedInstanceState) {
-        View rootView = inflater.inflate(R.layout.fragment_about_dialog, container, false);
-        ButterKnife.inject(this, rootView);
-        getDialog().setTitle(getResources().getText(resStringTitleId));
-        return rootView;
-    }
-
-    @Override
-    public void onDestroyView() {
-        super.onDestroyView();
-        ButterKnife.reset(this);
-    }
-
-    @Override
-    public void onActivityCreated(Bundle savedInstanceState) {
-        super.onActivityCreated(savedInstanceState);
-        ((BaseActivity) getActivity()).inject(this);
-        loadHtmlFileTask = new LoadHtmlFileTask(getActivity(), bus, resRawResourceId);
-        loadHtmlFileTask.execute();
+    public Dialog onCreateDialog(Bundle savedInstanceState) {
+        Dialog dialog = super.onCreateDialog(savedInstanceState);
+        dialog.setCanceledOnTouchOutside(true);
+        return dialog;
     }
 
     @Subscribe
@@ -139,6 +139,13 @@ public class AboutDialogFragment extends DialogFragment {
         }
     }
 
+    /**
+     * Display dialog fragment.
+     *
+     * @param fragmentManager  Fragment manager to display dialog fragment.
+     * @param resStringTitleId String title resource id.
+     * @param resRawResourceId HTML raw resource id.
+     */
     public static void displayDialogFragment(FragmentManager fragmentManager, @StringRes int resStringTitleId, @RawRes int resRawResourceId) {
         FragmentTransaction fragmentTransaction = fragmentManager.beginTransaction();
         Fragment prevFragment = fragmentManager.findFragmentByTag(FRAGMENT_TAG);

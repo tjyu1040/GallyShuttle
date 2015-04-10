@@ -80,12 +80,6 @@ public class TimesFragment extends Fragment implements TimesRecyclerViewAdapter.
         timesRecyclerViewAdapter.setOnTimeClickListener(this);
     }
 
-    @Override
-    public void onDestroyView() {
-        super.onDestroyView();
-        ButterKnife.reset(this);
-    }
-
     @Nullable
     @Override
     public View onCreateView(LayoutInflater inflater, ViewGroup container, Bundle savedInstanceState) {
@@ -97,6 +91,12 @@ public class TimesFragment extends Fragment implements TimesRecyclerViewAdapter.
         timesRecyclerView.setAdapter(timesRecyclerViewAdapter);
 
         return rootView;
+    }
+
+    @Override
+    public void onDestroyView() {
+        super.onDestroyView();
+        ButterKnife.reset(this);
     }
 
     @Override

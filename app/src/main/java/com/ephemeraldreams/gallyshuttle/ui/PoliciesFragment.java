@@ -63,6 +63,20 @@ public class PoliciesFragment extends Fragment {
     }
 
     @Override
+    public View onCreateView(LayoutInflater inflater, ViewGroup container, Bundle savedInstanceState) {
+        View rootView = inflater.inflate(R.layout.fragment_policies, container, false);
+        ButterKnife.inject(this, rootView);
+        return rootView;
+    }
+
+    @Override
+    public void onActivityCreated(Bundle savedInstanceState) {
+        super.onActivityCreated(savedInstanceState);
+        loadHtmlFileTask = new LoadHtmlFileTask(getActivity(), bus, R.raw.policies);
+        loadHtmlFileTask.execute();
+    }
+
+    @Override
     public void onResume() {
         super.onResume();
         bus.register(this);
@@ -75,31 +89,17 @@ public class PoliciesFragment extends Fragment {
     }
 
     @Override
-    public void onDestroy() {
-        super.onDestroy();
-        if (loadHtmlFileTask != null) {
-            loadHtmlFileTask.cancel(true);
-        }
-    }
-
-    @Override
-    public View onCreateView(LayoutInflater inflater, ViewGroup container, Bundle savedInstanceState) {
-        View rootView = inflater.inflate(R.layout.fragment_policies, container, false);
-        ButterKnife.inject(this, rootView);
-        return rootView;
-    }
-
-    @Override
     public void onDestroyView() {
         super.onDestroyView();
         ButterKnife.reset(this);
     }
 
     @Override
-    public void onActivityCreated(Bundle savedInstanceState) {
-        super.onActivityCreated(savedInstanceState);
-        loadHtmlFileTask = new LoadHtmlFileTask(getActivity(), bus, R.raw.policies);
-        loadHtmlFileTask.execute();
+    public void onDestroy() {
+        super.onDestroy();
+        if (loadHtmlFileTask != null) {
+            loadHtmlFileTask.cancel(true);
+        }
     }
 
     @Subscribe
