@@ -53,7 +53,7 @@ public class CacheManager {
     public void createScheduleCacheFile(Schedule schedule) {
         File file = getScheduleFile(schedule.title);
         try {
-            FileWriter fileWriter = new FileWriter(file);
+            FileWriter fileWriter = new FileWriter(file, false);
             fileWriter.write(Schedule.toJsonString(schedule));
             fileWriter.close();
             Timber.d("Cached file " + file.getCanonicalPath() + " successfully created.");
