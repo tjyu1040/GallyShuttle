@@ -23,7 +23,7 @@ android {
 
     defaultConfig {
         applicationId "com.ephemeraldreams.gallyshuttle"
-        minSdkVersion 16
+        minSdkVersion 17
         targetSdkVersion 22
         versionCode 4
         versionName "1.1.0"
