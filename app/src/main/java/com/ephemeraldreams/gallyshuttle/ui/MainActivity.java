@@ -49,6 +49,11 @@ import butterknife.InjectView;
  */
 public class MainActivity extends BaseActivity implements ExpandableListView.OnGroupClickListener, ExpandableListView.OnChildClickListener {
 
+    private static final int HOME_NAVIGATION_INDEX = 0;
+    private static final int SCHEDULE_NAVIGATION_INDEX = 1;
+    private static final int POLICIES_NAVIGATION_INDEX = 2;
+    private static final int ABOUT_NAVIGATION_INDEX = 3;
+
     @InjectView(R.id.toolbar) Toolbar toolbar;
     @InjectView(R.id.drawer_layout) DrawerLayout drawerLayout;
     @InjectView(R.id.left_drawer_expandable_list_view) ExpandableListView leftExpandableListView;
@@ -78,6 +83,7 @@ public class MainActivity extends BaseActivity implements ExpandableListView.OnG
         drawerLayout.setDrawerListener(actionBarDrawerToggle);
 
         setNavigationDrawer();
+        setSelectedNavigationGroup(HOME_NAVIGATION_INDEX);
     }
 
     @Override
@@ -128,13 +134,14 @@ public class MainActivity extends BaseActivity implements ExpandableListView.OnG
         List<String> scheduleTitles = Arrays.asList(getResources().getStringArray(R.array.schedule_titles));
 
         HashMap<String, List<String>> navigationItems = new HashMap<>();
-        navigationItems.put(navigationHeaders[0], scheduleTitles);
-        navigationItems.put(navigationHeaders[1], null);
-        navigationItems.put(navigationHeaders[2], null);
+        navigationItems.put(navigationHeaders[HOME_NAVIGATION_INDEX], null);
+        navigationItems.put(navigationHeaders[SCHEDULE_NAVIGATION_INDEX], scheduleTitles);
+        navigationItems.put(navigationHeaders[POLICIES_NAVIGATION_INDEX], null);
+        navigationItems.put(navigationHeaders[ABOUT_NAVIGATION_INDEX], null);
 
         NavigationDrawerAdapter navigationDrawerAdapter = new NavigationDrawerAdapter(layoutInflater, navigationHeaders, navigationItems);
         leftExpandableListView.setAdapter(navigationDrawerAdapter);
-        leftExpandableListView.expandGroup(0);
+        leftExpandableListView.expandGroup(SCHEDULE_NAVIGATION_INDEX);
         leftExpandableListView.setOnGroupClickListener(this);
         leftExpandableListView.setOnChildClickListener(this);
     }
@@ -165,22 +172,27 @@ public class MainActivity extends BaseActivity implements ExpandableListView.OnG
     }
 
     /**
-     * Handle navigation group clicks. Header 0, "Schedules", has no actions and cannot be clicked.
+     * Handle navigation group clicks. Header 1, "Schedules", has no actions and cannot be clicked.
      *
      * @param groupPosition Group to be selected.
      */
     private void setSelectedNavigationGroup(int groupPosition) {
-        if (groupPosition != 0) {
+        if (groupPosition != SCHEDULE_NAVIGATION_INDEX) {
             int position = leftExpandableListView.getFlatListPosition(ExpandableListView.getPackedPositionForGroup(groupPosition));
             leftExpandableListView.setItemChecked(position, true);
         }
         switch (groupPosition) {
-            case 1:
+            case HOME_NAVIGATION_INDEX:
+                fragmentManager.beginTransaction()
+                        .replace(R.id.container, MainFragment.newInstance())
+                        .commit();
+                break;
+            case POLICIES_NAVIGATION_INDEX:
                 fragmentManager.beginTransaction()
                         .replace(R.id.container, PoliciesFragment.newInstance())
                         .commit();
                 break;
-            case 2:
+            case ABOUT_NAVIGATION_INDEX:
                 fragmentManager.beginTransaction()
                         .replace(R.id.container, AboutFragment.newInstance())
                         .commit();
@@ -206,7 +218,7 @@ public class MainActivity extends BaseActivity implements ExpandableListView.OnG
      * @param childPosition Child to select.
      */
     private void setSelectedNavigationChild(int groupPosition, int childPosition) {
-        if (groupPosition == 0) {
+        if (groupPosition == SCHEDULE_NAVIGATION_INDEX) {
             int position = leftExpandableListView.getFlatListPosition(ExpandableListView.getPackedPositionForChild(groupPosition, childPosition));
             leftExpandableListView.setItemChecked(position, false);
             ScheduleActivity.launchActivity(this, childPosition);

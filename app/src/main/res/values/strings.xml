@@ -12,9 +12,7 @@
 
     <string name="main_fragment_title">Schedules</string>
 
-
     <string name="action_settings">Settings</string>
-
 
     <!-- MainFragment text -->
     <string name="intro_message">Choose a schedule to view:</string>
@@ -28,6 +26,7 @@
 
     <!-- Navigation Items text -->
     <string-array name="navigation_headers">
+        <item>Home</item>
         <item>Schedules</item>
         <item>Policies</item>
         <item>About</item>
