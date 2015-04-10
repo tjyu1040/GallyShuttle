@@ -60,7 +60,6 @@ public class TimesFragment extends Fragment implements TimesRecyclerViewAdapter.
         TimesFragment fragment = new TimesFragment();
         Bundle args = new Bundle();
         args.putParcelable(ARG_TIMES, StationTimes.create(times));
-        //args.putStringArrayList(ARG_TIMES, times);
         fragment.setArguments(args);
         return fragment;
     }
