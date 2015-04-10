@@ -21,6 +21,7 @@ import org.joda.time.format.DateTimeFormat;
 import org.joda.time.format.DateTimeFormatter;
 
 import java.util.Date;
+import java.util.concurrent.TimeUnit;
 
 /**
  * An utility class to handle formatting and parsing of times and dates.
@@ -71,5 +72,21 @@ public class DateUtils {
      */
     public static String formatTime(LocalDateTime localDateTime) {
         return TIME_TWELVE_HOURS_FORMATTER.print(localDateTime);
+    }
+
+    /**
+     * Convert milliseconds to "mm:ss" format.
+     *
+     * @param millis Milliseconds to convert.
+     * @return String format in "mm:ss""
+     */
+    public static String convertMillisecondsToMinutes(long millis) {
+        long minute = TimeUnit.MILLISECONDS.toMinutes(millis);
+        long second = TimeUnit.MILLISECONDS.toSeconds(millis) - TimeUnit.MINUTES.toSeconds(TimeUnit.MILLISECONDS.toMinutes(millis));
+        if (second < 10) {
+            return String.format("%d:0%d", minute, second);
+        } else {
+            return String.format("%d:%d", minute, second);
+        }
     }
 }
