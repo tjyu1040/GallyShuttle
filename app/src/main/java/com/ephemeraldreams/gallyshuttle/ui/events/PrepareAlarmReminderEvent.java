@@ -18,8 +18,8 @@ package com.ephemeraldreams.gallyshuttle.ui.events;
 
 import com.ephemeraldreams.gallyshuttle.util.DateUtils;
 
-import java.util.Calendar;
-import java.util.Date;
+import org.joda.time.LocalDateTime;
+import org.joda.time.LocalTime;
 
 /**
  * Event for Otto subscription and publication. Event happens when user click on a time to set an alarm
@@ -28,39 +28,29 @@ import java.util.Date;
  */
 public class PrepareAlarmReminderEvent {
 
-    private String time;
-    private Calendar alarmCalendar;
+    private LocalTime time;
+    private LocalDateTime alarmDateTime;
 
     public int hour;
     public int minute;
     public String reminderDialogMessage;
 
-    public PrepareAlarmReminderEvent(String time, int prefReminderLength) {
+    public PrepareAlarmReminderEvent(LocalTime time, int prefReminderLength) {
         this.time = time;
         setAlarmCalendar(prefReminderLength);
         setReminderDialogMessage();
     }
 
     private void setAlarmCalendar(int prefReminderLength) {
-        alarmCalendar = Calendar.getInstance();
-        alarmCalendar.setTime(DateUtils.parseToDate(time));
-        alarmCalendar.add(Calendar.MINUTE, -prefReminderLength);
-        hour = alarmCalendar.get(Calendar.HOUR);
-        minute = alarmCalendar.get(Calendar.MINUTE);
+        alarmDateTime = time.toDateTimeToday().toLocalDateTime();
+        alarmDateTime = alarmDateTime.minusMinutes(prefReminderLength);
+        hour = alarmDateTime.getHourOfDay();
+        minute = alarmDateTime.getMinuteOfHour();
     }
 
     private void setReminderDialogMessage() {
-        Calendar currentCalendar = Calendar.getInstance();
-        Date currentDate = new Date();
-        currentCalendar.setTime(currentDate);
-        String setDay;
-        if (alarmCalendar.before(currentCalendar)) {
-            alarmCalendar.add(Calendar.DATE, 1);
-            setDay = " tomorrow";
-        } else {
-            setDay = " today";
-        }
-        String timeMessage = DateUtils.TIME_TWELVE_HOURS_FORMATTER.format(alarmCalendar.getTime()) + setDay;
+        //String timeMessage = DateUtils.TIME_TWELVE_HOURS_FORMATTER.format(alarmDateTime.toDate().getTime());
+        String timeMessage = DateUtils.formatTime(alarmDateTime);
         reminderDialogMessage = "Set reminder for " + timeMessage + "?";
     }
 }

@@ -25,6 +25,7 @@ import android.content.Context;
 import android.content.DialogInterface;
 import android.content.Intent;
 import android.content.IntentFilter;
+import android.content.res.Resources;
 import android.net.ConnectivityManager;
 import android.os.Build;
 import android.os.Bundle;
@@ -41,22 +42,16 @@ import com.ephemeraldreams.gallyshuttle.annotations.qualifiers.RingtoneChoice;
 import com.ephemeraldreams.gallyshuttle.annotations.qualifiers.VibrationEnabled;
 import com.ephemeraldreams.gallyshuttle.api.ShuttleApiService;
 import com.ephemeraldreams.gallyshuttle.api.models.ApiResponse;
-import com.ephemeraldreams.gallyshuttle.api.models.Entry;
-import com.ephemeraldreams.gallyshuttle.api.models.StationTime;
 import com.ephemeraldreams.gallyshuttle.data.CacheManager;
 import com.ephemeraldreams.gallyshuttle.data.models.Schedule;
 import com.ephemeraldreams.gallyshuttle.data.preferences.BooleanPreference;
 import com.ephemeraldreams.gallyshuttle.data.preferences.StringPreference;
 import com.ephemeraldreams.gallyshuttle.ui.adapters.TimesFragmentPagerAdapter;
 import com.ephemeraldreams.gallyshuttle.ui.events.PrepareAlarmReminderEvent;
-import com.ephemeraldreams.gallyshuttle.util.DateUtils;
 import com.squareup.otto.Bus;
 import com.squareup.otto.Subscribe;
 
 import java.io.FileNotFoundException;
-import java.util.ArrayList;
-import java.util.LinkedHashMap;
-import java.util.List;
 
 import javax.inject.Inject;
 
@@ -94,6 +89,7 @@ public class ScheduleActivity extends BaseActivity implements Observer<ApiRespon
 
     private int scheduleId;
     private Schedule schedule;
+    @Inject Resources resources;
 
     @Inject Bus bus;
     @Inject FragmentManager fragmentManager;
@@ -173,7 +169,7 @@ public class ScheduleActivity extends BaseActivity implements Observer<ApiRespon
         progressDialog.setMessage(getString(R.string.loading_message));
         progressDialog.show();
 
-        String title = getScheduleTitle(scheduleId);
+        String title = Schedule.getScheduleTitle(scheduleId, resources);
 
         if (cacheManager.scheduleCacheFileExists(cacheManager.getScheduleFile(title))) {
             try {
@@ -220,9 +216,7 @@ public class ScheduleActivity extends BaseActivity implements Observer<ApiRespon
 
     @Override
     public void onNext(ApiResponse apiResponse) {
-        String title = getScheduleTitle(scheduleId);
-        LinkedHashMap<String, ArrayList<String>> stopsTimes = getStopsTimes(apiResponse.feed.entries);
-        schedule = new Schedule(title, stopsTimes);
+        schedule = new Schedule(scheduleId, apiResponse, resources);
         cacheManager.createScheduleCacheFile(schedule);
     }
 
@@ -267,74 +261,6 @@ public class ScheduleActivity extends BaseActivity implements Observer<ApiRespon
         isNetworkStateBroadcastReceiverRegistered = false;
         networkStateBroadCastReceiver = null;
         Timber.d("Network broadcast receiver dismissed.");
-    }
-
-    /**
-     * Get schedule title based on schedule id.
-     *
-     * @param scheduleId Schedule id.
-     * @return Title of schedule.
-     */
-    private String getScheduleTitle(int scheduleId) {
-        switch (scheduleId) {
-            case R.array.continuous_stations:
-                return getString(R.string.schedule_title_continuous);
-            case R.array.alt_continuous_stations:
-                return getString(R.string.schedule_title_alt_continuous);
-            case R.array.late_night_stations:
-                return getString(R.string.schedule_title_late_night);
-            case R.array.weekend_stations:
-                return getString(R.string.schedule_title_weekend);
-            case R.array.modified_stations:
-                return getString(R.string.schedule_title_modified);
-            default:
-                return getString(R.string.schedule_title_continuous);
-        }
-    }
-
-    /**
-     * Populate a linked map with stops and times.
-     *
-     * @param entries List of entries to iterate over.
-     * @return LinkedHashMap of stops to times.
-     */
-    private LinkedHashMap<String, ArrayList<String>> getStopsTimes(List<Entry> entries) {
-
-        String[] stops = getResources().getStringArray(scheduleId);
-        LinkedHashMap<String, ArrayList<String>> stopTimes = new LinkedHashMap<>();
-        for (String stop : stops) {
-            stopTimes.put(stop, new ArrayList<>());
-        }
-
-        String bensonStationName = getString(R.string.benson_station_name);
-        String kelloggStationName = getString(R.string.kellogg_station_name);
-        String unionStationName = getString(R.string.union_station_name);
-        String mssdStationName = getString(R.string.mssd_station_name);
-        String kdesStationName = getString(R.string.kdes_station_name);
-        String noMaGallaudetStationName = getString(R.string.no_ma_gallaudet_station_name);
-
-        for (Entry entry : entries) {
-            putTimeToStop(stopTimes, bensonStationName, entry.bensonStationTime);
-            putTimeToStop(stopTimes, kelloggStationName, entry.kelloggStationTime);
-            putTimeToStop(stopTimes, unionStationName, entry.unionStationTime);
-            putTimeToStop(stopTimes, mssdStationName, entry.mssdStationTime);
-            putTimeToStop(stopTimes, kdesStationName, entry.kdesStationTime);
-            putTimeToStop(stopTimes, noMaGallaudetStationName, entry.noMaGallaudetStationTime);
-        }
-        return stopTimes;
-    }
-
-    /**
-     * Put time to mapped stop.
-     *
-     * @param stopsTimes  LinkedHashMap to put time.
-     * @param key         Stop key to map time to.
-     * @param stationTime Station time to store into map.
-     */
-    private void putTimeToStop(LinkedHashMap<String, ArrayList<String>> stopsTimes, String key, StationTime stationTime) {
-        if (stopsTimes.containsKey(key) && !stationTime.toString().contains("-")) {
-            stopsTimes.get(key).add(DateUtils.trimAndFormat(stationTime.toString()));
-        }
     }
 
     /**

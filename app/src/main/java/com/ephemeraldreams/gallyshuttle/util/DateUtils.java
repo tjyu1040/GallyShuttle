@@ -16,17 +16,11 @@
 
 package com.ephemeraldreams.gallyshuttle.util;
 
-import android.annotation.SuppressLint;
+import org.joda.time.LocalDateTime;
+import org.joda.time.format.DateTimeFormat;
+import org.joda.time.format.DateTimeFormatter;
 
-import org.joda.time.LocalTime;
-
-import java.text.DateFormat;
-import java.text.ParseException;
-import java.text.SimpleDateFormat;
 import java.util.Date;
-
-import hugo.weaving.DebugLog;
-import timber.log.Timber;
 
 /**
  * An utility class to handle formatting and parsing of times and dates.
@@ -36,12 +30,13 @@ public class DateUtils {
     /**
      * Formatter to convert a String time into correct 12-hours time format for users to view.
      */
-    @SuppressLint("SimpleDateFormat") public static final DateFormat TIME_TWELVE_HOURS_FORMATTER = new SimpleDateFormat("h:mm aa");
+    private static final DateTimeFormatter TIME_TWELVE_HOURS_FORMATTER = DateTimeFormat.forPattern("h:mm aa");
+
 
     /**
      * Formatter to convert a String time into correct 24-hours time format for processing.
      */
-    @SuppressLint("SimpleDateFormat") public static final SimpleDateFormat TIME_TWENTY_FOUR_HOURS_FORMATTER = new SimpleDateFormat("hh:mm aa");
+    public static final DateTimeFormatter DATE_FORMAT = DateTimeFormat.forPattern("hh:mm aa");
 
     /**
      * Parse a string time into a {@link Date} object.
@@ -49,15 +44,8 @@ public class DateUtils {
      * @param time String time to parse.
      * @return Date object with time.
      */
-    @DebugLog
-    public static Date parseToDate(String time) {
-        try {
-            LocalTime localTime = new LocalTime(TIME_TWENTY_FOUR_HOURS_FORMATTER.parse(time));
-            return localTime.toDateTimeToday().toDate();
-        } catch (ParseException e) {
-            Timber.e("Parsing failed.", e);
-            return new Date();
-        }
+    public static LocalDateTime parseToLocalDateTime(String time) {
+        return LocalDateTime.parse(trimAndFormat(time), DATE_FORMAT);
     }
 
     /**
@@ -66,13 +54,22 @@ public class DateUtils {
      * @param time String time to trim and format.
      * @return Trimmed and formatted time.
      */
-    @DebugLog
-    public static String trimAndFormat(String time) {
+    private static String trimAndFormat(String time) {
         return time.toUpperCase()
                 .replace("*", "")           // Remove * characters
                 .replaceAll("\u00a0", " ")  // Remove &nbsp characters
                 .replaceAll("\\.", "")      // Remove period characters
                 .replace("NOON", "PM")      // Replace NOON with PM
                 .trim();
+    }
+
+    /**
+     * Format into "h:mm aa" date format.
+     *
+     * @param localDateTime LocalDateTime to format.
+     * @return String format in "h:mm aa"
+     */
+    public static String formatTime(LocalDateTime localDateTime) {
+        return TIME_TWELVE_HOURS_FORMATTER.print(localDateTime);
     }
 }

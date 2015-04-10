@@ -39,12 +39,12 @@ public class TimesFragmentPagerAdapter extends FragmentPagerAdapter {
 
     @Override
     public int getCount() {
-        return schedule.getNumberOfStops();
+        return schedule.getNumberOfStations();
     }
 
     @Override
     public CharSequence getPageTitle(int position) {
-        return schedule.getStop(position).toUpperCase(Locale.getDefault());
+        return schedule.getStation(position).toUpperCase(Locale.getDefault());
     }
 
     @Override
