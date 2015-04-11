@@ -25,10 +25,10 @@ import static java.lang.annotation.RetentionPolicy.RUNTIME;
 
 /**
  * Annotation to denote a {@link com.ephemeraldreams.gallyshuttle.data.preferences.BooleanPreference}
- * for getting vibration enabled preference.
+ * for getting notification vibration enabled preference.
  */
 @Qualifier
 @Documented
 @Retention(RUNTIME)
-public @interface VibrationEnabled {
+public @interface NotificationVibration {
 }

@@ -5,44 +5,63 @@
         android:key="@string/pref_key_alarms">
 
         <ListPreference
-            android:title="@string/pref_reminder_title"
-            android:key="@string/pref_key_reminder_length"
-            android:defaultValue="5"
+            android:title="@string/pref_title_alarm_reminder"
+            android:key="@string/pref_key_alarm_reminder_length"
+            android:defaultValue="@string/reminder_length_default"
             android:entries="@array/minutes"
             android:entryValues="@array/minutes_values"/>
 
         <RingtonePreference
-            android:key="pref_ringtone"
-            android:title="@string/pref_title_ringtone"
+            android:title="@string/pref_title_alarm_ringtone"
+            android:key="@string/pref_key_alarm_ringtone"
             android:ringtoneType="alarm"
             android:showSilent="true"
             android:defaultValue=""/>
 
         <CheckBoxPreference
-            android:key="pref_vibrate"
-            android:title="@string/pref_title_vibrate"
+            android:title="@string/pref_title_alarm_vibrate"
+            android:key="@string/pref_key_alarm_vibrate"
             android:summary="@string/pref_vibrate_summary_enabled"
             android:defaultValue="true"/>
 
     </PreferenceCategory>
 
     <PreferenceCategory
-        android:key="pref_options"
-        android:title="Options">
+        android:title="@string/pref_title_notifications"
+        android:key="@string/pref_key_notifications">
 
-        <Preference
-            android:key="pref_clear_cache"
-            android:title="@string/pref_title_clear_cache"/>
+        <RingtonePreference
+            android:title="@string/pref_title_notification_ringtone"
+            android:key="@string/pref_key_notification_ringtone"
+            android:ringtoneType="notification"
+            android:showSilent="true"
+            android:defaultValue=""/>
+
+        <CheckBoxPreference
+            android:title="@string/pref_title_notification_vibrate"
+            android:key="@string/pref_key_notification_vibrate"
+            android:summary="@string/pref_vibrate_summary_enabled"
+            android:defaultValue="true"/>
 
     </PreferenceCategory>
 
     <PreferenceCategory
-        android:key="pref_other"
-        android:title="Other">
+        android:title="@string/pref_title_options"
+        android:key="@string/pref_key_options">
 
         <Preference
-            android:key="pref_share"
-            android:title="Share Application"/>
+            android:title="@string/pref_title_clear_cache"
+            android:key="@string/pref_key_clear_cache" />
+
+    </PreferenceCategory>
+
+    <PreferenceCategory
+        android:title="@string/pref_title_other"
+        android:key="@string/pref_key_other">
+
+        <Preference
+            android:title="@string/pref_title_share"
+            android:key="@string/pref_key_share"/>
 
     </PreferenceCategory>
 

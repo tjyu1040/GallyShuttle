@@ -24,9 +24,11 @@ import android.content.res.Resources;
 import android.net.ConnectivityManager;
 import android.view.LayoutInflater;
 
-import com.ephemeraldreams.gallyshuttle.annotations.qualifiers.ReminderLength;
-import com.ephemeraldreams.gallyshuttle.annotations.qualifiers.RingtoneChoice;
-import com.ephemeraldreams.gallyshuttle.annotations.qualifiers.VibrationEnabled;
+import com.ephemeraldreams.gallyshuttle.annotations.qualifiers.AlarmReminderLength;
+import com.ephemeraldreams.gallyshuttle.annotations.qualifiers.AlarmRingtoneChoice;
+import com.ephemeraldreams.gallyshuttle.annotations.qualifiers.AlarmVibration;
+import com.ephemeraldreams.gallyshuttle.annotations.qualifiers.NotificationRingtoneChoice;
+import com.ephemeraldreams.gallyshuttle.annotations.qualifiers.NotificationVibration;
 import com.ephemeraldreams.gallyshuttle.annotations.scopes.ApplicationScope;
 import com.ephemeraldreams.gallyshuttle.api.ShuttleApiService;
 import com.ephemeraldreams.gallyshuttle.data.CacheManager;
@@ -69,12 +71,18 @@ public interface AppComponent {
 
     ShuttleApiService injectShuttleApiService();
 
-    @ReminderLength
+    @AlarmReminderLength
     StringPreference injectReminderLengthPreference();
 
-    @RingtoneChoice
-    StringPreference injectRingtonePreference();
+    @AlarmRingtoneChoice
+    StringPreference injectAlarmRingtonePreference();
 
-    @VibrationEnabled
-    BooleanPreference injectVibrateEnabledPreference();
+    @AlarmVibration
+    BooleanPreference injectAlarmVibratePreference();
+
+    @NotificationRingtoneChoice
+    StringPreference injectNotificationRingtonePreference();
+
+    @NotificationVibration
+    BooleanPreference injectNotificationVibrationPreference();
 }

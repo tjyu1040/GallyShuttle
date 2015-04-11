@@ -37,7 +37,8 @@ import android.text.TextUtils;
 import android.view.MenuItem;
 
 import com.ephemeraldreams.gallyshuttle.R;
-import com.ephemeraldreams.gallyshuttle.annotations.qualifiers.RingtoneChoice;
+import com.ephemeraldreams.gallyshuttle.annotations.qualifiers.AlarmRingtoneChoice;
+import com.ephemeraldreams.gallyshuttle.annotations.qualifiers.NotificationRingtoneChoice;
 import com.ephemeraldreams.gallyshuttle.data.CacheManager;
 import com.ephemeraldreams.gallyshuttle.data.preferences.StringPreference;
 
@@ -76,16 +77,19 @@ public class SettingsActivity extends BaseActivity {
     public static class SettingsFragment extends PreferenceFragment
             implements SharedPreferences.OnSharedPreferenceChangeListener {
 
-        private ListPreference reminderPreference;
-        private RingtonePreference ringtonePreference;
-        private CheckBoxPreference vibratePreference;
+        private ListPreference alarmReminderLengthPreference;
+        private RingtonePreference alarmRingtonePreference;
+        private CheckBoxPreference alarmVibratePreference;
+        private RingtonePreference notificationRingtonePreference;
+        private CheckBoxPreference notificationVibratePreference;
         private Preference clearCachePreference;
         private Preference sharePreference;
 
         @Inject Activity activity;
         @Inject CacheManager cacheManager;
         @Inject SharedPreferences sharedPreferences;
-        @Inject @RingtoneChoice StringPreference ringtoneStringPreference;
+        @Inject @AlarmRingtoneChoice StringPreference alarmRingtoneStringPreference;
+        @Inject @NotificationRingtoneChoice StringPreference notificationRingtoneStringPreference;
 
         @Override
         public void onCreate(Bundle savedInstanceState) {
@@ -99,22 +103,26 @@ public class SettingsActivity extends BaseActivity {
         }
 
         private void setPreferences() {
-            reminderPreference = (ListPreference) findPreference(getString(R.string.pref_key_reminder_length));
-            ringtonePreference = (RingtonePreference) findPreference(getString(R.string.pref_key_ringtone));
-            vibratePreference = (CheckBoxPreference) findPreference(getString(R.string.pref_key_vibrate));
+            alarmReminderLengthPreference = (ListPreference) findPreference(getString(R.string.pref_key_alarm_reminder_length));
+            alarmRingtonePreference = (RingtonePreference) findPreference(getString(R.string.pref_key_alarm_ringtone));
+            alarmVibratePreference = (CheckBoxPreference) findPreference(getString(R.string.pref_key_alarm_vibrate));
+            notificationRingtonePreference = (RingtonePreference) findPreference(getString(R.string.pref_key_notification_ringtone));
+            notificationVibratePreference = (CheckBoxPreference) findPreference(getString(R.string.pref_key_notification_vibrate));
             clearCachePreference = findPreference(getString(R.string.pref_key_clear_cache));
             sharePreference = findPreference(getString(R.string.pref_key_share));
 
-            updateReminderSummary();
+            updateAlarmReminderLengthSummary();
+            updateNotificationRingtoneSummary();
+            updateNotificationVibrateSummary();
             setSharePreference();
             setCacheClearPreference();
 
             if (Build.VERSION.SDK_INT < Build.VERSION_CODES.KITKAT) {
-                ((PreferenceGroup) findPreference(getString(R.string.pref_key_alarms))).removePreference(ringtonePreference);
-                ((PreferenceGroup) findPreference(getString(R.string.pref_key_alarms))).removePreference(vibratePreference);
+                ((PreferenceGroup) findPreference(getString(R.string.pref_key_alarms))).removePreference(alarmRingtonePreference);
+                ((PreferenceGroup) findPreference(getString(R.string.pref_key_alarms))).removePreference(alarmVibratePreference);
             } else {
-                updateRingtoneSummary();
-                updateVibrateSummary();
+                updateAlarmRingtoneSummary();
+                updateAlarmVibrateSummary();
             }
         }
 
@@ -134,18 +142,23 @@ public class SettingsActivity extends BaseActivity {
         public void onActivityResult(int requestCode, int resultCode, Intent data) {
             super.onActivityResult(requestCode, resultCode, data);
             if (Build.VERSION.SDK_INT >= Build.VERSION_CODES.KITKAT) {
-                updateRingtoneSummary();
+                updateAlarmRingtoneSummary();
             }
+            updateNotificationRingtoneSummary();
         }
 
         @Override
         public void onSharedPreferenceChanged(SharedPreferences sharedPreferences, String key) {
-            if (key.equals(getString(R.string.pref_key_reminder_length))) {
-                updateReminderSummary();
-            } else if (key.equals(getString(R.string.pref_key_ringtone))) {
-                updateRingtoneSummary();
-            } else if (key.equals(getString(R.string.pref_key_vibrate))) {
-                updateVibrateSummary();
+            if (key.equals(getString(R.string.pref_key_alarm_reminder_length))) {
+                updateAlarmReminderLengthSummary();
+            } else if (key.equals(getString(R.string.pref_key_alarm_ringtone))) {
+                updateAlarmRingtoneSummary();
+            } else if (key.equals(getString(R.string.pref_key_alarm_vibrate))) {
+                updateAlarmVibrateSummary();
+            } else if (key.equals(getString(R.string.pref_key_notification_ringtone))) {
+                updateNotificationRingtoneSummary();
+            } else if (key.equals(getString(R.string.pref_key_notification_vibrate))) {
+                updateNotificationVibrateSummary();
             } else if (key.equals(getString(R.string.pref_key_clear_cache))) {
                 updateCacheSummary();
             }
@@ -154,33 +167,66 @@ public class SettingsActivity extends BaseActivity {
         /**
          * Update reminder length in minutes.
          */
-        private void updateReminderSummary() {
-            reminderPreference.setSummary(reminderPreference.getEntry());
+        private void updateAlarmReminderLengthSummary() {
+            alarmReminderLengthPreference.setSummary(alarmReminderLengthPreference.getEntry());
         }
 
         /**
-         * Update ringtone name.
+         * Update alarm ringtone name.
          */
         @TargetApi(Build.VERSION_CODES.KITKAT)
-        private void updateRingtoneSummary() {
+        private void updateAlarmRingtoneSummary() {
+            alarmRingtonePreference.setSummary(getRingtoneName(alarmRingtoneStringPreference));
+        }
+
+        /**
+         * Update notification ringtone name.
+         */
+        private void updateNotificationRingtoneSummary() {
+            notificationRingtonePreference.setSummary(getRingtoneName(notificationRingtoneStringPreference));
+        }
+
+        /**
+         * Get Ringtone name stored in ringtone preference.
+         *
+         * @param ringtoneStringPreference String preference to get ringtone name from.
+         * @return Ringtone name.
+         */
+        private String getRingtoneName(StringPreference ringtoneStringPreference) {
             String strRingtonePreference = ringtoneStringPreference.get();
             String ringtoneName;
             if (TextUtils.isEmpty(strRingtonePreference)) {
-                ringtoneName = getString(R.string.ringtone_silent);
+                ringtoneName = getString(R.string.pref_ringtone_summary_silent);
             } else {
                 Timber.d(strRingtonePreference);
                 Uri ringtoneUri = Uri.parse(strRingtonePreference);
-                Ringtone ringtone = RingtoneManager.getRingtone(activity, ringtoneUri);
-                ringtoneName = ringtone.getTitle(activity);
+                Ringtone ringtone = RingtoneManager.getRingtone(getActivity(), ringtoneUri);
+                ringtoneName = ringtone.getTitle(getActivity());
             }
-            ringtonePreference.setSummary(ringtoneName);
+            return ringtoneName;
         }
 
         /**
-         * Update enabled or disabled vibration.
+         * Update enabled or disabled vibration for alarms.
          */
         @TargetApi(Build.VERSION_CODES.KITKAT)
-        private void updateVibrateSummary() {
+        private void updateAlarmVibrateSummary() {
+            setVibrateSummary(alarmVibratePreference);
+        }
+
+        /**
+         * Update enabled or disabled vibration for notifications.
+         */
+        private void updateNotificationVibrateSummary() {
+            setVibrateSummary(notificationVibratePreference);
+        }
+
+        /**
+         * Toggle vibration preference summary.
+         *
+         * @param vibratePreference Boolean vibrate preference to toggle.
+         */
+        private void setVibrateSummary(CheckBoxPreference vibratePreference) {
             if (vibratePreference.isChecked()) {
                 vibratePreference.setSummary(getString(R.string.pref_vibrate_summary_enabled));
             } else {

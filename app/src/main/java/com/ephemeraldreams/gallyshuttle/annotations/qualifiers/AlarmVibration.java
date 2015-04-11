@@ -24,11 +24,11 @@ import javax.inject.Qualifier;
 import static java.lang.annotation.RetentionPolicy.RUNTIME;
 
 /**
- * Annotation to denote a {@link com.ephemeraldreams.gallyshuttle.data.preferences.StringPreference}
- * for getting reminder length preference.
+ * Annotation to denote a {@link com.ephemeraldreams.gallyshuttle.data.preferences.BooleanPreference}
+ * for getting alarm vibration enabled preference.
  */
 @Qualifier
 @Documented
 @Retention(RUNTIME)
-public @interface ReminderLength {
+public @interface AlarmVibration {
 }

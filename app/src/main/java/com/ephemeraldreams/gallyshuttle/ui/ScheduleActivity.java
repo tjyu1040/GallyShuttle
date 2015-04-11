@@ -38,8 +38,8 @@ import android.view.MenuItem;
 import android.widget.Toast;
 
 import com.ephemeraldreams.gallyshuttle.R;
-import com.ephemeraldreams.gallyshuttle.annotations.qualifiers.RingtoneChoice;
-import com.ephemeraldreams.gallyshuttle.annotations.qualifiers.VibrationEnabled;
+import com.ephemeraldreams.gallyshuttle.annotations.qualifiers.AlarmRingtoneChoice;
+import com.ephemeraldreams.gallyshuttle.annotations.qualifiers.AlarmVibration;
 import com.ephemeraldreams.gallyshuttle.api.ShuttleApiService;
 import com.ephemeraldreams.gallyshuttle.api.models.ApiResponse;
 import com.ephemeraldreams.gallyshuttle.data.CacheManager;
@@ -71,8 +71,8 @@ public class ScheduleActivity extends BaseActivity implements Observer<ApiRespon
             R.array.continuous_stations,
             R.array.alt_continuous_stations,
             R.array.late_night_stations,
-            R.array.modified_stations,
-            R.array.weekend_stations
+            R.array.weekend_stations,
+            R.array.modified_stations
     };
 
     public static final String EXTRA_SCHEDULE = "schedule";
@@ -93,8 +93,8 @@ public class ScheduleActivity extends BaseActivity implements Observer<ApiRespon
 
     @Inject Bus bus;
     @Inject FragmentManager fragmentManager;
-    @Inject @RingtoneChoice StringPreference ringtoneChoiceStringPreference;
-    @Inject @VibrationEnabled BooleanPreference vibrationEnabledBooleanPreference;
+    @Inject @AlarmRingtoneChoice StringPreference alarmRingtoneChoiceStringPreference;
+    @Inject @AlarmVibration BooleanPreference alarmVibrationBooleanPreference;
 
     /**
      * Launch ScheduleActivity with specified schedule id.
@@ -280,7 +280,7 @@ public class ScheduleActivity extends BaseActivity implements Observer<ApiRespon
                 .setPositiveButton(android.R.string.ok, new DialogInterface.OnClickListener() {
                     @Override
                     public void onClick(DialogInterface dialog, int which) {
-                        startActivity(alarmIntent);
+                        startActivity(Intent.createChooser(alarmIntent, "Set alarm"));
                     }
                 })
                 .setNegativeButton(android.R.string.cancel, new DialogInterface.OnClickListener() {
@@ -308,11 +308,11 @@ public class ScheduleActivity extends BaseActivity implements Observer<ApiRespon
         alarmIntent.putExtra(AlarmClock.EXTRA_HOUR, hour);
         alarmIntent.putExtra(AlarmClock.EXTRA_MINUTES, minute);
         if (Build.VERSION.SDK_INT >= Build.VERSION_CODES.KITKAT) {
-            alarmIntent.putExtra(AlarmClock.EXTRA_VIBRATE, vibrationEnabledBooleanPreference.get());
-            if (TextUtils.isEmpty(ringtoneChoiceStringPreference.get())) {
+            alarmIntent.putExtra(AlarmClock.EXTRA_VIBRATE, alarmVibrationBooleanPreference.get());
+            if (TextUtils.isEmpty(alarmRingtoneChoiceStringPreference.get())) {
                 alarmIntent.putExtra(AlarmClock.VALUE_RINGTONE_SILENT, true);
             } else {
-                alarmIntent.putExtra(AlarmClock.EXTRA_RINGTONE, ringtoneChoiceStringPreference.get());
+                alarmIntent.putExtra(AlarmClock.EXTRA_RINGTONE, alarmRingtoneChoiceStringPreference.get());
             }
         }
         return alarmIntent;

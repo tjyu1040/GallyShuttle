@@ -25,10 +25,10 @@ import static java.lang.annotation.RetentionPolicy.RUNTIME;
 
 /**
  * Annotation to denote a {@link com.ephemeraldreams.gallyshuttle.data.preferences.StringPreference}
- * for getting ringtone choice preference.
+ * for getting alarm ringtone choice preference.
  */
 @Qualifier
 @Documented
 @Retention(RUNTIME)
-public @interface RingtoneChoice {
+public @interface AlarmRingtoneChoice {
 }

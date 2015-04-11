@@ -22,9 +22,11 @@ import android.content.res.Resources;
 import android.preference.PreferenceManager;
 
 import com.ephemeraldreams.gallyshuttle.R;
-import com.ephemeraldreams.gallyshuttle.annotations.qualifiers.ReminderLength;
-import com.ephemeraldreams.gallyshuttle.annotations.qualifiers.RingtoneChoice;
-import com.ephemeraldreams.gallyshuttle.annotations.qualifiers.VibrationEnabled;
+import com.ephemeraldreams.gallyshuttle.annotations.qualifiers.AlarmReminderLength;
+import com.ephemeraldreams.gallyshuttle.annotations.qualifiers.AlarmRingtoneChoice;
+import com.ephemeraldreams.gallyshuttle.annotations.qualifiers.AlarmVibration;
+import com.ephemeraldreams.gallyshuttle.annotations.qualifiers.NotificationRingtoneChoice;
+import com.ephemeraldreams.gallyshuttle.annotations.qualifiers.NotificationVibration;
 import com.ephemeraldreams.gallyshuttle.annotations.scopes.ApplicationScope;
 import com.ephemeraldreams.gallyshuttle.api.ApiModule;
 import com.ephemeraldreams.gallyshuttle.data.preferences.BooleanPreference;
@@ -46,7 +48,8 @@ import dagger.Provides;
 public class DataModule {
 
     public static final int DISK_CACHE_SIZE = 5 * 1024 * 1024; // 5MB
-    public static final String DEFAULT_RINGTONE = "content://settings/system/alarm_alert";
+    public static final String DEFAULT_ALARM_RINGTONE = "content://settings/system/alarm_alert";
+    public static final String DEFAULT_NOTIFICATION_RINGTONE = "content://settings/system/notification_sound";
     public static final boolean DEFAULT_VIBRATION_ENABLED = true;
 
     /**
@@ -82,37 +85,65 @@ public class DataModule {
      */
     @Provides
     @ApplicationScope
-    @ReminderLength
+    @AlarmReminderLength
     StringPreference provideReminderLengthPreference(SharedPreferences sharedPreferences, Resources resources) {
-        return new StringPreference(sharedPreferences, resources.getString(R.string.pref_key_reminder_length), "5");
+        return new StringPreference(sharedPreferences, resources.getString(R.string.pref_key_alarm_reminder_length), "5");
     }
 
     /**
-     * Provide ringtone choice preference.
+     * Provide alarm ringtone choice preference.
      *
      * @param sharedPreferences Shared preferences to pull preference from.
      * @param resources         Resources to pull preference key id from.
-     * @return Ringtone choice preference.
+     * @return Alarm ringtone choice preference.
      */
     @Provides
     @ApplicationScope
-    @RingtoneChoice
-    StringPreference provideRingtoneChoicePreference(SharedPreferences sharedPreferences, Resources resources) {
-        return new StringPreference(sharedPreferences, resources.getString(R.string.pref_key_ringtone), DEFAULT_RINGTONE);
+    @AlarmRingtoneChoice
+    StringPreference provideAlarmRingtoneChoicePreference(SharedPreferences sharedPreferences, Resources resources) {
+        return new StringPreference(sharedPreferences, resources.getString(R.string.pref_key_alarm_ringtone), DEFAULT_ALARM_RINGTONE);
     }
 
     /**
-     * Provide vibration enabled preference.
+     * Provide notification ringtone choice preference.
      *
      * @param sharedPreferences Shared preferences to pull preference from.
      * @param resources         Resources to pull preference key id from.
-     * @return Vibration enabled preference.
+     * @return Notification ringtone choice preference.
      */
     @Provides
     @ApplicationScope
-    @VibrationEnabled
-    BooleanPreference provideVibrateEnabledPreference(SharedPreferences sharedPreferences, Resources resources) {
-        return new BooleanPreference(sharedPreferences, resources.getString(R.string.pref_key_vibrate), DEFAULT_VIBRATION_ENABLED);
+    @NotificationRingtoneChoice
+    StringPreference provideNotificationRingtoneChoicePreference(SharedPreferences sharedPreferences, Resources resources) {
+        return new StringPreference(sharedPreferences, resources.getString(R.string.pref_key_notification_ringtone), DEFAULT_NOTIFICATION_RINGTONE);
+    }
+
+    /**
+     * Provide alarm vibration preference.
+     *
+     * @param sharedPreferences Shared preferences to pull preference from.
+     * @param resources         Resources to pull preference key id from.
+     * @return Alarm vibration preference.
+     */
+    @Provides
+    @ApplicationScope
+    @AlarmVibration
+    BooleanPreference provideAlarmVibrationPreference(SharedPreferences sharedPreferences, Resources resources) {
+        return new BooleanPreference(sharedPreferences, resources.getString(R.string.pref_key_alarm_vibrate), DEFAULT_VIBRATION_ENABLED);
+    }
+
+    /**
+     * Provide notification vibration preference.
+     *
+     * @param sharedPreferences Shared preferences to pull preference from.
+     * @param resources         Resources to pull preference key id from.
+     * @return Notification Vibration enabled preference.
+     */
+    @Provides
+    @ApplicationScope
+    @NotificationVibration
+    BooleanPreference provideNotificationVibrationPreference(SharedPreferences sharedPreferences, Resources resources) {
+        return new BooleanPreference(sharedPreferences, resources.getString(R.string.pref_key_notification_vibrate), DEFAULT_VIBRATION_ENABLED);
     }
 
     /**
