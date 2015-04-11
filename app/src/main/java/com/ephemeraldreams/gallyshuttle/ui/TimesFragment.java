@@ -26,7 +26,7 @@ import android.view.View;
 import android.view.ViewGroup;
 
 import com.ephemeraldreams.gallyshuttle.R;
-import com.ephemeraldreams.gallyshuttle.annotations.qualifiers.ReminderLength;
+import com.ephemeraldreams.gallyshuttle.annotations.qualifiers.AlarmReminderLength;
 import com.ephemeraldreams.gallyshuttle.data.models.StationTimes;
 import com.ephemeraldreams.gallyshuttle.data.preferences.StringPreference;
 import com.ephemeraldreams.gallyshuttle.ui.adapters.TimesRecyclerViewAdapter;
@@ -54,7 +54,7 @@ public class TimesFragment extends Fragment implements TimesRecyclerViewAdapter.
     private TimesRecyclerViewAdapter timesRecyclerViewAdapter;
 
     @Inject Bus bus;
-    @Inject @ReminderLength StringPreference reminderLengthStringPreference;
+    @Inject @AlarmReminderLength StringPreference reminderLengthStringPreference;
 
     public static TimesFragment newInstance(ArrayList<LocalTime> times) {
         TimesFragment fragment = new TimesFragment();
@@ -68,6 +68,7 @@ public class TimesFragment extends Fragment implements TimesRecyclerViewAdapter.
     public void onCreate(Bundle savedInstanceState) {
         super.onCreate(savedInstanceState);
         ((BaseActivity) getActivity()).inject(this);
+        setRetainInstance(true);
 
         List<LocalTime> times;
         if (getArguments() != null) {

@@ -78,6 +78,7 @@ public class AboutDialogFragment extends DialogFragment {
             resStringTitleId = getArguments().getInt(ARG_TITLE_ID);
             resRawResourceId = getArguments().getInt(ARG_RAW_RESOURCE_ID);
         }
+        setRetainInstance(true);
     }
 
     @Nullable

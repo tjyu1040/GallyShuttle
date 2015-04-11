@@ -55,6 +55,7 @@ public class AboutFragment extends Fragment {
     public void onCreate(Bundle savedInstanceState) {
         super.onCreate(savedInstanceState);
         ((BaseActivity) getActivity()).inject(this);
+        setRetainInstance(true);
     }
 
     @Nullable

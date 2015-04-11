@@ -60,6 +60,7 @@ public class PoliciesFragment extends Fragment {
     public void onCreate(Bundle savedInstanceState) {
         super.onCreate(savedInstanceState);
         ((BaseActivity) getActivity()).inject(this);
+        setRetainInstance(true);
     }
 
     @Override
