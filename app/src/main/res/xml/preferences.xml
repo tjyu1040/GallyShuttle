@@ -21,7 +21,7 @@
         <CheckBoxPreference
             android:title="@string/pref_title_alarm_vibrate"
             android:key="@string/pref_key_alarm_vibrate"
-            android:summary="@string/pref_vibrate_summary_enabled"
+            android:summary="@string/pref_summary_vibrate_enabled"
             android:defaultValue="true"/>
 
     </PreferenceCategory>
@@ -40,7 +40,7 @@
         <CheckBoxPreference
             android:title="@string/pref_title_notification_vibrate"
             android:key="@string/pref_key_notification_vibrate"
-            android:summary="@string/pref_vibrate_summary_enabled"
+            android:summary="@string/pref_summary_vibrate_enabled"
             android:defaultValue="true"/>
 
     </PreferenceCategory>

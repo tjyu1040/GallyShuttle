@@ -168,7 +168,8 @@ public class SettingsActivity extends BaseActivity {
          * Update reminder length in minutes.
          */
         private void updateAlarmReminderLengthSummary() {
-            alarmReminderLengthPreference.setSummary(alarmReminderLengthPreference.getEntry());
+            String setAlarmSummary = String.format(getString(R.string.pref_summary_set_alarm), alarmReminderLengthPreference.getEntry());
+            alarmReminderLengthPreference.setSummary(setAlarmSummary);
         }
 
         /**
@@ -228,9 +229,9 @@ public class SettingsActivity extends BaseActivity {
          */
         private void setVibrateSummary(CheckBoxPreference vibratePreference) {
             if (vibratePreference.isChecked()) {
-                vibratePreference.setSummary(getString(R.string.pref_vibrate_summary_enabled));
+                vibratePreference.setSummary(getString(R.string.pref_summary_vibrate_enabled));
             } else {
-                vibratePreference.setSummary(getString(R.string.pref_vibrate_summary_disabled));
+                vibratePreference.setSummary(getString(R.string.pref_summary_vibrate_disabled));
             }
         }
 
