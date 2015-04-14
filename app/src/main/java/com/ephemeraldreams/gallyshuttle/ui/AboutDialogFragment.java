@@ -74,11 +74,13 @@ public class AboutDialogFragment extends DialogFragment {
     @Override
     public void onCreate(Bundle savedInstanceState) {
         super.onCreate(savedInstanceState);
+        ((BaseActivity) getActivity()).inject(this);
+        setRetainInstance(true);
+
         if (getArguments() != null) {
             resStringTitleId = getArguments().getInt(ARG_TITLE_ID);
             resRawResourceId = getArguments().getInt(ARG_RAW_RESOURCE_ID);
         }
-        setRetainInstance(true);
     }
 
     @Nullable
@@ -93,7 +95,6 @@ public class AboutDialogFragment extends DialogFragment {
     @Override
     public void onActivityCreated(Bundle savedInstanceState) {
         super.onActivityCreated(savedInstanceState);
-        ((BaseActivity) getActivity()).inject(this);
         loadHtmlFileTask = new LoadHtmlFileTask(getActivity(), bus, resRawResourceId);
         loadHtmlFileTask.execute();
     }

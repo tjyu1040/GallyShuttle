@@ -218,8 +218,7 @@ public class Schedule {
     private static void putTimeToStop(LinkedHashMap<String, ArrayList<LocalTime>> stopsTimes, String key, StationTime stationTime) {
         if (stopsTimes.containsKey(key) && !TextUtils.isEmpty(stationTime.toString()) && !stationTime.toString().contains("-")) {
             LocalDateTime localDateTime = DateUtils.parseToLocalDateTime(stationTime.toString());
-            LocalTime localTime = new LocalTime(localDateTime);
-            stopsTimes.get(key).add(localTime);
+            stopsTimes.get(key).add(localDateTime.toLocalTime());
         }
     }
 }

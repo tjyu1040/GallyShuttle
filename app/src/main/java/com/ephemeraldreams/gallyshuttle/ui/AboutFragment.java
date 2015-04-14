@@ -17,6 +17,7 @@
 package com.ephemeraldreams.gallyshuttle.ui;
 
 import android.app.Fragment;
+import android.app.FragmentManager;
 import android.content.Intent;
 import android.net.Uri;
 import android.os.Bundle;
@@ -29,6 +30,8 @@ import android.widget.TextView;
 import com.ephemeraldreams.gallyshuttle.BuildConfig;
 import com.ephemeraldreams.gallyshuttle.R;
 
+import javax.inject.Inject;
+
 import butterknife.ButterKnife;
 import butterknife.InjectView;
 import butterknife.OnClick;
@@ -39,6 +42,8 @@ import butterknife.OnClick;
 public class AboutFragment extends Fragment {
 
     @InjectView(R.id.versionTextView) TextView versionTextView;
+
+    @Inject FragmentManager fragmentManager;
 
     /**
      * Required empty public constructor
@@ -86,7 +91,7 @@ public class AboutFragment extends Fragment {
      */
     @OnClick(R.id.creditsTextView)
     public void displayCredits() {
-        AboutDialogFragment.displayDialogFragment(getFragmentManager(), R.string.dialog_credits_title, R.raw.credits);
+        AboutDialogFragment.displayDialogFragment(fragmentManager, R.string.dialog_credits_title, R.raw.credits);
     }
 
     /**
@@ -118,7 +123,7 @@ public class AboutFragment extends Fragment {
      */
     @OnClick(R.id.openSourceLicensesTextView)
     public void displayOpenSourceLicenses() {
-        AboutDialogFragment.displayDialogFragment(getFragmentManager(), R.string.dialog_licenses_title, R.raw.licenses);
+        AboutDialogFragment.displayDialogFragment(fragmentManager, R.string.dialog_licenses_title, R.raw.licenses);
     }
 
     /**
@@ -126,7 +131,7 @@ public class AboutFragment extends Fragment {
      */
     @OnClick(R.id.termsOfServiceTextView)
     public void displayTermsOfServices() {
-        AboutDialogFragment.displayDialogFragment(getFragmentManager(), R.string.dialog_terms_of_service_title, R.raw.terms_of_use);
+        AboutDialogFragment.displayDialogFragment(fragmentManager, R.string.dialog_terms_of_service_title, R.raw.terms_of_use);
     }
 
     /**
@@ -134,6 +139,6 @@ public class AboutFragment extends Fragment {
      */
     @OnClick(R.id.privacyTextView)
     public void displayPrivacyPolicy() {
-        AboutDialogFragment.displayDialogFragment(getFragmentManager(), R.string.dialog_privacy_policy_title, R.raw.privacy);
+        AboutDialogFragment.displayDialogFragment(fragmentManager, R.string.dialog_privacy_policy_title, R.raw.privacy);
     }
 }
