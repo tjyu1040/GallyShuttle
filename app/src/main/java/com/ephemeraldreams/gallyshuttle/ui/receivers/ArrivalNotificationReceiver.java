@@ -56,12 +56,12 @@ public class ArrivalNotificationReceiver extends BroadcastReceiver {
 
     private void displayReminderNotification(Context context, Intent intent) {
 
-        String stationName = intent.getStringExtra(EXTRA_STATION_NAME);
+        CharSequence stationName = intent.getCharSequenceExtra(EXTRA_STATION_NAME);
 
         NotificationCompat.Builder builder = new NotificationCompat.Builder(context)
                 .setSmallIcon(R.drawable.ic_directions_bus_white_48dp)
                 .setContentTitle(context.getString(R.string.notification_title))
-                .setContentText(String.format(context.getString(R.string.notification_content), stationName))
+                .setContentText(String.format(context.getString(R.string.notification_content), stationName.toString()))
                 .setAutoCancel(true);
         if (vibrationEnabledBooleanPreference.get()) {
             builder.setVibrate(new long[]{1000, 1000, 1000, 1000, 1000});

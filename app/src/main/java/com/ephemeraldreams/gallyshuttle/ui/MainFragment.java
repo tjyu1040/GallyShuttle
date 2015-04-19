@@ -88,6 +88,7 @@ public class MainFragment extends Fragment implements Observer<ApiResponse>, Ada
     @Inject Resources resources;
 
     private int stationIndex;
+    private ArrayAdapter<CharSequence> stationStopsAdapter;
     private LocalDateTime arrivalTime;
     private CountDownTimer countDownTimer;
     @Inject AlarmManager alarmManager;
@@ -121,9 +122,9 @@ public class MainFragment extends Fragment implements Observer<ApiResponse>, Ada
         setScheduleId();
         currentScheduleTextView.setText(ScheduleUtils.getScheduleTitle(scheduleId, getResources()));
 
-        ArrayAdapter<CharSequence> arrayAdapter = ArrayAdapter.createFromResource(getActivity(), scheduleId, R.layout.support_simple_spinner_dropdown_item);
-        arrayAdapter.setDropDownViewResource(R.layout.support_simple_spinner_dropdown_item);
-        spinner.setAdapter(arrayAdapter);
+        stationStopsAdapter = ArrayAdapter.createFromResource(getActivity(), scheduleId, R.layout.support_simple_spinner_dropdown_item);
+        stationStopsAdapter.setDropDownViewResource(R.layout.support_simple_spinner_dropdown_item);
+        spinner.setAdapter(stationStopsAdapter);
         spinner.setOnItemSelectedListener(this);
 
         return rootView;
@@ -171,6 +172,11 @@ public class MainFragment extends Fragment implements Observer<ApiResponse>, Ada
     @Override
     public void onNothingSelected(AdapterView<?> parent) {
 
+    }
+
+    @OnCheckedChanged(R.id.notifications_enabled_checkbox)
+    public void onNotificationsEnabledCheckBoxClicked(boolean checked) {
+        setArrivalNotificationTimer(checked);
     }
 
     private void setScheduleId() {
@@ -271,10 +277,11 @@ public class MainFragment extends Fragment implements Observer<ApiResponse>, Ada
         if (notificationsBoxChecked) {
             if (arrivalTime != null) {
                 Intent notificationIntent = new Intent(getActivity(), ArrivalNotificationReceiver.class);
-                notificationIntent.putExtra(schedule.getStation(stationIndex), ArrivalNotificationReceiver.EXTRA_STATION_NAME);
+                notificationIntent.putExtra(ArrivalNotificationReceiver.EXTRA_STATION_NAME, stationStopsAdapter.getItem(stationIndex));
                 notificationPendingIntent = PendingIntent.getBroadcast(getActivity(), 0, notificationIntent, PendingIntent.FLAG_CANCEL_CURRENT);
 
-                long millis = new Duration(LocalDateTime.now().toDateTime(), arrivalTime.toDateTime()).getMillis();
+                Duration duration = new Duration(LocalDateTime.now().toDateTime(), arrivalTime.toDateTime());
+                long millis = duration.getMillis();
                 alarmManager.set(AlarmManager.RTC_WAKEUP, System.currentTimeMillis() + millis, notificationPendingIntent);
                 Timber.d("Arrival Notification receiver set: " + DateUtils.convertMillisecondsToTime(millis));
             } else {
@@ -284,11 +291,6 @@ public class MainFragment extends Fragment implements Observer<ApiResponse>, Ada
             alarmManager.cancel(notificationPendingIntent);
             Timber.d("Arrival Notification receiver cancelled.");
         }
-    }
-
-    @OnCheckedChanged(R.id.notifications_enabled_checkbox)
-    public void onNotificationsEnabledCheckBoxClicked(boolean checked) {
-        setArrivalNotificationTimer(checked);
     }
 
     @Override
