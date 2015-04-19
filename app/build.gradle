@@ -4,6 +4,7 @@ buildscript {
     }
 
     dependencies {
+        //noinspection GradleDynamicVersion
         classpath 'io.fabric.tools:gradle:1.+'
     }
 }
@@ -47,6 +48,7 @@ android {
     }
     applicationVariants.all { variant ->
         variant.outputs.each { output ->
+            //noinspection GroovyAssignabilityCheck
             def file = output.outputFile = new File(
                     output.outputFile.parent,
                     output.outputFile.name.replace("app", "GallyShuttle").replace(".apk", "-${variant.versionName}.apk"))

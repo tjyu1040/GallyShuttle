@@ -68,7 +68,7 @@ import timber.log.Timber;
  */
 public class ScheduleActivity extends BaseActivity implements Observer<ApiResponse> {
 
-    public static final int[] SCHEDULE_IDS = {
+    private static final int[] SCHEDULE_IDS = {
             R.array.continuous_stations,
             R.array.alt_continuous_stations,
             R.array.late_night_stations,
@@ -76,7 +76,7 @@ public class ScheduleActivity extends BaseActivity implements Observer<ApiRespon
             R.array.modified_stations
     };
 
-    public static final String EXTRA_SCHEDULE = "schedule";
+    private static final String EXTRA_SCHEDULE = "schedule";
 
     @InjectView(R.id.schedule_pager_tabs_strip) PagerTabStrip schedulePagerTabStrip;
     @InjectView(R.id.schedule_view_pager) ViewPager scheduleViewPager;

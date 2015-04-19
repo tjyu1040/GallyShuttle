@@ -35,9 +35,9 @@ import timber.log.Timber;
  */
 public class LoadHtmlFileTask extends AsyncTask<Void, Void, String> {
 
-    private Activity activity;
-    private Bus bus;
-    private int resRawResourceId;
+    private final Activity activity;
+    private final Bus bus;
+    private final int resRawResourceId;
 
     public LoadHtmlFileTask(Activity activity, Bus bus, @RawRes int resRawResourceId) {
         this.activity = activity;

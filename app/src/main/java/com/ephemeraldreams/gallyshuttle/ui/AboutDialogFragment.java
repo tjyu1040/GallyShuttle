@@ -46,8 +46,8 @@ import butterknife.InjectView;
 public class AboutDialogFragment extends DialogFragment {
 
     private static final String FRAGMENT_TAG = "com.ephemeraldreams.gallyshuttle.ui.AboutDialogFragment";
-    public static final String ARG_TITLE_ID = "string title resource id";
-    public static final String ARG_RAW_RESOURCE_ID = "raw resource id";
+    private static final String ARG_TITLE_ID = "string title resource id";
+    private static final String ARG_RAW_RESOURCE_ID = "raw resource id";
 
     @InjectView(R.id.dialog_web_view) WebView webView;
     @InjectView(R.id.dialog_progress_bar) ProgressBar progressBar;
@@ -62,7 +62,7 @@ public class AboutDialogFragment extends DialogFragment {
 
     }
 
-    public static AboutDialogFragment newInstance(@StringRes int resStringTitleId, @RawRes int resRawResourceId) {
+    private static AboutDialogFragment newInstance(@StringRes int resStringTitleId, @RawRes int resRawResourceId) {
         AboutDialogFragment fragment = new AboutDialogFragment();
         Bundle args = new Bundle();
         args.putInt(ARG_TITLE_ID, resStringTitleId);

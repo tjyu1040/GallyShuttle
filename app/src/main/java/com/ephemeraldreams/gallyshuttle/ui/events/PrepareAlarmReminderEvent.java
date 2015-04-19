@@ -27,8 +27,8 @@ import org.joda.time.LocalDateTime;
  */
 public class PrepareAlarmReminderEvent {
 
-    private String time;
-    private int prefReminderLength;
+    private final String time;
+    private final int prefReminderLength;
 
     public int hour;
     public int minute;

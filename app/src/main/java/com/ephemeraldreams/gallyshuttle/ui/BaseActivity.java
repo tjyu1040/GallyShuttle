@@ -16,6 +16,7 @@
 
 package com.ephemeraldreams.gallyshuttle.ui;
 
+import android.annotation.SuppressLint;
 import android.os.Bundle;
 import android.support.v7.app.ActionBarActivity;
 import android.support.v7.widget.Toolbar;
@@ -34,6 +35,7 @@ import static com.ephemeraldreams.gallyshuttle.ui.SettingsActivity.SettingsFragm
 /**
  * Base activity for dagger usage.
  */
+@SuppressLint("Registered")
 public class BaseActivity extends ActionBarActivity implements ActivityComponent {
 
     @Optional @InjectView(R.id.toolbar) Toolbar toolbar;

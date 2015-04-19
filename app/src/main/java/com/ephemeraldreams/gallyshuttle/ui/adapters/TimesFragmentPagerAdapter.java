@@ -30,7 +30,7 @@ import java.util.Locale;
  */
 public class TimesFragmentPagerAdapter extends FragmentPagerAdapter {
 
-    private Schedule schedule;
+    private final Schedule schedule;
 
     public TimesFragmentPagerAdapter(FragmentManager fragmentManager, Schedule schedule) {
         super(fragmentManager);

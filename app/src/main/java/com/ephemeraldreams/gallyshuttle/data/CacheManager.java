@@ -39,8 +39,8 @@ import timber.log.Timber;
  */
 public class CacheManager {
 
-    private Application application;
-    private OkHttpClient okHttpClient;
+    private final Application application;
+    private final OkHttpClient okHttpClient;
 
     public CacheManager(Application application, OkHttpClient okHttpClient) {
         this.application = application;

@@ -34,7 +34,7 @@ import butterknife.InjectView;
  */
 public class TimesRecyclerViewAdapter extends RecyclerView.Adapter<TimesRecyclerViewAdapter.TimeViewHolder> {
 
-    private List<String> times;
+    private final List<String> times;
     private OnTimeClickListener onTimeClickListener;
 
     public TimesRecyclerViewAdapter(List<String> times) {

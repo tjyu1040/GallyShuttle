@@ -20,7 +20,7 @@ import static org.junit.Assert.assertNull;
  */
 public class ShuttleApiServiceTest {
 
-    private boolean allowSystemPrint = false;    // Change to true to see schedules downloaded.
+    private final boolean allowSystemPrint = false;    // Change to true to see schedules downloaded.
     private ShuttleApiService shuttleApiService;
 
     @Before

@@ -38,7 +38,7 @@ public class DateUtils {
     /**
      * Formatter to convert a String time into correct 24-hours time format for processing.
      */
-    public static final DateTimeFormatter DATE_FORMAT = DateTimeFormat.forPattern("hh:mm aa");
+    private static final DateTimeFormatter DATE_FORMAT = DateTimeFormat.forPattern("hh:mm aa");
 
     /**
      * Parse a string time into a {@link Date} object.

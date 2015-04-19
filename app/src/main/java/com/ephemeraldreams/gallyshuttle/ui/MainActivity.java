@@ -51,7 +51,7 @@ import butterknife.InjectView;
  */
 public class MainActivity extends BaseActivity implements ExpandableListView.OnGroupClickListener, ExpandableListView.OnChildClickListener {
 
-    public static final String KEY_FRAGMENT_INSTANCE = "fragment instance";
+    private static final String KEY_FRAGMENT_INSTANCE = "fragment instance";
 
     private static final int HOME_NAVIGATION_INDEX = 0;
     private static final int SCHEDULE_NAVIGATION_INDEX = 1;

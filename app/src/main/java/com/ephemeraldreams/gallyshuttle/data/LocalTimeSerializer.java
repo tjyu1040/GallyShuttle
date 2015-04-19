@@ -33,7 +33,7 @@ import java.lang.reflect.Type;
 /**
  * Class to serialize a {@link LocalTime} into JSON and deserialize JSON to {@link LocalTime}.
  */
-public class LocalTimeSerializer implements JsonSerializer<LocalTime>, JsonDeserializer<LocalTime> {
+class LocalTimeSerializer implements JsonSerializer<LocalTime>, JsonDeserializer<LocalTime> {
 
     private static final DateTimeFormatter FORMATTER = DateTimeFormat.forPattern("HH:mm");
 

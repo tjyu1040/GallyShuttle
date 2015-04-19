@@ -23,7 +23,7 @@ package com.ephemeraldreams.gallyshuttle.ui.events;
  */
 public class OnHtmlFileLoadedEvent {
 
-    public String html;
+    public final String html;
 
     public OnHtmlFileLoadedEvent(String html) {
         this.html = html;

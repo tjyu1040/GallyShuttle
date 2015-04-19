@@ -33,9 +33,9 @@ import dagger.Provides;
  * A module for Android-specific dependencies which require an {@link Application} to create.
  */
 @Module(includes = DataModule.class)
-public class AppModule {
+class AppModule {
 
-    private ShuttleApplication application;
+    private final ShuttleApplication application;
 
     public AppModule(ShuttleApplication application) {
         this.application = application;

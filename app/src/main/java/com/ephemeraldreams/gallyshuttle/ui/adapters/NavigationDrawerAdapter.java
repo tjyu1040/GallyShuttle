@@ -35,11 +35,10 @@ import butterknife.ButterKnife;
  */
 public class NavigationDrawerAdapter extends BaseExpandableListAdapter {
 
-    private String[] headers;
-    private HashMap<String, List<String>> items;
+    private final String[] headers;
+    private final HashMap<String, List<String>> items;
 
-    private LayoutInflater layoutInflater;
-
+    private final LayoutInflater layoutInflater;
 
     public NavigationDrawerAdapter(LayoutInflater layoutInflater, String[] headers, HashMap<String, List<String>> items) {
         this.headers = headers;

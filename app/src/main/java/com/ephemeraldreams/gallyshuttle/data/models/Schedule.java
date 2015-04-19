@@ -32,8 +32,8 @@ import java.util.Map;
 public class Schedule {
 
     public String cacheVersion;
-    public String title;
-    public LinkedHashMap<String, ArrayList<String>> stationsTimes;
+    public final String title;
+    public final LinkedHashMap<String, ArrayList<String>> stationsTimes;
 
     public Schedule() {
         this("Empty", null);

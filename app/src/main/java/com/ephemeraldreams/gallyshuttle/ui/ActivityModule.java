@@ -29,7 +29,7 @@ import dagger.Provides;
  * A module for activity-specific or fragment-specific dependencies.
  */
 @Module
-public class ActivityModule {
+class ActivityModule {
 
     private final Activity activity;
 
