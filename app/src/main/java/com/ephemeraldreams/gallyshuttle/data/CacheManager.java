@@ -18,7 +18,9 @@ package com.ephemeraldreams.gallyshuttle.data;
 
 import android.app.Application;
 
+import com.ephemeraldreams.gallyshuttle.BuildConfig;
 import com.ephemeraldreams.gallyshuttle.data.models.Schedule;
+import com.google.gson.JsonSyntaxException;
 import com.squareup.okhttp.OkHttpClient;
 
 import java.io.BufferedReader;
@@ -54,7 +56,7 @@ public class CacheManager {
         File file = getScheduleFile(schedule.title);
         try {
             FileWriter fileWriter = new FileWriter(file, false);
-            fileWriter.write(Schedule.toJsonString(schedule));
+            fileWriter.write(ScheduleUtils.toJsonString(schedule));
             fileWriter.close();
             Timber.d("Cached file " + file.getCanonicalPath() + " successfully created.");
         } catch (IOException e) {
@@ -74,7 +76,7 @@ public class CacheManager {
         File file = getScheduleFile(scheduleTitle);
         if (scheduleCacheFileExists(file)) {
             BufferedReader bufferedReader = new BufferedReader(new InputStreamReader(new FileInputStream(file)));
-            return Schedule.fromJsonFile(bufferedReader);
+            return ScheduleUtils.fromJsonFile(bufferedReader);
         } else {
             throw new FileNotFoundException();
         }
@@ -147,6 +149,28 @@ public class CacheManager {
                 } catch (IOException e) {
                     Timber.d("OkHttp cache file deletion failed.");
                 }
+            }
+        }
+    }
+
+    /**
+     * Check cache version to ensure that it is cleaned up when the application version is updated or if cache is misformatted.
+     */
+    public void checkAndClearCacheVersion() {
+        File[] files = application.getCacheDir().listFiles();
+        for (File file : files) {
+            try {
+                Schedule schedule = ScheduleUtils.fromJsonFile(new BufferedReader(new InputStreamReader(new FileInputStream(file))));
+                if (schedule.cacheVersion == null || !schedule.cacheVersion.equals(BuildConfig.VERSION_NAME)) {
+                    clearCache();
+                    break;
+                }
+            } catch (FileNotFoundException e) {
+                Timber.d(e, "Cached file not found while checking cache version.");
+            } catch (JsonSyntaxException e) {
+                Timber.d(e, "Malformed JSON syntax found in cached file. Cache clearing.");
+                clearCache();
+                break;
             }
         }
     }

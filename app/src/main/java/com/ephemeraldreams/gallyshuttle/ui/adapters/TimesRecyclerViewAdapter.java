@@ -23,9 +23,6 @@ import android.view.ViewGroup;
 import android.widget.TextView;
 
 import com.ephemeraldreams.gallyshuttle.R;
-import com.ephemeraldreams.gallyshuttle.util.DateUtils;
-
-import org.joda.time.LocalTime;
 
 import java.util.List;
 
@@ -37,10 +34,10 @@ import butterknife.InjectView;
  */
 public class TimesRecyclerViewAdapter extends RecyclerView.Adapter<TimesRecyclerViewAdapter.TimeViewHolder> {
 
-    private List<LocalTime> times;
+    private List<String> times;
     private OnTimeClickListener onTimeClickListener;
 
-    public TimesRecyclerViewAdapter(List<LocalTime> times) {
+    public TimesRecyclerViewAdapter(List<String> times) {
         this.times = times;
     }
 
@@ -52,8 +49,7 @@ public class TimesRecyclerViewAdapter extends RecyclerView.Adapter<TimesRecycler
 
     @Override
     public void onBindViewHolder(TimeViewHolder holder, int position) {
-        LocalTime localTime = times.get(position);
-        String time = DateUtils.formatTime(localTime.toDateTimeToday().toLocalDateTime());
+        String time = times.get(position);
         holder.timeTextView.setText(time);
     }
 
@@ -91,6 +87,6 @@ public class TimesRecyclerViewAdapter extends RecyclerView.Adapter<TimesRecycler
      * Interface to handle click listener on time selected.
      */
     public interface OnTimeClickListener {
-        void onTimeClick(LocalTime time);
+        void onTimeClick(String time);
     }
 }

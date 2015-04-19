@@ -19,7 +19,6 @@ package com.ephemeraldreams.gallyshuttle.ui.events;
 import com.ephemeraldreams.gallyshuttle.util.DateUtils;
 
 import org.joda.time.LocalDateTime;
-import org.joda.time.LocalTime;
 
 /**
  * Event for Otto subscription and publication. Event happens when user click on a time to set an alarm
@@ -28,29 +27,28 @@ import org.joda.time.LocalTime;
  */
 public class PrepareAlarmReminderEvent {
 
-    private LocalTime time;
-    private LocalDateTime alarmDateTime;
+    private String time;
+    private int prefReminderLength;
 
     public int hour;
     public int minute;
     public String reminderDialogMessage;
 
-    public PrepareAlarmReminderEvent(LocalTime time, int prefReminderLength) {
+    public PrepareAlarmReminderEvent(String time, int prefReminderLength) {
         this.time = time;
-        setAlarmCalendar(prefReminderLength);
+        this.prefReminderLength = prefReminderLength;
+        setAlarmCalendar();
         setReminderDialogMessage();
     }
 
-    private void setAlarmCalendar(int prefReminderLength) {
-        alarmDateTime = time.toDateTimeToday().toLocalDateTime();
+    private void setAlarmCalendar() {
+        LocalDateTime alarmDateTime = DateUtils.parseToLocalDateTime(time);
         alarmDateTime = alarmDateTime.minusMinutes(prefReminderLength);
         hour = alarmDateTime.getHourOfDay();
         minute = alarmDateTime.getMinuteOfHour();
     }
 
     private void setReminderDialogMessage() {
-        //String timeMessage = DateUtils.TIME_TWELVE_HOURS_FORMATTER.format(alarmDateTime.toDate().getTime());
-        String timeMessage = DateUtils.formatTime(alarmDateTime);
-        reminderDialogMessage = "Set reminder for " + timeMessage + "?";
+        reminderDialogMessage = "Remind me " + prefReminderLength + " minutes before " + time + " shuttle arrival?";
     }
 }

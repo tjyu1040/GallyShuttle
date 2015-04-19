@@ -43,6 +43,7 @@ import com.ephemeraldreams.gallyshuttle.annotations.qualifiers.AlarmVibration;
 import com.ephemeraldreams.gallyshuttle.api.ShuttleApiService;
 import com.ephemeraldreams.gallyshuttle.api.models.ApiResponse;
 import com.ephemeraldreams.gallyshuttle.data.CacheManager;
+import com.ephemeraldreams.gallyshuttle.data.ScheduleUtils;
 import com.ephemeraldreams.gallyshuttle.data.models.Schedule;
 import com.ephemeraldreams.gallyshuttle.data.preferences.BooleanPreference;
 import com.ephemeraldreams.gallyshuttle.data.preferences.StringPreference;
@@ -120,7 +121,8 @@ public class ScheduleActivity extends BaseActivity implements Observer<ApiRespon
             scheduleId = SCHEDULE_IDS[0];
         }
 
-        schedulePagerTabStrip.setTabIndicatorColor(getResources().getColor(R.color.blue));
+        schedulePagerTabStrip.setTabIndicatorColor(getResources().getColor(R.color.buff));
+        schedulePagerTabStrip.setBackgroundColor(getResources().getColor(R.color.blue));
 
         loadSchedule();
     }
@@ -169,7 +171,7 @@ public class ScheduleActivity extends BaseActivity implements Observer<ApiRespon
         progressDialog.setMessage(getString(R.string.loading_message));
         progressDialog.show();
 
-        String title = Schedule.getScheduleTitle(scheduleId, resources);
+        String title = ScheduleUtils.getScheduleTitle(scheduleId, resources);
 
         if (cacheManager.scheduleCacheFileExists(cacheManager.getScheduleFile(title))) {
             try {

@@ -17,6 +17,7 @@
 package com.ephemeraldreams.gallyshuttle.util;
 
 import org.joda.time.LocalDateTime;
+import org.joda.time.LocalTime;
 import org.joda.time.format.DateTimeFormat;
 import org.joda.time.format.DateTimeFormatter;
 
@@ -46,7 +47,7 @@ public class DateUtils {
      * @return Date object with time.
      */
     public static LocalDateTime parseToLocalDateTime(String time) {
-        return LocalDateTime.parse(trimAndFormat(time), DATE_FORMAT);
+        return LocalTime.parse(trimAndFormat(time), DATE_FORMAT).toDateTimeToday().toLocalDateTime();
     }
 
     /**
@@ -55,7 +56,7 @@ public class DateUtils {
      * @param time String time to trim and format.
      * @return Trimmed and formatted time.
      */
-    private static String trimAndFormat(String time) {
+    public static String trimAndFormat(String time) {
         return time.toUpperCase()
                 .replace("*", "")           // Remove * characters
                 .replaceAll("\u00a0", " ")  // Remove &nbsp characters
@@ -80,13 +81,10 @@ public class DateUtils {
      * @param millis Milliseconds to convert.
      * @return String format in "mm:ss""
      */
-    public static String convertMillisecondsToMinutes(long millis) {
-        long minute = TimeUnit.MILLISECONDS.toMinutes(millis);
+    public static String convertMillisecondsToTime(long millis) {
+        long hour = TimeUnit.MILLISECONDS.toHours(millis);
+        long minute = TimeUnit.MILLISECONDS.toMinutes(millis) - TimeUnit.HOURS.toMinutes(TimeUnit.MILLISECONDS.toHours(millis));
         long second = TimeUnit.MILLISECONDS.toSeconds(millis) - TimeUnit.MINUTES.toSeconds(TimeUnit.MILLISECONDS.toMinutes(millis));
-        if (second < 10) {
-            return String.format("%d:0%d", minute, second);
-        } else {
-            return String.format("%d:%d", minute, second);
-        }
+        return String.format("%02d:%02d:%02d", hour, minute, second);
     }
 }

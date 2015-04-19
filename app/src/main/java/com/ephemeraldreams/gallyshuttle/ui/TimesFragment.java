@@ -27,13 +27,10 @@ import android.view.ViewGroup;
 
 import com.ephemeraldreams.gallyshuttle.R;
 import com.ephemeraldreams.gallyshuttle.annotations.qualifiers.AlarmReminderLength;
-import com.ephemeraldreams.gallyshuttle.data.models.StationTimes;
 import com.ephemeraldreams.gallyshuttle.data.preferences.StringPreference;
 import com.ephemeraldreams.gallyshuttle.ui.adapters.TimesRecyclerViewAdapter;
 import com.ephemeraldreams.gallyshuttle.ui.events.PrepareAlarmReminderEvent;
 import com.squareup.otto.Bus;
-
-import org.joda.time.LocalTime;
 
 import java.util.ArrayList;
 import java.util.List;
@@ -56,10 +53,10 @@ public class TimesFragment extends Fragment implements TimesRecyclerViewAdapter.
     @Inject Bus bus;
     @Inject @AlarmReminderLength StringPreference reminderLengthStringPreference;
 
-    public static TimesFragment newInstance(ArrayList<LocalTime> times) {
+    public static TimesFragment newInstance(ArrayList<String> times) {
         TimesFragment fragment = new TimesFragment();
         Bundle args = new Bundle();
-        args.putParcelable(ARG_TIMES, StationTimes.create(times));
+        args.putStringArrayList(ARG_TIMES, times);
         fragment.setArguments(args);
         return fragment;
     }
@@ -70,10 +67,9 @@ public class TimesFragment extends Fragment implements TimesRecyclerViewAdapter.
         ((BaseActivity) getActivity()).inject(this);
         setRetainInstance(true);
 
-        List<LocalTime> times;
+        List<String> times;
         if (getArguments() != null) {
-            StationTimes stationTimes = getArguments().getParcelable(ARG_TIMES);
-            times = stationTimes.times();
+            times = getArguments().getStringArrayList(ARG_TIMES);
         } else {
             times = new ArrayList<>();
         }
@@ -101,7 +97,7 @@ public class TimesFragment extends Fragment implements TimesRecyclerViewAdapter.
     }
 
     @Override
-    public void onTimeClick(LocalTime time) {
+    public void onTimeClick(String time) {
         int prefReminderLength = Integer.parseInt(reminderLengthStringPreference.get());
         bus.post(new PrepareAlarmReminderEvent(time, prefReminderLength));
     }
