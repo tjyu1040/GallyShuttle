@@ -1,8 +1,8 @@
 GallyShuttle
 ============
 This is an Android project to get schedules of Gallaudet University shuttles and to notify users of
-arrival/departure times. This project is still under development, but Gallaudet students, feel free
-to fork and contribute to this project! View the change log for this project [here] (CHANGELOG.md).
+arrival/departure times. Gallaudet students, feel free to fork and contribute to this project! View
+the change log for this project [here] (CHANGELOG.md).
 
 [![Google Play link](https://developer.android.com/images/brand/en_generic_rgb_wo_60.png)] (https://play.google.com/store/apps/details?id=com.ephemeraldreams.gallyshuttle)
 
@@ -28,7 +28,7 @@ Acknowledgements
 ----------------
 This project currently makes use of the following open-source libraries:
 - [Gson] (https://code.google.com/p/google-gson/) - Java library to convert Java Objects into JSON representations
-- [Dagger] (http://google.github.io/dagger/) - Dependency injection framework library for Android and Java
+- [Dagger 2] (http://google.github.io/dagger/) - Dependency injection framework library for Android and Java
 - [Otto] (http://square.github.io/otto/) - Event bus library for Android
 - [OkHttp] (http://square.github.io/okhttp/) - Networking library for Android and Java
 - [Retrofit] (http://square.github.io/retrofit/) - REST client for Android and Java
@@ -37,7 +37,6 @@ This project currently makes use of the following open-source libraries:
 - [Butterknife] (http://jakewharton.github.io/butterknife/) - View injection library for Android
 - [Timber] (https://github.com/JakeWharton/timber) - Utility logger for Android
 - [joda-time-android] (https://github.com/dlew/joda-time-android) - Java date and time Android library
-- [AutoParcel] (https://github.com/frankiesardo/auto-parcel) - Android Parcelable library.
 
 License
 -------

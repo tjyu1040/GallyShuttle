@@ -1,6 +1,14 @@
 Change Log
 ==========
 
+2.0.0 (April 19, 2015)
+----------------------
+* New navigation drawer style.
+* New schedule tabs style.
+* New countdown feature.
+* New arrival notification feature.
+* New separate settings for alarms and notifications
+
 1.1.0 (April 10, 2015)
 ----------------------
 * Migrated from Dagger 1 to Dagger 2.
