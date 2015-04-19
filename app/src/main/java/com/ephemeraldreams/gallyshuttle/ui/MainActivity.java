@@ -16,6 +16,7 @@
 
 package com.ephemeraldreams.gallyshuttle.ui;
 
+import android.app.Fragment;
 import android.app.FragmentManager;
 import android.content.SharedPreferences;
 import android.content.res.Configuration;
@@ -34,6 +35,7 @@ import android.widget.ExpandableListView;
 
 import com.ephemeraldreams.gallyshuttle.R;
 import com.ephemeraldreams.gallyshuttle.api.ShuttleApiService;
+import com.ephemeraldreams.gallyshuttle.data.CacheManager;
 import com.ephemeraldreams.gallyshuttle.ui.adapters.NavigationDrawerAdapter;
 
 import java.util.Arrays;
@@ -49,6 +51,8 @@ import butterknife.InjectView;
  */
 public class MainActivity extends BaseActivity implements ExpandableListView.OnGroupClickListener, ExpandableListView.OnChildClickListener {
 
+    public static final String KEY_FRAGMENT_INSTANCE = "fragment instance";
+
     private static final int HOME_NAVIGATION_INDEX = 0;
     private static final int SCHEDULE_NAVIGATION_INDEX = 1;
     private static final int POLICIES_NAVIGATION_INDEX = 2;
@@ -59,31 +63,44 @@ public class MainActivity extends BaseActivity implements ExpandableListView.OnG
     @InjectView(R.id.left_drawer_expandable_list_view) ExpandableListView leftExpandableListView;
     private ActionBarDrawerToggle actionBarDrawerToggle;
     private final Handler drawerHandler = new Handler();
-
-    @Inject FragmentManager fragmentManager;
     @Inject LayoutInflater layoutInflater;
+
+    @Inject ShuttleApiService shuttleApiService;
     @Inject ConnectivityManager connectivityManager;
     @Inject SharedPreferences sharedPreferences;
-    @Inject ShuttleApiService shuttleApiService;
+    @Inject CacheManager cacheManager;
+
+    @Inject FragmentManager fragmentManager;
+    private Fragment currentFragment;
 
     @Override
     protected void onCreate(Bundle savedInstanceState) {
         super.onCreate(savedInstanceState);
         setContentView(R.layout.activity_main);
-
         inject(this);
 
-        actionBarDrawerToggle = new ActionBarDrawerToggle(
-                this,
-                drawerLayout,
-                toolbar,
-                R.string.app_name,
-                R.string.app_name
-        );
-        drawerLayout.setDrawerListener(actionBarDrawerToggle);
+        cacheManager.checkAndClearCacheVersion();
 
-        setNavigationDrawer();
-        setSelectedNavigationGroup(HOME_NAVIGATION_INDEX);
+        setUpNavigationDrawer();
+
+        if (savedInstanceState != null) {
+            currentFragment = fragmentManager.getFragment(savedInstanceState, KEY_FRAGMENT_INSTANCE);
+            if (currentFragment != null) {
+                fragmentManager.beginTransaction()
+                        .replace(R.id.container, currentFragment)
+                        .commit();
+            }
+        } else {
+            setSelectedNavigationGroup(HOME_NAVIGATION_INDEX);
+        }
+    }
+
+    @Override
+    protected void onSaveInstanceState(Bundle outState) {
+        super.onSaveInstanceState(outState);
+        if (currentFragment != null) {
+            fragmentManager.putFragment(outState, KEY_FRAGMENT_INSTANCE, currentFragment);
+        }
     }
 
     @Override
@@ -127,7 +144,16 @@ public class MainActivity extends BaseActivity implements ExpandableListView.OnG
     /**
      * Set up navigation drawer.
      */
-    private void setNavigationDrawer() {
+    private void setUpNavigationDrawer() {
+        actionBarDrawerToggle = new ActionBarDrawerToggle(
+                this,
+                drawerLayout,
+                toolbar,
+                R.string.app_name,
+                R.string.app_name
+        );
+        drawerLayout.setDrawerListener(actionBarDrawerToggle);
+
         String[] navigationHeaders = getResources().getStringArray(R.array.navigation_headers);
         List<String> scheduleTitles = Arrays.asList(getResources().getStringArray(R.array.schedule_titles));
 
@@ -175,26 +201,26 @@ public class MainActivity extends BaseActivity implements ExpandableListView.OnG
      * @param groupPosition Group to be selected.
      */
     private void setSelectedNavigationGroup(int groupPosition) {
-        if (groupPosition != SCHEDULE_NAVIGATION_INDEX) {
-            int position = leftExpandableListView.getFlatListPosition(ExpandableListView.getPackedPositionForGroup(groupPosition));
-            leftExpandableListView.setItemChecked(position, true);
-        }
         switch (groupPosition) {
             case HOME_NAVIGATION_INDEX:
-                fragmentManager.beginTransaction()
-                        .replace(R.id.container, MainFragment.newInstance())
-                        .commit();
+                currentFragment = MainFragment.newInstance();
                 break;
             case POLICIES_NAVIGATION_INDEX:
-                fragmentManager.beginTransaction()
-                        .replace(R.id.container, PoliciesFragment.newInstance())
-                        .commit();
+                currentFragment = PoliciesFragment.newInstance();
                 break;
             case ABOUT_NAVIGATION_INDEX:
-                fragmentManager.beginTransaction()
-                        .replace(R.id.container, AboutFragment.newInstance())
-                        .commit();
+                currentFragment = AboutFragment.newInstance();
                 break;
+            default:
+                currentFragment = null;
+        }
+        if (groupPosition != SCHEDULE_NAVIGATION_INDEX && currentFragment != null) {
+            int position = leftExpandableListView.getFlatListPosition(ExpandableListView.getPackedPositionForGroup(groupPosition));
+            leftExpandableListView.setItemChecked(position, true);
+
+            fragmentManager.beginTransaction()
+                    .replace(R.id.container, currentFragment)
+                    .commit();
         }
     }
 

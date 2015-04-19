@@ -16,7 +16,10 @@
 
 package com.ephemeraldreams.gallyshuttle.ui;
 
+import android.app.AlarmManager;
 import android.app.Fragment;
+import android.app.NotificationManager;
+import android.app.PendingIntent;
 import android.content.BroadcastReceiver;
 import android.content.Context;
 import android.content.Intent;
@@ -31,20 +34,21 @@ import android.view.View;
 import android.view.ViewGroup;
 import android.widget.AdapterView;
 import android.widget.ArrayAdapter;
+import android.widget.CheckBox;
 import android.widget.Spinner;
 import android.widget.TextView;
-import android.widget.Toast;
 
 import com.ephemeraldreams.gallyshuttle.R;
 import com.ephemeraldreams.gallyshuttle.api.ShuttleApiService;
 import com.ephemeraldreams.gallyshuttle.api.models.ApiResponse;
 import com.ephemeraldreams.gallyshuttle.data.CacheManager;
+import com.ephemeraldreams.gallyshuttle.data.ScheduleUtils;
 import com.ephemeraldreams.gallyshuttle.data.models.Schedule;
+import com.ephemeraldreams.gallyshuttle.ui.receivers.ArrivalNotificationReceiver;
 import com.ephemeraldreams.gallyshuttle.util.DateUtils;
 
+import org.joda.time.Duration;
 import org.joda.time.LocalDateTime;
-import org.joda.time.LocalTime;
-import org.joda.time.Period;
 
 import java.io.FileNotFoundException;
 import java.util.List;
@@ -53,6 +57,7 @@ import javax.inject.Inject;
 
 import butterknife.ButterKnife;
 import butterknife.InjectView;
+import butterknife.OnCheckedChanged;
 import rx.Observable;
 import rx.Observer;
 import rx.android.schedulers.AndroidSchedulers;
@@ -69,7 +74,9 @@ public class MainFragment extends Fragment implements Observer<ApiResponse>, Ada
 
     @InjectView(R.id.current_schedule_text_view) TextView currentScheduleTextView;
     @InjectView(R.id.station_spinner) Spinner spinner;
-    @InjectView(R.id.time_countdown_text_view) TextView timeCountDownTextView;
+    @InjectView(R.id.timer_countdown_text_view) TextView timeCountDownTextView;
+    @InjectView(R.id.arrival_time_text_view) TextView arrivalTimeTextView;
+    @InjectView(R.id.notifications_enabled_checkbox) CheckBox notificationsEnabledCheckBox;
 
     @Inject ShuttleApiService shuttleApiService;
     @Inject CacheManager cacheManager;
@@ -80,7 +87,12 @@ public class MainFragment extends Fragment implements Observer<ApiResponse>, Ada
     private Schedule schedule;
     @Inject Resources resources;
 
+    private int stationIndex;
     private LocalDateTime arrivalTime;
+    private CountDownTimer countDownTimer;
+    @Inject AlarmManager alarmManager;
+    @Inject NotificationManager notificationManager;
+    private PendingIntent notificationPendingIntent;
 
     /**
      * Required empty public constructor
@@ -97,23 +109,30 @@ public class MainFragment extends Fragment implements Observer<ApiResponse>, Ada
     public void onCreate(Bundle savedInstanceState) {
         super.onCreate(savedInstanceState);
         ((BaseActivity) getActivity()).inject(this);
+        setRetainInstance(true);
+    }
 
-        LocalDateTime now = LocalDateTime.now();
-        int hour = now.getHourOfDay();
-        if (hour >= 10) {
-            scheduleId = R.array.late_night_stations;
-        } else {
-            int day = now.getDayOfWeek();
-            switch (day) {
-                case SATURDAY:
-                case SUNDAY:
-                    scheduleId = R.array.weekend_stations;
-                    break;
-                default:
-                    scheduleId = R.array.continuous_stations;
-                    break;
-            }
-        }
+    @Nullable
+    @Override
+    public View onCreateView(LayoutInflater inflater, ViewGroup container, Bundle savedInstanceState) {
+        View rootView = inflater.inflate(R.layout.fragment_main, container, false);
+        ButterKnife.inject(this, rootView);
+
+        setScheduleId();
+        currentScheduleTextView.setText(ScheduleUtils.getScheduleTitle(scheduleId, getResources()));
+
+        ArrayAdapter<CharSequence> arrayAdapter = ArrayAdapter.createFromResource(getActivity(), scheduleId, R.layout.support_simple_spinner_dropdown_item);
+        arrayAdapter.setDropDownViewResource(R.layout.support_simple_spinner_dropdown_item);
+        spinner.setAdapter(arrayAdapter);
+        spinner.setOnItemSelectedListener(this);
+
+        return rootView;
+    }
+
+    @Override
+    public void onStart() {
+        super.onStart();
+        loadSchedule();
     }
 
     @Override
@@ -130,23 +149,11 @@ public class MainFragment extends Fragment implements Observer<ApiResponse>, Ada
         if (networkStateBroadCastReceiver != null && isNetworkStateBroadcastReceiverRegistered) {
             unregisterNetworkBroadcastReceiver();
         }
-    }
-
-    @Nullable
-    @Override
-    public View onCreateView(LayoutInflater inflater, ViewGroup container, Bundle savedInstanceState) {
-        View rootView = inflater.inflate(R.layout.fragment_main, container, false);
-        ButterKnife.inject(this, rootView);
-
-        currentScheduleTextView.setText(Schedule.getScheduleTitle(scheduleId, getResources()));
-
-        ArrayAdapter<CharSequence> arrayAdapter = ArrayAdapter.createFromResource(getActivity(), scheduleId, R.layout.support_simple_spinner_dropdown_item);
-        arrayAdapter.setDropDownViewResource(R.layout.support_simple_spinner_dropdown_item);
-        spinner.setAdapter(arrayAdapter);
-        spinner.setOnItemSelectedListener(this);
-
-        loadSchedule();
-        return rootView;
+        if (countDownTimer != null) {
+            countDownTimer.cancel();
+            countDownTimer = null;
+            Timber.d("Count down timer canceled.");
+        }
     }
 
     @Override
@@ -157,47 +164,149 @@ public class MainFragment extends Fragment implements Observer<ApiResponse>, Ada
 
     @Override
     public void onItemSelected(AdapterView<?> parent, View view, int position, long id) {
+        stationIndex = position;
         loadSchedule();
     }
 
     @Override
     public void onNothingSelected(AdapterView<?> parent) {
-        //TODO: find next time for specified station.
-        //startCountDown(0);
+
     }
 
-    private void calculateTimeToArrival(int position) {
-        List<LocalTime> stationTimes = schedule.getTimes(position);
+    private void setScheduleId() {
         LocalDateTime now = LocalDateTime.now();
-
-        for (LocalTime time : stationTimes) {
-            if (time.toDateTimeToday().toLocalDateTime().isAfter(now)) {
-                arrivalTime = time.toDateTimeToday().toLocalDateTime();
+        int hour = now.getHourOfDay();
+        int minute = now.getMinuteOfHour();
+        if (hour >= 21 || (hour == 0 && minute <= 15)) {
+            scheduleId = R.array.late_night_stations;
+        } else {
+            int day = now.getDayOfWeek();
+            switch (day) {
+                case SATURDAY:
+                case SUNDAY:
+                    scheduleId = R.array.weekend_stations;
+                    break;
+                default:
+                    scheduleId = R.array.continuous_stations;
+                    break;
             }
         }
-
-        if (arrivalTime == null) {
-            arrivalTime = new LocalDateTime();
-        }
-
-        long millisInFuture = Period.fieldDifference(now, arrivalTime).getMillis();
-
-        startCountDown(millisInFuture);
     }
 
-    private void startCountDown(long millisInFuture) {
-        new CountDownTimer(millisInFuture, 1000) {
-            @Override
-            public void onTick(long millisUntilFinished) {
-                timeCountDownTextView.setText("Minutes remaining: " + DateUtils.convertMillisecondsToMinutes(millisUntilFinished));
-            }
+    /**
+     * Start counting down to next arrival time.
+     */
+    private void startCountDown() {
+        long millisInFuture = calculateTimeFromNowToNextArrivalAtStation(stationIndex);
+        if (countDownTimer != null) {
+            countDownTimer.cancel();
+        }
+        if (millisInFuture <= 0) {
+            timeCountDownTextView.setText(getString(R.string.timer_countdown_error));
+        } else {
+            countDownTimer = new CountDownTimer(millisInFuture, 500) {
+                @Override
+                public void onTick(long millisUntilFinished) {
+                    if (timeCountDownTextView != null) {
+                        timeCountDownTextView.setText(DateUtils.convertMillisecondsToTime(millisUntilFinished));
+                    }
+                }
 
-            @Override
-            public void onFinish() {
-                //calculateTimeToArrival(storedPosition);
-                timeCountDownTextView.setText("Done!");
+                @Override
+                public void onFinish() {
+                    loadSchedule();
+                }
+            }.start();
+            setArrivalNotificationTimer(notificationsEnabledCheckBox.isChecked());
+        }
+    }
+
+    /**
+     * Calculate time difference in milliseconds between now and next available shuttle arrival time.
+     *
+     * @param stationId Station id to get times from.
+     * @return Duration between now and next arrival time in milliseconds.
+     */
+    private long calculateTimeFromNowToNextArrivalAtStation(int stationId) {
+        List<String> times = schedule.getTimes(stationId);
+        LocalDateTime now = LocalDateTime.now();
+        arrivalTime = null;
+        LocalDateTime stationTime;
+        for (String time : times) {
+            stationTime = DateUtils.parseToLocalDateTime(time);
+            Timber.d(stationTime.toString());
+
+            //Workaround midnight exception case where station time was converted to midnight of current day instead of next day.
+            if (stationTime.getHourOfDay() == 0 && now.getHourOfDay() != 0) {
+                stationTime = stationTime.plusDays(1);
             }
-        }.start();
+            if (now.isBefore(stationTime)) {
+                arrivalTime = stationTime;
+                break;
+            }
+        }
+        if (arrivalTime == null) {
+            arrivalTimeTextView.setText(getString(R.string.arrival_not_available_message));
+            return -1;
+        } else {
+            arrivalTimeTextView.setText(String.format(getString(R.string.until_arrival_time_message), DateUtils.formatTime(arrivalTime)));
+
+            Duration duration = new Duration(now.toDateTime(), arrivalTime.toDateTime());
+            long milliseconds = duration.getMillis();
+
+            Timber.d("Now: " + DateUtils.formatTime(now));
+            Timber.d("Arrival: " + DateUtils.formatTime(arrivalTime));
+            Timber.d("Time difference between now and arrival: " + DateUtils.convertMillisecondsToTime(milliseconds));
+
+            return milliseconds;
+        }
+    }
+
+    /**
+     * Set a timer for arrival notification.
+     *
+     * @param notificationsBoxChecked Notification check box's checked status.
+     */
+    private void setArrivalNotificationTimer(boolean notificationsBoxChecked) {
+        if (notificationsBoxChecked) {
+            if (arrivalTime != null) {
+                Intent notificationIntent = new Intent(getActivity(), ArrivalNotificationReceiver.class);
+                notificationIntent.putExtra(schedule.getStation(stationIndex), ArrivalNotificationReceiver.EXTRA_STATION_NAME);
+                notificationPendingIntent = PendingIntent.getBroadcast(getActivity(), 0, notificationIntent, PendingIntent.FLAG_CANCEL_CURRENT);
+
+                long millis = new Duration(LocalDateTime.now().toDateTime(), arrivalTime.toDateTime()).getMillis();
+                alarmManager.set(AlarmManager.RTC_WAKEUP, System.currentTimeMillis() + millis, notificationPendingIntent);
+                Timber.d("Arrival Notification receiver set: " + DateUtils.convertMillisecondsToTime(millis));
+            } else {
+                Timber.d("Arrival Notification receiver not set. Arrival time is null.");
+            }
+        } else {
+            alarmManager.cancel(notificationPendingIntent);
+            Timber.d("Arrival Notification receiver cancelled.");
+        }
+    }
+
+    @OnCheckedChanged(R.id.notifications_enabled_checkbox)
+    public void onNotificationsEnabledCheckBoxClicked(boolean checked) {
+        setArrivalNotificationTimer(checked);
+    }
+
+    @Override
+    public void onNext(ApiResponse apiResponse) {
+        schedule = new Schedule(scheduleId, apiResponse, resources);
+        cacheManager.createScheduleCacheFile(schedule);
+    }
+
+    @Override
+    public void onCompleted() {
+        startCountDown();
+        Timber.d("Download complete. Starting countdown...");
+    }
+
+    @Override
+    public void onError(Throwable e) {
+        Timber.e(e, "Error downloading schedule.");
+        registerNetworkBroadcastReceiver();
     }
 
     /**
@@ -205,7 +314,9 @@ public class MainFragment extends Fragment implements Observer<ApiResponse>, Ada
      */
     private void loadSchedule() {
 
-        String title = Schedule.getScheduleTitle(scheduleId, resources);
+        setScheduleId();
+
+        String title = ScheduleUtils.getScheduleTitle(scheduleId, resources);
 
         if (cacheManager.scheduleCacheFileExists(cacheManager.getScheduleFile(title))) {
             try {
@@ -248,26 +359,6 @@ public class MainFragment extends Fragment implements Observer<ApiResponse>, Ada
         apiResponseObservable.subscribeOn(Schedulers.io())
                 .observeOn(AndroidSchedulers.mainThread())
                 .subscribe(this);
-    }
-
-    @Override
-    public void onNext(ApiResponse apiResponse) {
-        schedule = new Schedule(scheduleId, apiResponse, resources);
-        cacheManager.createScheduleCacheFile(schedule);
-    }
-
-    @Override
-    public void onCompleted() {
-        //TODO: startCountDown()
-        calculateTimeToArrival(0);
-        Timber.d("Download complete.");
-    }
-
-    @Override
-    public void onError(Throwable e) {
-        Timber.e(e, "Error downloading schedule.");
-        Toast.makeText(getActivity(), "Error loading schedule. Please check your Internet connection.", Toast.LENGTH_LONG).show();
-        registerNetworkBroadcastReceiver();
     }
 
     /**

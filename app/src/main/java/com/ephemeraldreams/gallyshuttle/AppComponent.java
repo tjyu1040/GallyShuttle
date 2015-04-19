@@ -35,6 +35,7 @@ import com.ephemeraldreams.gallyshuttle.data.CacheManager;
 import com.ephemeraldreams.gallyshuttle.data.DataModule;
 import com.ephemeraldreams.gallyshuttle.data.preferences.BooleanPreference;
 import com.ephemeraldreams.gallyshuttle.data.preferences.StringPreference;
+import com.ephemeraldreams.gallyshuttle.ui.receivers.ArrivalNotificationReceiver;
 import com.squareup.okhttp.OkHttpClient;
 
 import dagger.Component;
@@ -46,7 +47,10 @@ import retrofit.RestAdapter;
 @ApplicationScope
 @Component(modules = {AppModule.class, DataModule.class})
 public interface AppComponent {
+
     void inject(ShuttleApplication shuttleApplication);
+
+    void inject(ArrivalNotificationReceiver arrivalNotificationReceiver);
 
     // Exported for children components
     Application injectApplication();
