@@ -1,11 +1,3 @@
-NOTICE!
-=======
-Gallaudet University has drastically changed the way they display shuttle schedules. Previously, the schedules
-were hard-coded into the html pages, but now the schedules are retrieved dynamically from a JSON web
-service. This has completely broken the application (at least the data retrieval process), and the
-whole data retrieval process will need to be rewritten from scratch. I do not know when I will have
-the time to go into this more in depth, but this project is on hold for now.
-
 GallyShuttle
 ============
 This is an Android project to get schedules of Gallaudet University shuttles and to notify users of
@@ -35,15 +27,17 @@ with the crash reporting service. These commented out snippets should not affect
 Acknowledgements
 ----------------
 This project currently makes use of the following open-source libraries:
-- [Gson] (https://code.google.com/p/google-gson/) - Java library to conver Java Objects into JSON representations
-- [Dagger] (http://square.github.io/dagger/) - Dependency injection framework library for Android
+- [Gson] (https://code.google.com/p/google-gson/) - Java library to convert Java Objects into JSON representations
+- [Dagger] (http://google.github.io/dagger/) - Dependency injection framework library for Android and Java
 - [Otto] (http://square.github.io/otto/) - Event bus library for Android
-- [OkHttp] (http://square.github.io/okhttp/) - Networking library for Android
+- [OkHttp] (http://square.github.io/okhttp/) - Networking library for Android and Java
+- [Retrofit] (http://square.github.io/retrofit/) - REST client for Android and Java
+- [RxJava] (https://github.com/ReactiveX/RxJava) - Reactive Extensions Java implementation.
+- [RxAndroid] (https://github.com/ReactiveX/RxAndroid) - Android-specific bindings for RxJava
 - [Butterknife] (http://jakewharton.github.io/butterknife/) - View injection library for Android
 - [Timber] (https://github.com/JakeWharton/timber) - Utility logger for Android
-- [Jsoup] (http://jsoup.org/) - Java HTML parser library
-- [Joda-Time] (http://www.joda.org/joda-time/index.html) - Java date and time library.
-- [snackbar] (https://github.com/nispok/snackbar) - Snackbar library.
+- [joda-time-android] (https://github.com/dlew/joda-time-android) - Java date and time Android library
+- [AutoParcel] (https://github.com/frankiesardo/auto-parcel) - Android Parcelable library.
 
 License
 -------

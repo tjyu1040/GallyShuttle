@@ -1,6 +1,12 @@
 Change Log
 ==========
 
+1.1.0 (April 10, 2015)
+----------------------
+* Migrated from Dagger 1 to Dagger 2.
+* Now retrieves schedule data from REST api entirely instead of web-scraping HTML content.
+* Removed snackbars and notifications temporarily.
+
 1.0.2 (January 14, 2015)
 ------------------------
 * Snackbar bugs fixed.
