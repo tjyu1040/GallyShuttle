@@ -7,9 +7,11 @@
     <style name="GallaudetTheme.Base" parent="Theme.AppCompat.Light.NoActionBar">
         <item name="colorPrimary">@color/blue</item>
         <item name="colorPrimaryDark">@color/darker_blue</item>
+        <item name="colorAccent">@color/blue</item>
         <!-- <item name="android:windowBackground">@color/buff</item> -->
 
         <item name="drawerArrowStyle">@style/GallaudetTheme.Base.DrawerArrowStyle</item>
+        <item name="android:spinnerStyle">@android:style/Widget.Holo.Light.Spinner</item>
         <item name="android:windowDrawsSystemBarBackgrounds">true</item>
     </style>
 

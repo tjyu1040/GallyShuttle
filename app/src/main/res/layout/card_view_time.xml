@@ -18,8 +18,8 @@
         android:layout_width="wrap_content"
         android:layout_height="wrap_content"
         android:layout_gravity="center"
-        android:text="@string/app_name"
-        android:textColor="@color/material_blue_grey_950"
-        android:textSize="25sp"/>
+        android:text="@string/placeholder_timer_countdown"
+        android:textColor="@color/darker_blue"
+        android:textSize="40sp"/>
 
 </android.support.v7.widget.CardView>

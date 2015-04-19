@@ -7,5 +7,7 @@
         <item name="android:windowAllowReturnTransitionOverlap">true</item>
         <item name="android:windowSharedElementEnterTransition">@android:transition/fade</item>
         <item name="android:windowSharedElementExitTransition">@android:transition/fade</item>
+        <item name="android:spinnerStyle">@android:style/Widget.Material.Light.Spinner.Underlined
+        </item>
     </style>
 </resources>
