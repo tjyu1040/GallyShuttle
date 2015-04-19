@@ -86,9 +86,6 @@ dependencies {
 
     compile 'com.google.code.gson:gson:2.3.1'
 
-    compile 'com.github.frankiesardo:auto-parcel:0.3'
-    apt 'com.github.frankiesardo:auto-parcel-processor:0.3'
-
     compile 'net.danlew:android.joda:2.7.2'
 
     compile('com.crashlytics.sdk.android:crashlytics:2.1.0@aar') {
