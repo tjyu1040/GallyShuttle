@@ -113,7 +113,7 @@ public class ScheduleActivity extends BaseActivity implements Observer<ApiRespon
     protected void onCreate(Bundle savedInstanceState) {
         super.onCreate(savedInstanceState);
         setContentView(R.layout.activity_schedule);
-        inject(this);
+        BaseActivity.getActivityComponent().inject(this);
 
         if (getIntent() != null) {
             scheduleId = getIntent().getIntExtra(EXTRA_SCHEDULE, SCHEDULE_IDS[0]);
@@ -224,7 +224,9 @@ public class ScheduleActivity extends BaseActivity implements Observer<ApiRespon
 
     @Override
     public void onCompleted() {
-        getSupportActionBar().setTitle(schedule.title);
+        if (getSupportActionBar() != null) {
+            getSupportActionBar().setTitle(schedule.title);
+        }
         timesFragmentPagerAdapter = new TimesFragmentPagerAdapter(fragmentManager, schedule);
         scheduleViewPager.setAdapter(timesFragmentPagerAdapter);
         progressDialog.dismiss();

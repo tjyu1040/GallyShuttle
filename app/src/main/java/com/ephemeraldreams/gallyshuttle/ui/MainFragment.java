@@ -109,7 +109,7 @@ public class MainFragment extends Fragment implements Observer<ApiResponse>, Ada
     @Override
     public void onCreate(Bundle savedInstanceState) {
         super.onCreate(savedInstanceState);
-        ((BaseActivity) getActivity()).inject(this);
+        BaseActivity.getActivityComponent().inject(this);
         setRetainInstance(true);
     }
 
@@ -120,11 +120,6 @@ public class MainFragment extends Fragment implements Observer<ApiResponse>, Ada
         ButterKnife.inject(this, rootView);
 
         setScheduleId();
-        currentScheduleTextView.setText(ScheduleUtils.getScheduleTitle(scheduleId, getResources()));
-
-        stationStopsAdapter = ArrayAdapter.createFromResource(getActivity(), scheduleId, R.layout.support_simple_spinner_dropdown_item);
-        stationStopsAdapter.setDropDownViewResource(R.layout.support_simple_spinner_dropdown_item);
-        spinner.setAdapter(stationStopsAdapter);
         spinner.setOnItemSelectedListener(this);
 
         return rootView;
@@ -139,17 +134,13 @@ public class MainFragment extends Fragment implements Observer<ApiResponse>, Ada
     @Override
     public void onResume() {
         super.onResume();
-        if (networkStateBroadCastReceiver != null && !isNetworkStateBroadcastReceiverRegistered) {
-            registerNetworkBroadcastReceiver();
-        }
+        registerNetworkBroadcastReceiver();
     }
 
     @Override
     public void onPause() {
         super.onPause();
-        if (networkStateBroadCastReceiver != null && isNetworkStateBroadcastReceiverRegistered) {
-            unregisterNetworkBroadcastReceiver();
-        }
+        unregisterNetworkBroadcastReceiver();
         if (countDownTimer != null) {
             countDownTimer.cancel();
             countDownTimer = null;
@@ -197,6 +188,15 @@ public class MainFragment extends Fragment implements Observer<ApiResponse>, Ada
                     break;
             }
         }
+        currentScheduleTextView.setText(ScheduleUtils.getScheduleTitle(scheduleId, getResources()));
+        updateSpinnerAdapter();
+    }
+
+    private void updateSpinnerAdapter() {
+        stationStopsAdapter = ArrayAdapter.createFromResource(getActivity(), scheduleId, R.layout.support_simple_spinner_dropdown_item);
+        stationStopsAdapter.setDropDownViewResource(R.layout.support_simple_spinner_dropdown_item);
+        spinner.setAdapter(stationStopsAdapter);
+        stationStopsAdapter.notifyDataSetChanged();
     }
 
     /**
@@ -368,25 +368,29 @@ public class MainFragment extends Fragment implements Observer<ApiResponse>, Ada
      * re-establishment.
      */
     private void registerNetworkBroadcastReceiver() {
-        networkStateBroadCastReceiver = new BroadcastReceiver() {
-            @Override
-            public void onReceive(Context context, Intent intent) {
-                // Internet connection has been re-established.
-                unregisterNetworkBroadcastReceiver();
-            }
-        };
-        getActivity().registerReceiver(networkStateBroadCastReceiver, new IntentFilter(ConnectivityManager.CONNECTIVITY_ACTION));
-        isNetworkStateBroadcastReceiverRegistered = true;
+        if (networkStateBroadCastReceiver != null && !isNetworkStateBroadcastReceiverRegistered) {
+            networkStateBroadCastReceiver = new BroadcastReceiver() {
+                @Override
+                public void onReceive(Context context, Intent intent) {
+                    // Internet connection has been re-established.
+                    unregisterNetworkBroadcastReceiver();
+                }
+            };
+            getActivity().registerReceiver(networkStateBroadCastReceiver, new IntentFilter(ConnectivityManager.CONNECTIVITY_ACTION));
+            isNetworkStateBroadcastReceiverRegistered = true;
+        }
     }
 
     /**
      * Unregister {@link #networkStateBroadCastReceiver} and try loading schedule from web.
      */
     private void unregisterNetworkBroadcastReceiver() {
-        loadScheduleFromWeb();
-        getActivity().unregisterReceiver(networkStateBroadCastReceiver);
-        isNetworkStateBroadcastReceiverRegistered = false;
-        networkStateBroadCastReceiver = null;
-        Timber.d("Network broadcast receiver dismissed.");
+        if (networkStateBroadCastReceiver != null && isNetworkStateBroadcastReceiverRegistered) {
+            getActivity().unregisterReceiver(networkStateBroadCastReceiver);
+            isNetworkStateBroadcastReceiverRegistered = false;
+            networkStateBroadCastReceiver = null;
+            Timber.d("Network broadcast receiver dismissed.");
+            loadScheduleFromWeb();
+        }
     }
 }

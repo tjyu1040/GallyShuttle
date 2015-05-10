@@ -74,7 +74,7 @@ public class AboutDialogFragment extends DialogFragment {
     @Override
     public void onCreate(Bundle savedInstanceState) {
         super.onCreate(savedInstanceState);
-        ((BaseActivity) getActivity()).inject(this);
+        BaseActivity.getActivityComponent().inject(this);
         setRetainInstance(true);
 
         if (getArguments() != null) {

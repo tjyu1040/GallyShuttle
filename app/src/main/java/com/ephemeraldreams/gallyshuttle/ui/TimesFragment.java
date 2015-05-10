@@ -64,7 +64,7 @@ public class TimesFragment extends Fragment implements TimesRecyclerViewAdapter.
     @Override
     public void onCreate(Bundle savedInstanceState) {
         super.onCreate(savedInstanceState);
-        ((BaseActivity) getActivity()).inject(this);
+        BaseActivity.getActivityComponent().inject(this);
         setRetainInstance(true);
 
         List<String> times;

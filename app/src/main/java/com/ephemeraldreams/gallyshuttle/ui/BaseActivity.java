@@ -18,7 +18,8 @@ package com.ephemeraldreams.gallyshuttle.ui;
 
 import android.annotation.SuppressLint;
 import android.os.Bundle;
-import android.support.v7.app.ActionBarActivity;
+import android.support.v7.app.ActionBar;
+import android.support.v7.app.AppCompatActivity;
 import android.support.v7.widget.Toolbar;
 import android.view.View;
 import android.view.ViewGroup;
@@ -30,15 +31,14 @@ import butterknife.ButterKnife;
 import butterknife.InjectView;
 import butterknife.Optional;
 
-import static com.ephemeraldreams.gallyshuttle.ui.SettingsActivity.SettingsFragment;
-
 /**
  * Base activity for dagger usage.
  */
 @SuppressLint("Registered")
-public class BaseActivity extends ActionBarActivity implements ActivityComponent {
+public class BaseActivity extends AppCompatActivity {
 
     @Optional @InjectView(R.id.toolbar) Toolbar toolbar;
+    private ActionBar actionBar;
 
     private static ActivityComponent activityComponent;
 
@@ -59,8 +59,11 @@ public class BaseActivity extends ActionBarActivity implements ActivityComponent
 
         if (toolbar != null) {
             setSupportActionBar(toolbar);
-            getSupportActionBar().setDisplayHomeAsUpEnabled(true);
-            getSupportActionBar().setDisplayShowHomeEnabled(true);
+            actionBar = getSupportActionBar();
+            if (actionBar != null) {
+                actionBar.setDisplayHomeAsUpEnabled(true);
+                actionBar.setDisplayShowHomeEnabled(true);
+            }
         }
     }
 
@@ -71,57 +74,15 @@ public class BaseActivity extends ActionBarActivity implements ActivityComponent
 
         if (toolbar != null) {
             setSupportActionBar(toolbar);
-            getSupportActionBar().setDisplayHomeAsUpEnabled(true);
-            getSupportActionBar().setDisplayShowHomeEnabled(true);
+            actionBar = getSupportActionBar();
+            if (actionBar != null) {
+                actionBar.setDisplayHomeAsUpEnabled(true);
+                actionBar.setDisplayShowHomeEnabled(true);
+            }
         }
     }
 
     public static ActivityComponent getActivityComponent() {
         return activityComponent;
-    }
-
-    @Override
-    public void inject(MainActivity mainActivity) {
-        activityComponent.inject(mainActivity);
-    }
-
-    @Override
-    public void inject(ScheduleActivity scheduleActivity) {
-        activityComponent.inject(scheduleActivity);
-    }
-
-    @Override
-    public void inject(SettingsActivity settingsActivity) {
-        activityComponent.inject(settingsActivity);
-    }
-
-    @Override
-    public void inject(MainFragment mainFragment) {
-        activityComponent.inject(mainFragment);
-    }
-
-    @Override
-    public void inject(TimesFragment timesFragment) {
-        activityComponent.inject(timesFragment);
-    }
-
-    @Override
-    public void inject(PoliciesFragment policiesFragment) {
-        activityComponent.inject(policiesFragment);
-    }
-
-    @Override
-    public void inject(SettingsFragment settingsFragment) {
-        activityComponent.inject(settingsFragment);
-    }
-
-    @Override
-    public void inject(AboutDialogFragment aboutDialogFragment) {
-        activityComponent.inject(aboutDialogFragment);
-    }
-
-    @Override
-    public void inject(AboutFragment aboutFragment) {
-        activityComponent.inject(aboutFragment);
     }
 }
