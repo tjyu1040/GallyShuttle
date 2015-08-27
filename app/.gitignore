@@ -1,5 +1,0 @@
-/build
-crashlytics.properties
-manifest-merger-debug-report.txt
-manifest-merger-release-report.txt
-src/main/res/values/com_crashlytics_export_strings.xml
