@@ -4,8 +4,9 @@
    https://github.com/GoogleCloudPlatform/gradle-appengine-templates/tree/master/GcmEndpoints
 */
 
-package com.ephemeraldreams.gallyshuttle.backend;
+package com.ephemeraldreams.gallyshuttle.backend.endpoints;
 
+import com.ephemeraldreams.gallyshuttle.backend.models.RegistrationRecord;
 import com.google.android.gcm.server.Constants;
 import com.google.android.gcm.server.Message;
 import com.google.android.gcm.server.Result;
@@ -19,7 +20,7 @@ import java.util.logging.Logger;
 
 import javax.inject.Named;
 
-import static com.ephemeraldreams.gallyshuttle.backend.OfyService.ofy;
+import static com.googlecode.objectify.ObjectifyService.ofy;
 
 /**
  * An endpoint to send messages to devices registered with the backend
@@ -38,7 +39,8 @@ import static com.ephemeraldreams.gallyshuttle.backend.OfyService.ofy;
                 ownerDomain = "backend.gallyshuttle.ephemeraldreams.com",
                 ownerName = "backend.gallyshuttle.ephemeraldreams.com",
                 packagePath = ""
-        )
+        ),
+        description = "API for Google Cloud Messaging."
 )
 public class MessagingEndpoint {
     private static final Logger log = Logger.getLogger(MessagingEndpoint.class.getName());

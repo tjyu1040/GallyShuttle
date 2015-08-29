@@ -4,8 +4,9 @@
    https://github.com/GoogleCloudPlatform/gradle-appengine-templates/tree/master/GcmEndpoints
 */
 
-package com.ephemeraldreams.gallyshuttle.backend;
+package com.ephemeraldreams.gallyshuttle.backend.endpoints;
 
+import com.ephemeraldreams.gallyshuttle.backend.models.RegistrationRecord;
 import com.google.api.server.spi.config.Api;
 import com.google.api.server.spi.config.ApiMethod;
 import com.google.api.server.spi.config.ApiNamespace;
@@ -16,7 +17,7 @@ import java.util.logging.Logger;
 
 import javax.inject.Named;
 
-import static com.ephemeraldreams.gallyshuttle.backend.OfyService.ofy;
+import static com.googlecode.objectify.ObjectifyService.ofy;
 
 /**
  * A registration endpoint class we are exposing for a device's GCM registration id on the backend
@@ -35,7 +36,8 @@ import static com.ephemeraldreams.gallyshuttle.backend.OfyService.ofy;
                 ownerDomain = "backend.gallyshuttle.ephemeraldreams.com",
                 ownerName = "backend.gallyshuttle.ephemeraldreams.com",
                 packagePath = ""
-        )
+        ),
+        description = "API for Google Cloud Messaging device registration."
 )
 public class RegistrationEndpoint {
 
