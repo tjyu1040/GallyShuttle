@@ -23,8 +23,6 @@ import com.google.gson.annotations.Expose;
 import com.google.gson.annotations.SerializedName;
 
 import java.io.IOException;
-import java.util.ArrayList;
-import java.util.List;
 import java.util.logging.Logger;
 
 import javax.servlet.ServletException;
@@ -43,14 +41,11 @@ public class CronServlet extends HttpServlet {
 
     private static final Gson GSON = new Gson();
     private boolean isAllSchedulesSaved = true;
-    private List<Exception> exceptions = new ArrayList<>();
 
     @Override
     protected void doGet(HttpServletRequest req, HttpServletResponse resp) throws ServletException, IOException {
         resp.setContentType("application/json");
         ResponseBodyStatus responseBodyStatus = new ResponseBodyStatus();
-        exceptions.clear();
-
         String path = req.getPathInfo().substring(1);
         switch (path) {
             case "schedules":
@@ -62,13 +57,10 @@ public class CronServlet extends HttpServlet {
                     } else {
                         resp.setStatus(HttpServletResponse.SC_PARTIAL_CONTENT);
                         responseBodyStatus.setStatus(ResponseBodyStatus.PARTIAL_SUCCESS);
-                        responseBodyStatus.setExceptions(exceptions);
                     }
                 } catch (IOException e) {
                     resp.setStatus(HttpServletResponse.SC_INTERNAL_SERVER_ERROR);
                     responseBodyStatus.setStatus(ResponseBodyStatus.FAILURE);
-                    exceptions.add(e);
-                    responseBodyStatus.setExceptions(exceptions);
                 } finally {
                     resp.getWriter().println(GSON.toJson(responseBodyStatus));
                 }
@@ -101,7 +93,6 @@ public class CronServlet extends HttpServlet {
             } else {
                 isAllSchedulesSaved = false;
                 String exceptionMessage = "Failed to download schedule " + Constants.SCHEDULES_NAMES[id] + ".";
-                exceptions.add(new IOException(exceptionMessage));
                 LOG.severe(exceptionMessage);
             }
         }
@@ -128,27 +119,15 @@ public class CronServlet extends HttpServlet {
         @Expose @SerializedName("status")
         private String status;
 
-        @Expose @SerializedName("exceptions")
-        private List<Exception> exceptions;
-
         public ResponseBodyStatus() {
-
         }
 
         public void setStatus(String status) {
             this.status = status;
         }
 
-        public void setExceptions(List<Exception> exceptions) {
-            this.exceptions = exceptions;
-        }
-
         public String getStatus() {
             return status;
-        }
-
-        public List<Exception> getExceptions() {
-            return exceptions;
         }
     }
 }
