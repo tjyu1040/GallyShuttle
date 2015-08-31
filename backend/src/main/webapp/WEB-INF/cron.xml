@@ -1,0 +1,13 @@
+<?xml version="1.0" encoding="UTF-8"?>
+<cronentries>
+    <cron>
+        <url>/cron/schedules</url>
+        <description>Repopulate schedule data every each week</description>
+        <schedule>every wednesday 3:00</schedule>
+    </cron>
+    <cron>
+        <url>/cron/stations</url>
+        <description>Repopulate station data every month</description>
+        <schedule>1st wednesday 4:00</schedule>
+    </cron>
+</cronentries>
