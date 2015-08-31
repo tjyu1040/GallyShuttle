@@ -28,6 +28,16 @@ dependencies {
     compile 'javax.servlet:servlet-api:2.5'
     compile 'com.googlecode.objectify:objectify:5.1.6'
     compile 'com.ganyo:gcm-server:1.0.2'
+
+    compile 'com.google.guava:guava:18.0'
+    compile 'com.google.code.gson:gson:2.3.1'
+    compile 'joda-time:joda-time:2.8.2'
+
+    testCompile 'junit:junit:4.11'
+    testCompile 'com.google.appengine:appengine-api-labs:1.9.25'
+    testCompile 'com.google.appengine:appengine-api-stubs:1.9.25'
+    testCompile 'com.google.appengine:appengine-tools-sdk:1.9.25'
+    testCompile 'com.google.appengine:appengine-testing:1.9.25'
 }
 
 appengine {
