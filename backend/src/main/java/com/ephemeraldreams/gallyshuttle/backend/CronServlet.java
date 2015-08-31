@@ -46,8 +46,7 @@ public class CronServlet extends HttpServlet {
     private List<Exception> exceptions = new ArrayList<>();
 
     @Override
-    protected void doPut(HttpServletRequest req, HttpServletResponse resp) throws ServletException, IOException {
-
+    protected void doGet(HttpServletRequest req, HttpServletResponse resp) throws ServletException, IOException {
         resp.setContentType("application/json");
         ResponseBodyStatus responseBodyStatus = new ResponseBodyStatus();
         exceptions.clear();
