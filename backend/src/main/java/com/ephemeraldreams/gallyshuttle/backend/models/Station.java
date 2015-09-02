@@ -16,6 +16,7 @@
 
 package com.ephemeraldreams.gallyshuttle.backend.models;
 
+import com.google.gson.Gson;
 import com.googlecode.objectify.annotation.Entity;
 import com.googlecode.objectify.annotation.Id;
 import com.googlecode.objectify.annotation.Index;
@@ -26,19 +27,21 @@ import com.googlecode.objectify.annotation.Index;
 @Entity
 public class Station {
 
-    @Id public String stationName;
-    @Index public String pathName;
+    private static final Gson GSON = new Gson();
+
+    @Id public String name;
+    @Index public String path;
 
     private Station() {
     }
 
-    public Station(String stationName, String pathName) {
-        this.stationName = stationName;
-        this.pathName = pathName;
+    public Station(String name, String path) {
+        this.name = name;
+        this.path = path;
     }
 
     @Override
     public String toString() {
-        return stationName;
+        return GSON.toJson(this);
     }
 }

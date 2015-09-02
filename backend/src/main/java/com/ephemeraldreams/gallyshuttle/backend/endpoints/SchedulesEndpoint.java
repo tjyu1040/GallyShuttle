@@ -18,8 +18,6 @@ package com.ephemeraldreams.gallyshuttle.backend.endpoints;
 
 import com.ephemeraldreams.gallyshuttle.backend.models.Schedule;
 import com.ephemeraldreams.gallyshuttle.backend.models.Station;
-import com.ephemeraldreams.gallyshuttle.backend.models.collections.ScheduleCollectionResponse;
-import com.ephemeraldreams.gallyshuttle.backend.models.collections.StationCollectionResponse;
 import com.google.api.server.spi.config.Api;
 import com.google.api.server.spi.config.ApiMethod;
 import com.google.api.server.spi.config.ApiNamespace;
@@ -53,34 +51,22 @@ public class SchedulesEndpoint {
      * URL: /stations
      * Method: GET
      *
-     * @return Collection of stations.
-     * @throws NotFoundException
+     * @return List of stations.
      */
     @ApiMethod(name = "stations", httpMethod = GET)
-    public StationCollectionResponse stations() throws NotFoundException {
-        List<Station> stations = ofy().load().type(Station.class).list();
-        if (stations.isEmpty()) {
-            throw new NotFoundException("Stations not found in datastore. Please contact admin.");
-        } else {
-            return new StationCollectionResponse(stations);
-        }
+    public List<Station> stations() {
+        return ofy().load().type(Station.class).list();
     }
 
     /**
      * URL: /schedules
      * Method: GET
      *
-     * @return Collection of schedules.
-     * @throws NotFoundException
+     * @return List of schedules.
      */
     @ApiMethod(name = "schedules", httpMethod = GET)
-    public ScheduleCollectionResponse schedules() throws NotFoundException {
-        List<Schedule> schedules = ofy().load().type(Schedule.class).list();
-        if (schedules.isEmpty()) {
-            throw new NotFoundException("Schedules not found in datastore. Please contact admin.");
-        } else {
-            return new ScheduleCollectionResponse(schedules);
-        }
+    public List<Schedule> schedules() throws NotFoundException {
+        return ofy().load().type(Schedule.class).list();
     }
 
     /**
@@ -92,6 +78,6 @@ public class SchedulesEndpoint {
      */
     @ApiMethod(name = "schedule", path = "schedule/{name}", httpMethod = GET)
     public Schedule getSchedule(@Named("name") String name) {
-        return ofy().load().type(Schedule.class).filter("pathName", name).first().now();
+        return ofy().load().type(Schedule.class).filter("path", name).first().now();
     }
 }
