@@ -1,25 +1,36 @@
 package com.ephemeraldreams.gallyshuttle.ui;
 
-import android.app.Activity;
+import android.support.v4.app.FragmentManager;
+import android.support.v7.app.AppCompatActivity;
 
-import com.ephemeraldreams.gallyshuttle.annotations.ActivityScope;
+import com.ephemeraldreams.gallyshuttle.annotations.scopes.ActivityScope;
 import com.ephemeraldreams.gallyshuttle.net.NetworkModule;
+import com.squareup.otto.Bus;
 
 import dagger.Module;
 import dagger.Provides;
 
+/**
+ * A module for activity-specific or fragment-specific dependencies.
+ */
 @Module(includes = NetworkModule.class)
 public class ActivityModule {
 
-    private final Activity activity;
+    private final AppCompatActivity activity;
 
-    public ActivityModule(Activity activity) {
+    public ActivityModule(AppCompatActivity activity) {
         this.activity = activity;
     }
 
     @Provides
     @ActivityScope
-    Activity provideActivityContext(){
+    AppCompatActivity activity() {
         return activity;
+    }
+
+    @Provides
+    @ActivityScope
+    FragmentManager fragmentManager(AppCompatActivity activity) {
+        return activity.getSupportFragmentManager();
     }
 }

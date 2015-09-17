@@ -1,4 +1,4 @@
-package com.ephemeraldreams.gallyshuttle.annotations;
+package com.ephemeraldreams.gallyshuttle.annotations.scopes;
 
 import java.lang.annotation.Documented;
 import java.lang.annotation.Retention;
