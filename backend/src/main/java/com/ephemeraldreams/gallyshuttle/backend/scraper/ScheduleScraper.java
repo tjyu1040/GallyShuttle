@@ -70,13 +70,13 @@ public class ScheduleScraper {
 
             String scheduleName = SCHEDULES_NAMES[scheduleId];
             String schedulePathName = SCHEDULES_PATH_NAMES[scheduleId];
-            ArrayList<StationTimes> stationsTimes = new ArrayList<>();
+            ArrayList<StationTimes> stationTimesList = new ArrayList<>();
             for (Station station : stationsTimesMap.keySet()) {
-                stationsTimes.add(new StationTimes(station, stationsTimesMap.get(station)));
+                stationTimesList.add(new StationTimes(station, stationsTimesMap.get(station)));
             }
 
             Schedule schedule = new Schedule(scheduleName, schedulePathName);
-            schedule.setStationsTimes(stationsTimes);
+            schedule.setStationTimesList(stationTimesList);
             return schedule;
         }
         return null;
