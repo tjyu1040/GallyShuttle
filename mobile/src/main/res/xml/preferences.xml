@@ -1,0 +1,80 @@
+<?xml version="1.0" encoding="utf-8"?>
+<!--
+  ~ Copyright 2014 Timothy Yu
+  ~
+  ~ Licensed under the Apache License, Version 2.0 (the "License");
+  ~ you may not use this file except in compliance with the License.
+  ~ You may obtain a copy of the License at
+  ~
+  ~     http://www.apache.org/licenses/LICENSE-2.0
+  ~
+  ~ Unless required by applicable law or agreed to in writing, software
+  ~ distributed under the License is distributed on an "AS IS" BASIS,
+  ~ WITHOUT WARRANTIES OR CONDITIONS OF ANY KIND, either express or implied.
+  ~ See the License for the specific language governing permissions and
+  ~ limitations under the License.
+  -->
+
+<PreferenceScreen xmlns:android="http://schemas.android.com/apk/res/android">
+    <PreferenceCategory
+        android:key="@string/key_alarms_preference"
+        android:title="@string/title_alarms_preference">
+
+        <ListPreference
+            android:defaultValue="@string/reminder_length_default"
+            android:entries="@array/minutes"
+            android:entryValues="@array/minutes_values"
+            android:key="@string/key_alarm_reminder_length_preference"
+            android:title="@string/title_alarm_reminder_length_preference"/>
+
+        <Preference
+            android:defaultValue=""
+            android:key="@string/key_alarm_ringtone_preference"
+            android:title="@string/title_alarm_ringtone_preference"/>
+
+        <CheckBoxPreference
+            android:defaultValue="true"
+            android:key="@string/key_alarm_vibrate_preference"
+            android:summary="@string/summary_vibrate_enabled_preference"
+            android:title="@string/title_alarm_vibrate_preference"/>
+
+    </PreferenceCategory>
+
+    <PreferenceCategory
+        android:key="@string/key_notifications_preference"
+        android:title="@string/title_notifications_preference">
+
+        <Preference
+            android:defaultValue=""
+            android:key="@string/key_notification_ringtone_preference"
+            android:title="@string/title_notification_ringtone_preference"/>
+
+        <CheckBoxPreference
+            android:defaultValue="true"
+            android:key="@string/key_notification_vibrate_preference"
+            android:summary="@string/summary_vibrate_enabled_preference"
+            android:title="@string/title_notification_vibrate_preference"/>
+
+    </PreferenceCategory>
+
+    <PreferenceCategory
+        android:key="@string/key_options_preference"
+        android:title="@string/title_options_preference">
+
+        <Preference
+            android:key="@string/key_clear_cache_preference"
+            android:title="@string/title_clear_cache_preference"/>
+
+    </PreferenceCategory>
+
+    <PreferenceCategory
+        android:key="@string/key_other_preference"
+        android:title="@string/title_other_preference">
+
+        <Preference
+            android:key="@string/key_share_preference"
+            android:title="@string/title_share_preference"/>
+
+    </PreferenceCategory>
+
+</PreferenceScreen>
