@@ -69,7 +69,7 @@ public class Schedule {
      * @param position Position to get times.
      * @return Map entry of stop and times.
      */
-    private Map.Entry<Station, ArrayList<String>> getStationTimes(int position) {
+    public Map.Entry<Station, ArrayList<String>> getStationTimes(int position) {
         int i = 0;
         for (Map.Entry<Station, ArrayList<String>> entry : stationsTimes.entrySet()) {
             if (i == position) {
@@ -83,10 +83,11 @@ public class Schedule {
 
     @Override
     public String toString() {
-        return "Schedule{" +
-                "name='" + name + '\'' +
-                ", path='" + path + '\'' +
-                ", stationsTimes=" + stationsTimes +
-                '}';
+        final StringBuilder sb = new StringBuilder("Schedule{");
+        sb.append("name='").append(name).append('\'');
+        sb.append(", path='").append(path).append('\'');
+        sb.append(", stationsTimes=").append(stationsTimes);
+        sb.append('}');
+        return sb.toString();
     }
 }

@@ -26,9 +26,10 @@ public class Station {
 
     @Override
     public String toString() {
-        return "Station{" +
-                "name='" + name + '\'' +
-                ", path='" + path + '\'' +
-                '}';
+        final StringBuilder sb = new StringBuilder("Station{");
+        sb.append("name='").append(name).append('\'');
+        sb.append(", path='").append(path).append('\'');
+        sb.append('}');
+        return sb.toString();
     }
 }
