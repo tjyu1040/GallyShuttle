@@ -1,10 +1,12 @@
 apply plugin: 'com.android.application'
 apply plugin: 'com.google.gms.google-services'
 apply plugin: 'com.neenbedankt.android-apt'
+apply plugin: 'io.fabric'
 
 def versionMajor = 3
 def versionMinor = 0
 def versionPatch = "0-SNAPSHOT"
+def versionNameCode = "${versionMajor}.${versionMinor}.${versionPatch}"
 
 android {
     compileSdkVersion 23
@@ -15,16 +17,18 @@ android {
         minSdkVersion 16
         targetSdkVersion 23
         versionCode 6
-        versionName "${versionMajor}.${versionMinor}.${versionPatch}"
+        versionName "${versionNameCode}"
+
+        testInstrumentationRunner "android.support.test.runner.AndroidJUnitRunner"
     }
     buildTypes {
         debug {
             applicationIdSuffix ".debug"
-            versionNameSuffix "-debug"
+            versionNameSuffix "-debug-${versionNameCode}"
         }
         release {
             applicationIdSuffix ".release"
-            versionNameSuffix "-release"
+            versionNameSuffix "-release-${versionNameCode}"
             minifyEnabled false
             proguardFiles getDefaultProguardFile('proguard-android.txt'), 'proguard-rules.pro'
         }
@@ -66,6 +70,18 @@ dependencies {
 
     compile 'net.danlew:android.joda:2.8.2'
 
+    compile('com.crashlytics.sdk.android:crashlytics:2.5.2@aar') {
+        transitive = true;
+    }
+
     debugCompile 'com.squareup.leakcanary:leakcanary-android:1.3.1'
     releaseCompile 'com.squareup.leakcanary:leakcanary-android-no-op:1.3.1'
+
+    testCompile 'junit:junit:4.12'
+    androidTestCompile 'com.android.support.test.espresso:espresso-core:2.2.1'
+    androidTestCompile 'com.android.support.test.espresso:espresso-contrib:2.2.1'
+    androidTestCompile 'com.android.support.test.espresso:espresso-idling-resource:2.2.1'
+    androidTestCompile 'com.android.support.test.espresso:espresso-web:2.2.1'
+    androidTestCompile 'com.android.support.test:rules:0.4'
+    androidTestCompile 'com.android.support.test:runner:0.4'
 }
