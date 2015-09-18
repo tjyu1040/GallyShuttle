@@ -2,7 +2,13 @@ package com.ephemeraldreams.gallyshuttle;
 
 import android.app.Application;
 
+import com.crashlytics.android.Crashlytics;
+import com.ephemeraldreams.gallyshuttle.utils.CrashReportingTree;
+import com.ephemeraldreams.gallyshuttle.utils.DebugActivityCallbacks;
 import com.squareup.leakcanary.LeakCanary;
+
+import io.fabric.sdk.android.Fabric;
+import net.danlew.android.joda.JodaTimeAndroid;
 
 import timber.log.Timber;
 
@@ -17,6 +23,7 @@ public class GallyShuttleApplication extends Application {
     public void onCreate() {
         super.onCreate();
         LeakCanary.install(this);
+        JodaTimeAndroid.init(this);
 
         component = DaggerApplicationComponent.builder()
                 .applicationModule(new ApplicationModule(this))
@@ -25,13 +32,10 @@ public class GallyShuttleApplication extends Application {
 
         if (BuildConfig.DEBUG) {
             Timber.plant(new Timber.DebugTree());
+            registerActivityLifecycleCallbacks(new DebugActivityCallbacks());
         } else {
-            Timber.plant(new Timber.Tree() {
-                @Override
-                protected void log(int priority, String tag, String message, Throwable t) {
-                    //TODO: implement crash reporting...
-                }
-            });
+            Fabric.with(this, new Crashlytics());
+            Timber.plant(new CrashReportingTree());
         }
     }
 
