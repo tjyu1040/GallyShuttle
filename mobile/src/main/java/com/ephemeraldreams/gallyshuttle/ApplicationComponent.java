@@ -36,20 +36,20 @@ public interface ApplicationComponent {
     void inject(NetworkStateBroadCastReceiver networkStateBroadCastReceiver);
 
     // Android system services dependencies made available to sub-graphs
-    Application application();
-    Bus bus();
-    ConnectivityManager connectivityManager();
-    AlarmManager alarmManager();
-    NotificationManager notificationManager();
+    Application getApplication();
+    Bus getBus();
+    ConnectivityManager getConnectivityManager();
+    AlarmManager getAlarmManager();
+    NotificationManager getNotificationManager();
 
     // Content dependencies made available to sub-graphs
-    Resources resources();
-    SharedPreferences sharedPreferences();
-    @AlarmReminderLength StringPreference alarmReminderLengthStringPreference();
-    @AlarmRingtoneChoice StringPreference alarmRingtoneChoiceStringPreference();
-    @AlarmVibration BooleanPreference alarmVibrationBooleanPreference();
-    @NotificationRingtoneChoice StringPreference notificationRingtoneChoiceStringPreference();
-    @NotificationVibration BooleanPreference notificationVibrationBooleanPreference();
-    Gson gson();
-    CacheManager cacheManager();
+    Resources getResources();
+    SharedPreferences getSharedPreferences();
+    @AlarmReminderLength StringPreference getAlarmReminderLengthStringPreference();
+    @AlarmRingtoneChoice StringPreference getAlarmRingtoneChoiceStringPreference();
+    @AlarmVibration BooleanPreference getAlarmVibrationBooleanPreference();
+    @NotificationRingtoneChoice StringPreference getNotificationRingtoneChoiceStringPreference();
+    @NotificationVibration BooleanPreference getNotificationVibrationBooleanPreference();
+    Gson getGson();
+    CacheManager getCacheManager();
 }
