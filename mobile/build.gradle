@@ -24,11 +24,11 @@ android {
     buildTypes {
         debug {
             applicationIdSuffix ".debug"
-            versionNameSuffix "-debug-${versionNameCode}"
+            versionNameSuffix "-debug"
         }
         release {
             applicationIdSuffix ".release"
-            versionNameSuffix "-release-${versionNameCode}"
+            versionNameSuffix "-release"
             minifyEnabled false
             proguardFiles getDefaultProguardFile('proguard-android.txt'), 'proguard-rules.pro'
         }
