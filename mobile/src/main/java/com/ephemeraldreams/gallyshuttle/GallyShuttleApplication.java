@@ -3,8 +3,8 @@ package com.ephemeraldreams.gallyshuttle;
 import android.app.Application;
 
 import com.crashlytics.android.Crashlytics;
-import com.ephemeraldreams.gallyshuttle.utils.CrashReportingTree;
-import com.ephemeraldreams.gallyshuttle.utils.DebugActivityCallbacks;
+import com.ephemeraldreams.gallyshuttle.util.CrashReportingTree;
+import com.ephemeraldreams.gallyshuttle.util.DebugActivityCallbacks;
 import com.squareup.leakcanary.LeakCanary;
 
 import io.fabric.sdk.android.Fabric;

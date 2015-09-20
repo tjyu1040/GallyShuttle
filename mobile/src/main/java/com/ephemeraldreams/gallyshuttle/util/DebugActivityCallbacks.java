@@ -14,7 +14,7 @@
  * limitations under the License.
  */
 
-package com.ephemeraldreams.gallyshuttle.utils;
+package com.ephemeraldreams.gallyshuttle.util;
 
 import android.app.Activity;
 import android.app.Application;
