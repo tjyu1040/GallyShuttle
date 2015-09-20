@@ -1,15 +1,18 @@
 package com.ephemeraldreams.gallyshuttle;
 
+import android.annotation.TargetApi;
 import android.app.Application;
+import android.os.Build;
+import android.os.StrictMode;
 
 import com.crashlytics.android.Crashlytics;
 import com.ephemeraldreams.gallyshuttle.util.CrashReportingTree;
 import com.ephemeraldreams.gallyshuttle.util.DebugActivityCallbacks;
 import com.squareup.leakcanary.LeakCanary;
 
-import io.fabric.sdk.android.Fabric;
 import net.danlew.android.joda.JodaTimeAndroid;
 
+import io.fabric.sdk.android.Fabric;
 import timber.log.Timber;
 
 /**
@@ -31,6 +34,9 @@ public class GallyShuttleApplication extends Application {
         component.inject(this);
 
         if (BuildConfig.DEBUG) {
+            if (Build.VERSION.SDK_INT >= Build.VERSION_CODES.GINGERBREAD) {
+                enableStrictMode();
+            }
             Timber.plant(new Timber.DebugTree());
             registerActivityLifecycleCallbacks(new DebugActivityCallbacks());
         } else {
@@ -39,7 +45,23 @@ public class GallyShuttleApplication extends Application {
         }
     }
 
-    public static ApplicationComponent getComponent(){
+    public static ApplicationComponent getComponent() {
         return component;
+    }
+
+    @TargetApi(Build.VERSION_CODES.GINGERBREAD)
+    public void enableStrictMode() {
+        StrictMode.ThreadPolicy.Builder threadPolicyBuilder = new StrictMode.ThreadPolicy.Builder();
+        if (Build.VERSION.SDK_INT >= Build.VERSION_CODES.M) {
+            threadPolicyBuilder.detectResourceMismatches();
+        }
+        StrictMode.setThreadPolicy(threadPolicyBuilder
+                .detectCustomSlowCalls()
+                .penaltyLog()
+                .build());
+        StrictMode.setVmPolicy(new StrictMode.VmPolicy.Builder()
+                .detectAll()
+                .penaltyLog()
+                .build());
     }
 }
