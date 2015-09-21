@@ -35,6 +35,6 @@
         android:id="@+id/settings_fragment"
         android:name="com.ephemeraldreams.gallyshuttle.ui.SettingsActivity$SettingsFragment"
         android:layout_width="match_parent"
-        android:layout_height="match_parent" />
+        android:layout_height="match_parent"/>
 
 </LinearLayout>
