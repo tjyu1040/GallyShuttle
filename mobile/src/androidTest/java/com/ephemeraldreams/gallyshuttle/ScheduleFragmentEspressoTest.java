@@ -17,102 +17,78 @@
 package com.ephemeraldreams.gallyshuttle;
 
 import android.support.test.rule.ActivityTestRule;
-import android.support.test.runner.AndroidJUnit4;
-import android.test.suitebuilder.annotation.LargeTest;
 
+import com.ephemeraldreams.gallyshuttle.action.TimesRecyclerViewActions;
 import com.ephemeraldreams.gallyshuttle.ui.MainActivity;
 
 import org.junit.Rule;
 import org.junit.Test;
-import org.junit.runner.RunWith;
 
 import static android.support.test.espresso.Espresso.onView;
 import static android.support.test.espresso.action.ViewActions.click;
-import static android.support.test.espresso.action.ViewActions.pressBack;
-import static android.support.test.espresso.action.ViewActions.swipeLeft;
 import static android.support.test.espresso.assertion.ViewAssertions.matches;
 import static android.support.test.espresso.contrib.DrawerActions.open;
+import static android.support.test.espresso.contrib.RecyclerViewActions.actionOnItemAtPosition;
+import static android.support.test.espresso.matcher.ViewMatchers.isClickable;
 import static android.support.test.espresso.matcher.ViewMatchers.isDisplayed;
 import static android.support.test.espresso.matcher.ViewMatchers.isEnabled;
-import static android.support.test.espresso.matcher.ViewMatchers.isRoot;
+import static android.support.test.espresso.matcher.ViewMatchers.isFocusable;
 import static android.support.test.espresso.matcher.ViewMatchers.withId;
 import static android.support.test.espresso.matcher.ViewMatchers.withText;
 import static org.hamcrest.core.AllOf.allOf;
-import static org.hamcrest.core.IsNot.not;
 
-@RunWith(AndroidJUnit4.class)
-@LargeTest
-public class MainActivityEspressoTest {
+public class ScheduleFragmentEspressoTest {
 
     @Rule
     public ActivityTestRule<MainActivity> activityTestRule = new ActivityTestRule<>(MainActivity.class);
 
     @Test
-    public void navigationDrawerIsHidden() {
-        onView(withId(R.id.navigation_view)).check(matches(not(isDisplayed())));
+    public void clickAlarmButton() {
+        navigateToContinuousFragment();
+        checkAlarmSnackBarIsDisplayed();
+
+        navigateToLateNightFragment();
+        checkAlarmSnackBarIsDisplayed();
+
+        navigateToWeekendFragment();
+        checkAlarmSnackBarIsDisplayed();
+
+        navigateToAlternateContinuousFragment();
+        checkAlarmSnackBarIsDisplayed();
+
+        navigateToModifiedFragment();
+        checkAlarmSnackBarIsDisplayed();
     }
 
-    @Test
-    public void openNavigationDrawer() {
-        onView(withId(R.id.drawer_layout)).perform(open());
-        onView(withId(R.id.navigation_view)).check(matches(isDisplayed()));
-    }
-
-    @Test
-    public void openAndCloseNavigationDrawer() {
-        onView(withId(R.id.drawer_layout)).perform(open());
-        onView(isRoot()).perform(swipeLeft());
-        onView(withId(R.id.navigation_view)).check(matches(not(isDisplayed())));
-        onView(withId(R.id.drawer_layout)).perform(open());
-        onView(isRoot()).perform(pressBack());
-        onView(withId(R.id.navigation_view)).check(matches(not(isDisplayed())));
-    }
-
-    @Test
-    public void navigateToHomeFragment() {
-        onView(withId(R.id.drawer_layout)).perform(open());
-        onView(withText(R.string.nav_home)).perform(click()).check(matches(isEnabled()));
-        onView(withId(R.id.tab_layout)).check(matches(not(isDisplayed())));
-    }
-
-    @Test
-    public void navigateToContinuousFragment() {
+    private void navigateToContinuousFragment() {
         onView(withId(R.id.drawer_layout)).perform(open());
         onView(withText(R.string.nav_continuous)).perform(click()).check(matches(isEnabled()));
-        checkScheduleFragmentIsDisplayed();
     }
 
-    @Test
-    public void navigateToLateNightFragment() {
+    private void navigateToLateNightFragment() {
         onView(withId(R.id.drawer_layout)).perform(open());
         onView(withText(R.string.nav_late_night)).perform(click()).check(matches(isEnabled()));
-        checkScheduleFragmentIsDisplayed();
     }
 
-    @Test
-    public void navigateToWeekendFragment() {
+    private void navigateToWeekendFragment() {
         onView(withId(R.id.drawer_layout)).perform(open());
         onView(withText(R.string.nav_weekend)).perform(click()).check(matches(isEnabled()));
-        checkScheduleFragmentIsDisplayed();
     }
 
-    @Test
-    public void navigateToAlternateContinuousFragment() {
+    private void navigateToAlternateContinuousFragment() {
         onView(withId(R.id.drawer_layout)).perform(open());
         onView(withText(R.string.nav_alt_continuous)).perform(click()).check(matches(isEnabled()));
-        checkScheduleFragmentIsDisplayed();
     }
 
-    @Test
-    public void navigateToModifiedFragment() {
+    private void navigateToModifiedFragment() {
         onView(withId(R.id.drawer_layout)).perform(open());
         onView(withText(R.string.nav_modified)).perform(click()).check(matches(isEnabled()));
-        checkScheduleFragmentIsDisplayed();
     }
 
-    private void checkScheduleFragmentIsDisplayed(){
-        onView(withId(R.id.tab_layout)).check(matches(isDisplayed()));
-        onView(withId(R.id.view_pager)).check(matches(isDisplayed()));
-        onView(allOf(withId(R.id.times_recycler_view), isDisplayed())).check(matches(isDisplayed()));
+    private void checkAlarmSnackBarIsDisplayed() {
+        onView(allOf(withId(R.id.times_recycler_view), isDisplayed())).perform(actionOnItemAtPosition(0, TimesRecyclerViewActions.clickAlarmButton()));
+        onView(withText("CLOSE")).check(matches(isFocusable()))
+                .check(matches(isClickable()))
+                .check(matches(isEnabled()));
     }
 }
