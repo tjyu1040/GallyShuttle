@@ -1,0 +1,130 @@
+<?xml version="1.0" encoding="utf-8"?>
+<!--
+  ~ Copyright 2014 Timothy Yu
+  ~
+  ~ Licensed under the Apache License, Version 2.0 (the "License");
+  ~ you may not use this file except in compliance with the License.
+  ~ You may obtain a copy of the License at
+  ~
+  ~     http://www.apache.org/licenses/LICENSE-2.0
+  ~
+  ~ Unless required by applicable law or agreed to in writing, software
+  ~ distributed under the License is distributed on an "AS IS" BASIS,
+  ~ WITHOUT WARRANTIES OR CONDITIONS OF ANY KIND, either express or implied.
+  ~ See the License for the specific language governing permissions and
+  ~ limitations under the License.
+  -->
+
+<ScrollView
+    xmlns:android="http://schemas.android.com/apk/res/android"
+    xmlns:app="http://schemas.android.com/apk/res-auto"
+    android:layout_width="match_parent"
+    android:layout_height="match_parent">
+
+    <LinearLayout
+        android:layout_width="match_parent"
+        android:layout_height="wrap_content"
+        android:gravity="center_horizontal"
+        android:orientation="vertical">
+
+        <ImageView
+            android:id="@+id/logo_image_view"
+            android:layout_width="150dp"
+            android:layout_height="150dp"
+            android:contentDescription="@string/logo_description"
+            android:scaleType="fitCenter"
+            android:paddingTop="@dimen/activity_horizontal_margin"
+            android:src="@drawable/ic_launcher"/>
+
+        <TextView
+            android:id="@+id/version_text_view"
+            android:layout_width="wrap_content"
+            android:layout_height="wrap_content"
+            android:padding="@dimen/about_text_view_padding"/>
+
+        <TextView
+            android:id="@+id/copyright_text_view"
+            android:layout_width="wrap_content"
+            android:layout_height="wrap_content"
+            android:padding="@dimen/about_text_view_padding"
+            android:text="@string/copyright"/>
+
+        <TextView
+            android:id="@+id/creditsTextView"
+            android:layout_width="wrap_content"
+            android:layout_height="wrap_content"
+            android:background="?android:attr/selectableItemBackground"
+            android:clickable="true"
+            android:padding="@dimen/about_text_view_padding"
+            android:text="@string/underlined_credits"/>
+
+        <TextView
+            android:id="@+id/rate_text_view"
+            android:layout_width="wrap_content"
+            android:layout_height="wrap_content"
+            android:background="?android:attr/selectableItemBackground"
+            android:clickable="true"
+            android:padding="@dimen/about_text_view_padding"
+            android:text="@string/underlined_rate_application"/>
+
+        <TextView
+            android:id="@+id/support_text_view"
+            android:layout_width="wrap_content"
+            android:layout_height="wrap_content"
+            android:background="?android:attr/selectableItemBackground"
+            android:clickable="true"
+            android:padding="@dimen/about_text_view_padding"
+            android:text="@string/underlined_support"/>
+
+        <android.support.percent.PercentFrameLayout
+            android:layout_width="wrap_content"
+            android:layout_height="50dp"
+            android:padding="8dp">
+
+            <View
+                android:background="@color/buff"
+                android:layout_width="0dp"
+                android:layout_height="0dp"
+                android:layout_gravity="center"
+                app:layout_heightPercent="5%"
+                app:layout_widthPercent="75%"/>
+
+        </android.support.percent.PercentFrameLayout>
+
+        <TextView
+            android:id="@+id/message_text_view"
+            android:layout_width="wrap_content"
+            android:layout_height="wrap_content"
+            android:padding="@dimen/about_text_view_padding"
+            android:text="@string/about_message"/>
+
+        <TextView
+            android:id="@+id/open_source_text_view"
+            android:layout_width="wrap_content"
+            android:layout_height="wrap_content"
+            android:background="?android:attr/selectableItemBackground"
+            android:clickable="true"
+            android:padding="@dimen/about_text_view_padding"
+            android:text="@string/underlined_open_source_licenses"/>
+
+        <TextView
+            android:id="@+id/tos_text_view"
+            android:layout_width="wrap_content"
+            android:layout_height="wrap_content"
+            android:background="?android:attr/selectableItemBackground"
+            android:clickable="true"
+            android:padding="@dimen/about_text_view_padding"
+            android:text="@string/underlined_terms_of_service"/>
+
+        <TextView
+            android:id="@+id/privacy_text_view"
+            android:layout_width="wrap_content"
+            android:layout_height="wrap_content"
+            android:background="?android:attr/selectableItemBackground"
+            android:clickable="true"
+            android:padding="@dimen/about_text_view_padding"
+            android:text="@string/underlined_privacy_policy"/>
+
+    </LinearLayout>
+
+</ScrollView>
