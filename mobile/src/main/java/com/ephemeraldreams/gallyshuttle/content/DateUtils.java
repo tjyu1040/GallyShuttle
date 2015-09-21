@@ -28,6 +28,10 @@ import java.util.concurrent.TimeUnit;
  */
 public class DateUtils {
 
+    private DateUtils() {
+        // No instance.
+    }
+
     /**
      * Formatter to convert a String time into correct 24-hours time format for processing.
      */
