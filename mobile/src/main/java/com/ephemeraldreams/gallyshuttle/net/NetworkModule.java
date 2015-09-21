@@ -30,7 +30,7 @@ import retrofit.RxJavaCallAdapterFactory;
 @Module
 public class NetworkModule {
 
-    private static final String GALLY_SHUTTLE_API_BASE_URL = "https://gallyshuttle.appspot.com";
+    private static final String GALLY_SHUTTLE_API_BASE_URL = "https://gallyshuttle.appspot.com/";
 
     @Provides
     @ActivityScope

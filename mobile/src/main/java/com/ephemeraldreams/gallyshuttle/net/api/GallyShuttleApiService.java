@@ -30,12 +30,12 @@ import rx.Observable;
  */
 public interface GallyShuttleApiService {
 
-    @GET("/_ah/api/gallyshuttle/v1/schedule/{name}")
+    @GET("_ah/api/gallyshuttle/v1/schedule/{name}")
     Observable<Schedule> schedule(@Path("name") String name);
 
-    @GET("/_ah/api/gallyshuttle/v1/schedules")
+    @GET("_ah/api/gallyshuttle/v1/schedules")
     Observable<List<Schedule>> schedules();
 
-    @GET("/_ah/api/gallyshuttle/v1/stations")
+    @GET("_ah/api/gallyshuttle/v1/stations")
     Observable<List<Station>> stations();
 }
