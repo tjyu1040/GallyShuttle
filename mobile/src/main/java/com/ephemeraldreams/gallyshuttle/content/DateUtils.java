@@ -26,7 +26,7 @@ import java.util.concurrent.TimeUnit;
 /**
  * An utility class to handle formatting and parsing of times and dates.
  */
-public class DateUtils {
+public final class DateUtils {
 
     private DateUtils() {
         // No instance.

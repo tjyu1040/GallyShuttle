@@ -23,7 +23,7 @@ import timber.log.Timber;
 /**
  * A tree which logs important information for crash reporting using Crashlytics.
  */
-public class CrashReportingTree extends Timber.Tree {
+public final class CrashReportingTree extends Timber.Tree {
 
     @Override
     protected void log(int priority, String tag, String message, Throwable throwable) {

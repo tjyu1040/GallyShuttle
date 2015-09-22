@@ -25,7 +25,7 @@ import timber.log.Timber;
 /**
  * Small debugging utility class to output the current states of activities.
  */
-public class DebugActivityCallbacks implements Application.ActivityLifecycleCallbacks {
+public final class DebugActivityCallbacks implements Application.ActivityLifecycleCallbacks {
     @Override
     public void onActivityCreated(Activity activity, Bundle savedInstanceState) {
         Timber.d("Activity created: " + activity.getComponentName().getShortClassName());
