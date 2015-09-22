@@ -26,7 +26,11 @@ import java.util.concurrent.TimeUnit;
 /**
  * An utility class to handle formatting and parsing of times and dates.
  */
-public class DateUtils {
+public final class DateUtils {
+
+    private DateUtils() {
+        // No instance.
+    }
 
     /**
      * Formatter to convert a String time into correct 24-hours time format for processing.

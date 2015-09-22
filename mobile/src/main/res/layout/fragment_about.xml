@@ -50,7 +50,7 @@
             android:text="@string/copyright"/>
 
         <TextView
-            android:id="@+id/creditsTextView"
+            android:id="@+id/credits_text_view"
             android:layout_width="wrap_content"
             android:layout_height="wrap_content"
             android:background="?android:attr/selectableItemBackground"
