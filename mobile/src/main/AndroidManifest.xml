@@ -40,6 +40,10 @@
             android:label="@string/title_activity_settings"
             android:theme="@style/GallaudetTheme.PreferenceTheme"/>
 
+        <activity
+            android:name=".ui.WebViewActivity"
+            android:label="@string/title_activity_webview" />
+
         <service
             android:name=".net.gcm.RegistrationIntentService"
             android:exported="false"/>

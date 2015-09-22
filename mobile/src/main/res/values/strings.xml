@@ -18,6 +18,7 @@
     <string name="app_name">GallyShuttle</string>
 
     <string name="title_activity_schedule">ScheduleActivity</string>
+    <string name="title_activity_webview">WebViewActivity</string>
     <string name="title_activity_settings">Settings</string>
 
     <string name="title_fragment_main">Schedules</string>
