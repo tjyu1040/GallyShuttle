@@ -19,9 +19,13 @@
     <dimen name="activity_horizontal_margin">16dp</dimen>
     <dimen name="activity_vertical_margin">16dp</dimen>
 
+    <dimen name="fragment_countdown_element_padding">16dp</dimen>
+
     <dimen name="card_margin">8dp</dimen>
     <dimen name="card_text_padding">16dp</dimen>
     <dimen name="card_primary_title_top_padding">24dp</dimen>
+    <dimen name="card_vertical_padding">24dp</dimen>
+    <dimen name="card_horizontal_padding">16dp</dimen>
     <dimen name="card_title_font_size">24sp</dimen>
     <dimen name="card_action_padding">8dp</dimen>
 
