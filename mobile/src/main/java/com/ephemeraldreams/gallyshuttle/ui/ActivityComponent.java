@@ -20,6 +20,7 @@ public interface ActivityComponent {
     void inject(MainActivity mainActivity);
     void inject(SettingsActivity settingsActivity);
     void inject(ScheduleFragment scheduleFragment);
+    void inject(CountDownFragment countDownFragment);
     void inject(TimesFragment timesFragment);
     void inject(SettingsFragment settingsFragment);
 

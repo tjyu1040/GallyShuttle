@@ -75,6 +75,7 @@ public class MainActivity extends BaseActivity implements NavigationView.OnNavig
 
         navigationView.setNavigationItemSelectedListener(this);
         navigationView.setCheckedItem(R.id.nav_home);
+        setSelectedNavigationItem(R.id.nav_home);
     }
 
     @Override
@@ -129,9 +130,14 @@ public class MainActivity extends BaseActivity implements NavigationView.OnNavig
     }
 
     @Override
-    public boolean onNavigationItemSelected(MenuItem menuItem) {
+    public boolean onNavigationItemSelected(final MenuItem menuItem) {
         menuItem.setChecked(true);
-        setSelectedNavigationItem(menuItem.getItemId());
+        closeDrawers(new Runnable() {
+            @Override
+            public void run() {
+                setSelectedNavigationItem(menuItem.getItemId());
+            }
+        });
         return true;
     }
 
@@ -144,42 +150,38 @@ public class MainActivity extends BaseActivity implements NavigationView.OnNavig
     }
 
     private void setSelectedNavigationItem(@IdRes final int id) {
-        closeDrawers(new Runnable() {
-            @Override
-            public void run() {
-                switch (id) {
-                    case R.id.nav_home:
-                        //TODO: add home fragment
-                        break;
-                    case R.id.nav_continuous:
-                        Timber.d("Starting continuous fragment.");
-                        setCurrentFragment(ScheduleFragment.newInstance(resources.getString(R.string.path_continuous)));
-                        break;
-                    case R.id.nav_late_night:
-                        Timber.d("Starting late night fragment.");
-                        setCurrentFragment(ScheduleFragment.newInstance(resources.getString(R.string.path_late_night)));
-                        break;
-                    case R.id.nav_weekend:
-                        Timber.d("Starting weekend fragment.");
-                        setCurrentFragment(ScheduleFragment.newInstance(resources.getString(R.string.path_weekend)));
-                        break;
-                    case R.id.nav_alt_continuous:
-                        Timber.d("Starting alt continuous fragment.");
-                        setCurrentFragment(ScheduleFragment.newInstance(resources.getString(R.string.path_alt_continuous)));
-                        break;
-                    case R.id.nav_modified:
-                        Timber.d("Starting modified fragment.");
-                        setCurrentFragment(ScheduleFragment.newInstance(resources.getString(R.string.path_modified)));
-                        break;
-                    case R.id.nav_policies:
-                        //TODO: add policies fragment
-                        break;
-                    case R.id.nav_about:
-                        setCurrentFragment(AboutFragment.newInstance());
-                        break;
-                }
-            }
-        });
+        switch (id) {
+            case R.id.nav_home:
+                Timber.d("Starting count down fragment.");
+                setCurrentFragment(CountDownFragment.newInstance());
+                break;
+            case R.id.nav_continuous:
+                Timber.d("Starting continuous fragment.");
+                setCurrentFragment(ScheduleFragment.newInstance(resources.getString(R.string.path_continuous)));
+                break;
+            case R.id.nav_late_night:
+                Timber.d("Starting late night fragment.");
+                setCurrentFragment(ScheduleFragment.newInstance(resources.getString(R.string.path_late_night)));
+                break;
+            case R.id.nav_weekend:
+                Timber.d("Starting weekend fragment.");
+                setCurrentFragment(ScheduleFragment.newInstance(resources.getString(R.string.path_weekend)));
+                break;
+            case R.id.nav_alt_continuous:
+                Timber.d("Starting alt continuous fragment.");
+                setCurrentFragment(ScheduleFragment.newInstance(resources.getString(R.string.path_alt_continuous)));
+                break;
+            case R.id.nav_modified:
+                Timber.d("Starting modified fragment.");
+                setCurrentFragment(ScheduleFragment.newInstance(resources.getString(R.string.path_modified)));
+                break;
+            case R.id.nav_policies:
+                //TODO: add policies fragment
+                break;
+            case R.id.nav_about:
+                setCurrentFragment(AboutFragment.newInstance());
+                break;
+        }
     }
 
     private void setCurrentFragment(Fragment fragment) {
