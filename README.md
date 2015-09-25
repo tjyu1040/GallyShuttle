@@ -33,11 +33,11 @@ Messaging for notifications, which will need to be configured.
 3. Rename `mobile/fabric.properties.sample` to `mobile/fabric.properties`.
 4. Fill in your API key and secret in `mobile/fabric.properties`.
 
-#### Google Analytics and Google Cloud Messaging Setup
+#### Google Analytics, App Invites, & Google Cloud Messaging Setup
 
 1. Go to this link: [Enable Google services for your app](https://developers.google.com/mobile/add?platform=android)
 2. Create a new project for your own app.
-3. Add "Analytics" and "Cloud Messaging" services and generate your configuration file.
+3. Add "Analytics", "App Invites", & "Cloud Messaging" services and generate your configuration file.
 4. Download `google-services.json` and move it to `mobile/` directory.
 
 ##### Testing Google Cloud Messaging
