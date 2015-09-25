@@ -13,7 +13,7 @@ import dagger.Provides;
 /**
  * A module for activity-specific or fragment-specific dependencies.
  */
-@Module(includes = NetworkModule.class)
+@Module()
 public class ActivityModule {
 
     private final AppCompatActivity activity;

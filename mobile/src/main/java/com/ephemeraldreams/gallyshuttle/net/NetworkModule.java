@@ -1,6 +1,7 @@
 package com.ephemeraldreams.gallyshuttle.net;
 
 import com.ephemeraldreams.gallyshuttle.annotations.scopes.ActivityScope;
+import com.ephemeraldreams.gallyshuttle.annotations.scopes.ApplicationScope;
 import com.ephemeraldreams.gallyshuttle.net.api.GallyShuttleApiService;
 import com.ephemeraldreams.gallyshuttle.net.api.ListSchedulesDeserializer;
 import com.ephemeraldreams.gallyshuttle.net.api.ListStationsDeserializer;
@@ -30,16 +31,18 @@ import retrofit.RxJavaCallAdapterFactory;
 @Module
 public class NetworkModule {
 
-    private static final String GALLY_SHUTTLE_API_BASE_URL = "https://gallyshuttle.appspot.com/";
+    private static final String API_BASE_URL = "https://gallyshuttle.appspot.com/";
+    private static final String GALLYSHUTTLE_API_URL = "_ah/api/gallyshuttle/v1/";
+    private static final String REGISTRATION__API_URL = "_ah/api/registration/v1/";
 
     @Provides
-    @ActivityScope
+    @ApplicationScope
     OkHttpClient okHttpClient() {
         return new OkHttpClient();
     }
 
     @Provides
-    @ActivityScope
+    @ApplicationScope
     GallyShuttleApiService gallyShuttleApiService(OkHttpClient okHttpClient) {
 
         //TODO: decide on whether to include list deserializers.
@@ -54,7 +57,7 @@ public class NetworkModule {
                 .create();
 
         return new Retrofit.Builder()
-                .baseUrl(GALLY_SHUTTLE_API_BASE_URL)
+                .baseUrl(API_BASE_URL + GALLYSHUTTLE_API_URL)
                 .client(okHttpClient)
                 .addConverterFactory(GsonConverterFactory.create(gson))
                 .addCallAdapterFactory(RxJavaCallAdapterFactory.create())
@@ -64,11 +67,13 @@ public class NetworkModule {
 
     //TODO: update registration api url.
     @Provides
-    @ActivityScope
+    @ApplicationScope
     RegistrationApiService registrationApiService(OkHttpClient okHttpClient) {
         return new Retrofit.Builder()
-                .baseUrl("")
+                .baseUrl(API_BASE_URL + REGISTRATION__API_URL)
                 .client(okHttpClient)
+                .addConverterFactory(GsonConverterFactory.create())
+                .addCallAdapterFactory(RxJavaCallAdapterFactory.create())
                 .build()
                 .create(RegistrationApiService.class);
     }

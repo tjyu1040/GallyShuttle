@@ -17,9 +17,13 @@ import com.ephemeraldreams.gallyshuttle.content.CacheManager;
 import com.ephemeraldreams.gallyshuttle.content.ContentModule;
 import com.ephemeraldreams.gallyshuttle.content.preferences.BooleanPreference;
 import com.ephemeraldreams.gallyshuttle.content.preferences.StringPreference;
+import com.ephemeraldreams.gallyshuttle.net.NetworkModule;
+import com.ephemeraldreams.gallyshuttle.net.api.GallyShuttleApiService;
+import com.ephemeraldreams.gallyshuttle.net.gcm.RegistrationApiService;
 import com.ephemeraldreams.gallyshuttle.net.gcm.RegistrationIntentService;
 import com.ephemeraldreams.gallyshuttle.ui.receivers.NetworkStateBroadCastReceiver;
 import com.google.gson.Gson;
+import com.squareup.okhttp.OkHttpClient;
 import com.squareup.otto.Bus;
 
 import dagger.Component;
@@ -28,7 +32,7 @@ import dagger.Component;
  * A component whose lifetime is constrained to {@link Application}'s lifecycle.
  */
 @ApplicationScope
-@Component(modules = {ApplicationModule.class, ContentModule.class})
+@Component(modules = {ApplicationModule.class, NetworkModule.class, ContentModule.class})
 public interface ApplicationComponent {
 
     void inject(GallyShuttleApplication gallyShuttleApplication);
@@ -52,4 +56,8 @@ public interface ApplicationComponent {
     @NotificationVibration BooleanPreference getNotificationVibrationBooleanPreference();
     Gson getGson();
     CacheManager getCacheManager();
+
+    OkHttpClient getOkHttpClient();
+    GallyShuttleApiService getGallyShuttleApiService();
+    RegistrationApiService getRegistrationApiService();
 }
