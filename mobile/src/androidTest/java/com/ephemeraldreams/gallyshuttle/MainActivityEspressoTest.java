@@ -16,11 +16,13 @@
 
 package com.ephemeraldreams.gallyshuttle;
 
+import android.content.Intent;
 import android.support.test.rule.ActivityTestRule;
 import android.support.test.runner.AndroidJUnit4;
 import android.test.suitebuilder.annotation.LargeTest;
 
 import com.ephemeraldreams.gallyshuttle.ui.MainActivity;
+import com.google.android.gms.appinvite.AppInviteReferral;
 
 import org.junit.Rule;
 import org.junit.Test;
@@ -114,5 +116,15 @@ public class MainActivityEspressoTest {
         onView(withId(R.id.tab_layout)).check(matches(isDisplayed()));
         onView(withId(R.id.view_pager)).check(matches(isDisplayed()));
         onView(allOf(withId(R.id.times_recycler_view), isDisplayed())).check(matches(isDisplayed()));
+    }
+
+    @Test
+    public void sendInvitationIntent(){
+        Intent invitationIntent = new Intent();
+        String invitationId = "12345";
+        String deepLink = "http://example.com/12345";
+        AppInviteReferral.addReferralDataToIntent(invitationId, deepLink, invitationIntent);
+        activityTestRule.launchActivity(invitationIntent);
+        onView(withText(R.string.invite_dialog_title)).check(matches(isDisplayed()));
     }
 }

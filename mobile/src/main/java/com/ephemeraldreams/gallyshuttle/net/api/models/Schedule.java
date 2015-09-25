@@ -37,27 +37,36 @@ public class Schedule {
     /**
      * Get the count of stations.
      *
-     * @return Count of stations.
+     * @return Count of {@link Station}.
      */
     public int getStationsCount() {
         return stationsTimes.keySet().size();
     }
 
     /**
-     * Get stop at specified position.
+     * Get station at specified position.
      *
      * @param position Position to get stop.
-     * @return Name of stop.
+     * @return A {@link Station}.
      */
     public Station getStation(int position) {
         return getStationTimes(position).getKey();
     }
 
     /**
+     * Get all stations of schedule.
+     *
+     * @return {@link ArrayList} of {@link Station}s.
+     */
+    public ArrayList<Station> getStations() {
+        return new ArrayList<>(stationsTimes.keySet());
+    }
+
+    /**
      * Get times at specified position.
      *
      * @param position Position to get times.
-     * @return ArrayList of times.
+     * @return {@link ArrayList} of times.
      */
     public ArrayList<String> getTimes(int position) {
         return getStationTimes(position).getValue();
@@ -67,7 +76,7 @@ public class Schedule {
      * Get station times entry at specified position.
      *
      * @param position Position to get times.
-     * @return Map entry of stop and times.
+     * @return {@link java.util.Map.Entry} of stop and times.
      */
     public Map.Entry<Station, ArrayList<String>> getStationTimes(int position) {
         int i = 0;

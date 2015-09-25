@@ -27,6 +27,7 @@
 
     <string name="action_settings">Settings</string>
 
+    <!-- Navigation Drawer text -->
     <string name="nav_home">Home</string>
     <string name="nav_schedules">Schedules</string>
     <string name="nav_continuous">Continuous</string>
@@ -37,12 +38,36 @@
     <string name="nav_policies">Policies</string>
     <string name="nav_about">About</string>
 
+    <!-- Path data entries -->
     <string name="path_continuous">continuous</string>
     <string name="path_alt_continuous">alt_continuous</string>
     <string name="path_late_night">late_night</string>
     <string name="path_weekend">weekend</string>
     <string name="path_modified">modified</string>
 
+    <!-- Google Play Services App Invite text -->
+    <string name="action_deep_link">com.ephemeraldreams.gallyshuttle.appinvite.DEEP_LINK_ACTION</string>
+    <string name="invitation_title">Send GallyShuttle Invitation</string>
+    <string name="invitation_message">Check out Gallaudet University\'s shuttle schedules!</string>
+    <string name="invitation_deep_link">http://gallyshuttle.com/invite</string>
+    <string name="invitation_custom_image">http://gallyshuttle.appspot.com/img/ic_launcher.png</string>
+    <string name="invitation_cta">Install!</string>
+    <string name="sent_invitations_fmt" formatted="false">Sent %d invitations</string>
+    <string name="send_failed">Sending invitations failed.</string>
+    <string name="invite_dialog_title">You got an invitation!</string>
+
+    <!-- CountDownFragment text -->
+    <string name="placeholder_current_schedule">Schedule</string>
+    <string name="remaining_time_message">Time remaining:</string>
+    <string name="placeholder_timer_countdown">00:00:00</string>
+    <string name="timer_countdown_error">--:--:--</string>
+    <string name="until_arrival_time_message">until shuttle arrival at %1$s.</string>
+    <string name="arrival_not_available_message">Shuttle arrival time not available.</string>
+    <string name="spinner_select_station_message">Select a station:</string>
+    <string name="checkbox_notification_enabled_message">Notify me when shuttle arrives.</string>
+    <string name="real_time_tracking_note">Real-time tracking is not available, so shuttle may be early or late.</string>
+
+    <!-- AboutFragment text -->
     <string name="logo_description">Gally Shuttle logo</string>
     <string name="copyright">Copyright © 2014 Timothy Yu</string>
     <string name="underlined_credits"><u>Credits</u></string>

@@ -33,6 +33,8 @@ import android.preference.PreferenceScreen;
 import android.provider.Settings;
 import android.support.annotation.NonNull;
 import android.support.annotation.StringRes;
+import android.support.design.widget.AppBarLayout;
+import android.support.design.widget.Snackbar;
 import android.support.v7.app.ActionBar;
 import android.support.v7.app.AlertDialog;
 import android.support.v7.widget.Toolbar;
@@ -43,18 +45,23 @@ import com.ephemeraldreams.gallyshuttle.annotations.qualifiers.AlarmRingtoneChoi
 import com.ephemeraldreams.gallyshuttle.annotations.qualifiers.NotificationRingtoneChoice;
 import com.ephemeraldreams.gallyshuttle.content.CacheManager;
 import com.ephemeraldreams.gallyshuttle.content.preferences.StringPreference;
+import com.google.android.gms.appinvite.AppInviteInvitation;
 
 import javax.inject.Inject;
 
 import butterknife.Bind;
 import butterknife.ButterKnife;
+import timber.log.Timber;
 
 /**
  * Activity to handle user's settings for the application. Holds a {@link SettingsFragment} instance.
  */
 public class SettingsActivity extends BaseActivity {
 
+    private static final int INVITE_REQUEST_CODE = 0;
+
     @Bind(R.id.toolbar) Toolbar toolbar;
+    @Bind(R.id.app_bar_layout) AppBarLayout appBarLayout;
 
     public static void launch(Activity activity) {
         activity.startActivity(new Intent(activity, SettingsActivity.class));
@@ -72,6 +79,20 @@ public class SettingsActivity extends BaseActivity {
         if (actionBar != null) {
             actionBar.setDisplayShowHomeEnabled(true);
             actionBar.setDisplayHomeAsUpEnabled(true);
+        }
+    }
+
+    @Override
+    protected void onActivityResult(int requestCode, int resultCode, Intent data) {
+        super.onActivityResult(requestCode, resultCode, data);
+        Timber.d("onActivityResult: requestCode=" + requestCode + ", resultCode=" + resultCode);
+        if (requestCode == INVITE_REQUEST_CODE) {
+            if (resultCode == RESULT_OK) {
+                String[] ids = AppInviteInvitation.getInvitationIds(resultCode, data);
+                Timber.d(getString(R.string.sent_invitations_fmt, ids.length));
+            } else {
+                Snackbar.make(appBarLayout, getString(R.string.send_failed), Snackbar.LENGTH_SHORT).show();
+            }
         }
     }
 
@@ -372,11 +393,13 @@ public class SettingsActivity extends BaseActivity {
             sharePreference.setOnPreferenceClickListener(new Preference.OnPreferenceClickListener() {
                 @Override
                 public boolean onPreferenceClick(Preference preference) {
-                    Intent shareIntent = new Intent(Intent.ACTION_SEND);
-                    shareIntent.putExtra(Intent.EXTRA_SUBJECT, getString(R.string.share_subject));
-                    shareIntent.putExtra(Intent.EXTRA_TEXT, getString(R.string.share_message));
-                    shareIntent.setType("text/plain");
-                    startActivity(Intent.createChooser(shareIntent, getString(R.string.title_share_preference)));
+                    Intent intent = new AppInviteInvitation.IntentBuilder(getString(R.string.invitation_title))
+                            .setMessage(getString(R.string.invitation_message))
+                            .setDeepLink(Uri.parse(getString(R.string.invitation_deep_link)))
+                            .setCallToActionText(getString(R.string.invitation_cta))
+                            .setCustomImage(Uri.parse(getString(R.string.invitation_custom_image)))
+                            .build();
+                    startActivityForResult(intent, SettingsActivity.INVITE_REQUEST_CODE);
                     return true;
                 }
             });
