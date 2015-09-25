@@ -28,17 +28,17 @@ public class RegistrationRecord {
 
     @Id Long id;
 
-    @Index private String regId;
+    @Index private String token;
     // you can add more fields...
 
     public RegistrationRecord() {
     }
 
-    public String getRegId() {
-        return regId;
+    public String getToken() {
+        return token;
     }
 
-    public void setRegId(String regId) {
-        this.regId = regId;
+    public void setToken(String token) {
+        this.token = token;
     }
 }

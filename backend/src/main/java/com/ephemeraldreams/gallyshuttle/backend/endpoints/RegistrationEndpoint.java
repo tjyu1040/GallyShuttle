@@ -44,41 +44,39 @@ public class RegistrationEndpoint {
     private static final Logger log = Logger.getLogger(RegistrationEndpoint.class.getName());
 
     /**
-     * Register a device to the backend
+     * Register a device to the backend.
      *
-     * @param regId The Google Cloud Messaging registration Id to add
+     * @param registrationRecord The Google Cloud Messaging registration record to add.
      */
     @ApiMethod(name = "register")
-    public void registerDevice(@Named("regId") String regId) {
-        if (findRecord(regId) != null) {
-            log.info("Device " + regId + " already registered, skipping register");
+    public void registerDevice(RegistrationRecord registrationRecord) {
+        if (findRecord(registrationRecord) != null) {
+            log.info("Device " + registrationRecord.getToken() + " already registered, skipping register");
             return;
         }
-        RegistrationRecord record = new RegistrationRecord();
-        record.setRegId(regId);
-        ofy().save().entity(record).now();
+        ofy().save().entity(registrationRecord).now();
     }
 
     /**
-     * Unregister a device from the backend
+     * Unregister a device from the backend.
      *
-     * @param regId The Google Cloud Messaging registration Id to remove
+     * @param registrationRecord The Google Cloud Messaging record to remove.
      */
     @ApiMethod(name = "unregister")
-    public void unregisterDevice(@Named("regId") String regId) {
-        RegistrationRecord record = findRecord(regId);
+    public void unregisterDevice(RegistrationRecord registrationRecord) {
+        RegistrationRecord record = findRecord(registrationRecord);
         if (record == null) {
-            log.info("Device " + regId + " not registered, skipping unregister");
+            log.info("Device " + registrationRecord.getToken() + " not registered, skipping unregister");
             return;
         }
         ofy().delete().entity(record).now();
     }
 
     /**
-     * Return a collection of registered devices
+     * Return a collection of registered devices.
      *
-     * @param count The number of devices to list
-     * @return a list of Google Cloud Messaging registration Ids
+     * @param count The number of devices to list.
+     * @return a list of Google Cloud Messaging registration Ids.
      */
     @ApiMethod(name = "listDevices")
     public CollectionResponse<RegistrationRecord> listDevices(@Named("count") int count) {
@@ -86,8 +84,8 @@ public class RegistrationEndpoint {
         return CollectionResponse.<RegistrationRecord>builder().setItems(records).build();
     }
 
-    private RegistrationRecord findRecord(String regId) {
-        return ofy().load().type(RegistrationRecord.class).filter("regId", regId).first().now();
+    private RegistrationRecord findRecord(RegistrationRecord record) {
+        return ofy().load().type(RegistrationRecord.class).filter("token", record.getToken()).first().now();
     }
 
 }

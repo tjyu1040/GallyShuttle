@@ -68,20 +68,20 @@ public class MessagingEndpoint {
         Message msg = new Message.Builder().addData("message", message).build();
         List<RegistrationRecord> records = ofy().load().type(RegistrationRecord.class).limit(10).list();
         for (RegistrationRecord record : records) {
-            Result result = sender.send(msg, record.getRegId(), 5);
+            Result result = sender.send(msg, record.getToken(), 5);
             if (result.getMessageId() != null) {
-                log.info("Message sent to " + record.getRegId());
+                log.info("Message sent to " + record.getToken());
                 String canonicalRegId = result.getCanonicalRegistrationId();
                 if (canonicalRegId != null) {
                     // if the regId changed, we have to update the datastore
-                    log.info("Registration Id changed for " + record.getRegId() + " updating to " + canonicalRegId);
-                    record.setRegId(canonicalRegId);
+                    log.info("Registration Id changed for " + record.getToken() + " updating to " + canonicalRegId);
+                    record.setToken(canonicalRegId);
                     ofy().save().entity(record).now();
                 }
             } else {
                 String error = result.getErrorCodeName();
                 if (error.equals(Constants.ERROR_NOT_REGISTERED)) {
-                    log.warning("Registration Id " + record.getRegId() + " no longer registered with GCM, removing from datastore");
+                    log.warning("Registration Id " + record.getToken() + " no longer registered with GCM, removing from datastore");
                     // if the device is no longer registered with Gcm, remove it from the datastore
                     ofy().delete().entity(record).now();
                 } else {
