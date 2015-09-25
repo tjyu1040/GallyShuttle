@@ -45,6 +45,17 @@
     <string name="path_weekend">weekend</string>
     <string name="path_modified">modified</string>
 
+    <!-- Google Play Services App Invite text -->
+    <string name="action_deep_link">com.ephemeraldreams.gallyshuttle.appinvite.DEEP_LINK_ACTION</string>
+    <string name="invitation_title">Send GallyShuttle Invitation</string>
+    <string name="invitation_message">Check out Gallaudet University\'s shuttle schedules!</string>
+    <string name="invitation_deep_link">http://gallyshuttle.com/invite</string>
+    <string name="invitation_custom_image">http://gallyshuttle.appspot.com/img/ic_launcher.png</string>
+    <string name="invitation_cta">Install!</string>
+    <string name="sent_invitations_fmt" formatted="false">Sent %d invitations</string>
+    <string name="send_failed">Sending invitations failed.</string>
+    <string name="invite_dialog_title">You got an invitation!</string>
+
     <!-- CountDownFragment text -->
     <string name="placeholder_current_schedule">Schedule</string>
     <string name="remaining_time_message">Time remaining:</string>
