@@ -82,8 +82,8 @@ public class MainActivity extends BaseActivity implements NavigationView.OnNavig
                 this,
                 drawerLayout,
                 toolbar,
-                R.string.app_name,
-                R.string.app_name
+                R.string.nav_open_desc,
+                R.string.nav_close_desc
         );
         drawerLayout.setDrawerListener(actionBarDrawerToggle);
 
