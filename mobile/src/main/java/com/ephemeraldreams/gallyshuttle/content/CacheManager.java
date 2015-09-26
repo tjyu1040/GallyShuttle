@@ -26,6 +26,7 @@ import com.jakewharton.disklrucache.DiskLruCache;
 import java.io.FileNotFoundException;
 import java.io.IOException;
 import java.io.InputStreamReader;
+import java.io.OutputStream;
 
 import timber.log.Timber;
 
@@ -60,8 +61,10 @@ public class CacheManager {
                 diskLruCache = DiskLruCache.open(application.getCacheDir(), APP_VERSION, VALUE_COUNT, MAX_SIZE);
             }
             DiskLruCache.Editor editor = diskLruCache.edit(schedule.path);
-            editor.newOutputStream(0).write(gson.toJson(schedule).getBytes());
+            OutputStream outputStream = editor.newOutputStream(0);
+            outputStream.write(gson.toJson(schedule).getBytes());
             editor.commit();
+            outputStream.close();
             Timber.d("Successfully cached " + schedule.path + " schedule.");
         } catch (IOException e) {
             Timber.e(e, "Failed to cache " + schedule.path + " schedule.");
