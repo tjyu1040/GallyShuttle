@@ -45,12 +45,18 @@ public class GallyShuttleApplication extends Application {
         }
     }
 
+    /**
+     * @return Application {@link dagger.Component} to provide and inject dependencies.
+     */
     public static ApplicationComponent getComponent() {
         return component;
     }
 
+    /**
+     * Enable strict mode for further debugging and detection of any possible resources leaks.
+     */
     @TargetApi(Build.VERSION_CODES.GINGERBREAD)
-    public void enableStrictMode() {
+    private void enableStrictMode() {
         StrictMode.ThreadPolicy.Builder threadPolicyBuilder = new StrictMode.ThreadPolicy.Builder();
         if (Build.VERSION.SDK_INT >= Build.VERSION_CODES.M) {
             threadPolicyBuilder.detectResourceMismatches();
