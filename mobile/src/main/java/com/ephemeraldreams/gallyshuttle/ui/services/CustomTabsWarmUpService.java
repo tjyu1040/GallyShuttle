@@ -44,11 +44,13 @@ public class CustomTabsWarmUpService {
      * Binds the activity to the Custom Tabs service.
      *
      * @param activity Activity to be connected to Custom Tabs service.
+     * @param callback Connection callback to be bound.
      */
-    public void bindCustomTabsService(Activity activity) {
+    public void bindCustomTabsService(Activity activity, CustomTabsConnectionCallback callback) {
         if (client == null) {
             String packageName = CustomTabsUtils.getPackageNameToUse(activity);
             if (packageName != null) {
+                connectionCallback = callback;
                 connection = new CustomTabsServiceConnection() {
                     @Override
                     public void onCustomTabsServiceConnected(ComponentName componentName, CustomTabsClient customTabsClient) {
@@ -88,6 +90,7 @@ public class CustomTabsWarmUpService {
             activity.unbindService(connection);
             client = null;
             session = null;
+            connectionCallback = null;
             Timber.d("Unbound Custom Tabs service.");
         }
     }
@@ -104,13 +107,6 @@ public class CustomTabsWarmUpService {
             session = client.newSession(null);
         }
         return session;
-    }
-
-    /**
-     * Register a callback to be called when connected or disconnected from the Custom Tabs service.
-     */
-    public void setConnectionCallback(CustomTabsConnectionCallback connectionCallback) {
-        this.connectionCallback = connectionCallback;
     }
 
     /**
