@@ -23,7 +23,6 @@ import com.ephemeraldreams.gallyshuttle.net.api.models.Schedule;
 import com.google.gson.Gson;
 import com.jakewharton.disklrucache.DiskLruCache;
 
-import java.io.FileNotFoundException;
 import java.io.IOException;
 import java.io.InputStreamReader;
 import java.io.OutputStream;
@@ -75,7 +74,7 @@ public class CacheManager {
      * Load schedule cache.
      *
      * @param path Path name of schedule to load.
-     * @return Cached schedule.
+     * @return Cached schedule. Null if no such cached schedule.
      * @throws IOException
      */
     public Schedule loadScheduleCache(String path) throws IOException {
@@ -89,7 +88,7 @@ public class CacheManager {
             snapshot.close();
             return schedule;
         } else {
-            throw new FileNotFoundException(path + " schedule cache not found.");
+            return null;
         }
     }
 
