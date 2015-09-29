@@ -23,6 +23,7 @@ import com.ephemeraldreams.gallyshuttle.net.api.models.Schedule;
 import com.google.gson.Gson;
 import com.jakewharton.disklrucache.DiskLruCache;
 
+import java.io.File;
 import java.io.IOException;
 import java.io.InputStreamReader;
 import java.io.OutputStream;
@@ -107,7 +108,12 @@ public class CacheManager {
      * @return Cache size in bytes.
      */
     public long getCacheSize() {
-        return diskLruCache.size();
+        long size = 0;
+        File[] cacheDirectory = diskLruCache.getDirectory().listFiles();
+        for (File file : cacheDirectory){
+            size += file.length();
+        }
+        return size;
     }
 
     /**
