@@ -19,17 +19,17 @@
     <dimen name="activity_horizontal_margin">16dp</dimen>
     <dimen name="activity_vertical_margin">16dp</dimen>
 
-    <dimen name="fragment_countdown_element_padding">16dp</dimen>
-
+    <dimen name="card_resting_elevation">2dp</dimen>
+    <dimen name="card_picked_up_elevation">8dp</dimen>
     <dimen name="card_margin">8dp</dimen>
     <dimen name="card_text_padding">16dp</dimen>
-    <dimen name="card_primary_title_top_padding">24dp</dimen>
-    <dimen name="card_vertical_padding">24dp</dimen>
-    <dimen name="card_horizontal_padding">16dp</dimen>
-    <dimen name="card_title_font_size">24sp</dimen>
     <dimen name="card_action_padding">8dp</dimen>
 
     <dimen name="fab_margin">16dp</dimen>
 
-    <dimen name="about_text_view_padding">8dp</dimen>
+    <dimen name="progress_bar_width">112dp</dimen>
+
+    <dimen name="about_view_padding">8dp</dimen>
+
+    <dimen name="arrival_countdown_timer_font_size">56sp</dimen>
 </resources>
