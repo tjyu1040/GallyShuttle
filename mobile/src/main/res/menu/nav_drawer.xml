@@ -20,7 +20,6 @@
     <group android:checkableBehavior="single">
         <item
             android:id="@+id/nav_home"
-            android:checked="true"
             android:icon="@drawable/ic_home_black_24dp"
             android:title="@string/nav_home"/>
         <item
@@ -41,7 +40,6 @@
                         android:id="@+id/nav_weekend"
                         android:icon="@drawable/ic_event_black_24dp"
                         android:title="@string/nav_weekend"/>
-
                     <item
                         android:id="@+id/nav_alt_continuous"
                         android:icon="@drawable/ic_event_black_24dp"
@@ -61,6 +59,10 @@
             android:id="@+id/nav_policies"
             android:icon="@drawable/ic_description_black_24dp"
             android:title="@string/nav_policies"/>
+        <item
+            android:id="@+id/nav_settings"
+            android:icon="@drawable/ic_settings_black_24dp"
+            android:title="@string/nav_settings"/>
         <item
             android:id="@+id/nav_about"
             android:icon="@drawable/ic_info_black_24dp"
