@@ -14,8 +14,13 @@
   ~ See the License for the specific language governing permissions and
   ~ limitations under the License.
   -->
-<android.support.v4.view.ViewPager
-    android:id="@+id/view_pager"
-    xmlns:android="http://schemas.android.com/apk/res/android"
-    android:layout_width="match_parent"
-    android:layout_height="wrap_content"/>
+
+<shape xmlns:android="http://schemas.android.com/apk/res/android"
+       android:shape="rectangle">
+    <gradient
+        android:angle="135"
+        android:centerColor="@color/blue"
+        android:endColor="@color/darker_blue"
+        android:startColor="@color/light_blue"
+        android:type="linear"/>
+</shape>
