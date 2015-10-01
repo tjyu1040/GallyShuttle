@@ -24,30 +24,24 @@
         <item name="colorAccent">@color/vegas_gold</item>
         <item name="android:windowBackground">@color/white</item>
 
-        <item name="drawerArrowStyle">@style/GallaudetTheme.Base.DrawerArrowStyle</item>
-        <item name="alertDialogTheme">@style/GallaudetTheme.Base.AlertDialog</item>
-    </style>
-
-    <style name="GallaudetTheme.Base.DrawerArrowStyle" parent="Widget.AppCompat.DrawerArrowToggle">
-        <item name="spinBars">true</item>
-        <item name="color">@color/white</item>
-    </style>
-
-    <style name="Widget.CardContent" parent="android:Widget">
-        <item name="android:paddingLeft">16dp</item>
-        <item name="android:paddingRight">16dp</item>
-        <item name="android:paddingTop">24dp</item>
-        <item name="android:paddingBottom">24dp</item>
-        <item name="android:orientation">vertical</item>
+        <item name="alertDialogTheme">@style/GallaudetTheme.AlertDialog</item>
+        <item name="drawerArrowStyle">@style/GallaudetTheme.DrawerArrowStyle</item>
     </style>
 
     <style name="GallaudetTheme.PreferenceTheme" parent="GallaudetTheme">
         <item name="colorAccent">@color/vegas_gold</item>
     </style>
 
-    <style name="GallaudetTheme.Base.AlertDialog" parent="Theme.AppCompat.Light.Dialog.Alert">
+    <style name="GallaudetTheme.AlertDialog" parent="Theme.AppCompat.Light.Dialog.Alert">
         <item name="colorAccent">@color/vegas_gold</item>
         <item name="android:background">@color/white</item>
     </style>
 
+    <style name="GallaudetTheme.DrawerArrowStyle" parent="Widget.AppCompat.DrawerArrowToggle">
+        <item name="spinBars">true</item>
+        <item name="color">@color/white</item>
+    </style>
+
+    <style name="GallaudetTheme.AppBarOverlay" parent="ThemeOverlay.AppCompat.Dark.ActionBar"/>
+    <style name="GallaudetTheme.PopupOverlay" parent="ThemeOverlay.AppCompat.Light"/>
 </resources>
