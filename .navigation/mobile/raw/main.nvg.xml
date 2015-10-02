@@ -1,0 +1,47 @@
+<?xml version="1.0" encoding="UTF-8"?>
+<navigationModel
+  ns = "http://schemas.android.com?import=com.android.tools.idea.editors.navigation.model.*">
+  <locations  
+    class = "java.util.ArrayList">
+    <statePointEntry>
+      <state      
+        class = "com.android.tools.idea.editors.navigation.model.ActivityState"      
+        className = "com.ephemeraldreams.gallyshuttle.ui.AboutActivity"/>
+      <point      
+        x = "2324"      
+        y = "292"/>
+    </statePointEntry>
+    <statePointEntry>
+      <state      
+        class = "com.android.tools.idea.editors.navigation.model.ActivityState"      
+        className = "com.ephemeraldreams.gallyshuttle.ui.ArrivalCountdownActivity"/>
+      <point      
+        x = "176"      
+        y = "744"/>
+    </statePointEntry>
+    <statePointEntry>
+      <state      
+        class = "com.android.tools.idea.editors.navigation.model.ActivityState"      
+        className = "com.ephemeraldreams.gallyshuttle.ui.ScheduleActivity"/>
+      <point      
+        x = "1640"      
+        y = "1512"/>
+    </statePointEntry>
+    <statePointEntry>
+      <state      
+        class = "com.android.tools.idea.editors.navigation.model.ActivityState"      
+        className = "com.ephemeraldreams.gallyshuttle.ui.SettingsActivity"/>
+      <point      
+        x = "2808"      
+        y = "1424"/>
+    </statePointEntry>
+    <statePointEntry>
+      <state      
+        class = "com.android.tools.idea.editors.navigation.model.ActivityState"      
+        className = "com.ephemeraldreams.gallyshuttle.ui.WebViewActivity"/>
+      <point      
+        x = "1324"      
+        y = "16"/>
+    </statePointEntry>
+  </locations>
+</navigationModel>
