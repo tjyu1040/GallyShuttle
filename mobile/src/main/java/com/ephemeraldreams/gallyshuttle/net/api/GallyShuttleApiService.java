@@ -17,25 +17,16 @@
 package com.ephemeraldreams.gallyshuttle.net.api;
 
 import com.ephemeraldreams.gallyshuttle.net.api.models.Schedule;
-import com.ephemeraldreams.gallyshuttle.net.api.models.Station;
 
-import java.util.List;
-
+import retrofit.Call;
 import retrofit.http.GET;
 import retrofit.http.Path;
-import rx.Observable;
 
 /**
  * REST API interface service to retrieve Gallaudet University shuttle information.
  */
 public interface GallyShuttleApiService {
 
-    @GET("schedule/{name}")
-    Observable<Schedule> schedule(@Path("name") String name);
-
-    @GET("schedules")
-    Observable<List<Schedule>> schedules();
-
-    @GET("stations")
-    Observable<List<Station>> stations();
+    @GET("schedule/{pathName}")
+    Call<Schedule> loadSchedule(@Path("pathName") String pathName);
 }
