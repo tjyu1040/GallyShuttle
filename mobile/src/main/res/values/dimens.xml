@@ -23,6 +23,9 @@
     <dimen name="card_picked_up_elevation">8dp</dimen>
     <dimen name="card_margin">8dp</dimen>
     <dimen name="card_text_padding">16dp</dimen>
+    <dimen name="card_text_horizontal_padding">16dp</dimen>
+    <dimen name="card_text_vertical_small_padding">16dp</dimen>
+    <dimen name="card_text_vertical_large_padding">24dp</dimen>
     <dimen name="card_action_padding">8dp</dimen>
 
     <dimen name="fab_margin">16dp</dimen>
@@ -32,4 +35,5 @@
     <dimen name="about_view_padding">8dp</dimen>
 
     <dimen name="arrival_countdown_timer_font_size">56sp</dimen>
+    <dimen name="time_view_holder_font_size">34sp</dimen>
 </resources>
