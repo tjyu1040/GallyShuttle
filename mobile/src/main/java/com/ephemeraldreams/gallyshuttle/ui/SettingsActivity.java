@@ -64,7 +64,8 @@ public class SettingsActivity extends BaseActivity {
     @Bind(R.id.app_bar_layout) AppBarLayout appBarLayout;
 
     public static void launch(Activity activity) {
-        activity.startActivity(new Intent(activity, SettingsActivity.class));
+        Intent intent = new Intent(activity, SettingsActivity.class);
+        activity.startActivity(intent);
     }
 
     @Override
@@ -72,14 +73,16 @@ public class SettingsActivity extends BaseActivity {
         super.onCreate(savedInstanceState);
         setContentView(R.layout.activity_settings);
         getComponent().inject(this);
-        ButterKnife.bind(this);
+    }
 
-        setSupportActionBar(toolbar);
-        final ActionBar actionBar = getSupportActionBar();
-        if (actionBar != null) {
-            actionBar.setDisplayShowHomeEnabled(true);
-            actionBar.setDisplayHomeAsUpEnabled(true);
-        }
+    @Override
+    protected int getSelfNavigationDrawerItemId() {
+        return R.id.nav_settings;
+    }
+
+    @Override
+    protected String getActionBarTitle() {
+        return getString(R.string.nav_settings);
     }
 
     @Override
@@ -294,7 +297,7 @@ public class SettingsActivity extends BaseActivity {
                         super.onActivityResult(requestCode, resultCode, data);
                 }
             } else {
-                super.onActivityResult(requestCode, resultCode, data);
+                super.onActivityResult(requestCode, resultCode, null);
             }
         }
 
