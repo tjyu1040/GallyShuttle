@@ -20,33 +20,33 @@
     <group android:checkableBehavior="single">
         <item
             android:id="@+id/nav_home"
-            android:icon="@drawable/ic_home_black_24dp"
+            android:icon="@drawable/ic_home_24dp"
             android:title="@string/nav_home"/>
         <item
             android:id="@+id/nav_schedules"
-            android:icon="@drawable/ic_event_black_24dp"
+            android:icon="@drawable/ic_schedule_24dp"
             android:title="@string/nav_schedules">
             <menu>
                 <group android:checkableBehavior="single">
                     <item
                         android:id="@+id/nav_continuous"
-                        android:icon="@drawable/ic_event_black_24dp"
+                        android:icon="@drawable/ic_schedule_24dp"
                         android:title="@string/nav_continuous"/>
                     <item
                         android:id="@+id/nav_late_night"
-                        android:icon="@drawable/ic_event_black_24dp"
+                        android:icon="@drawable/ic_schedule_24dp"
                         android:title="@string/nav_late_night"/>
                     <item
                         android:id="@+id/nav_weekend"
-                        android:icon="@drawable/ic_event_black_24dp"
+                        android:icon="@drawable/ic_schedule_24dp"
                         android:title="@string/nav_weekend"/>
                     <item
                         android:id="@+id/nav_alt_continuous"
-                        android:icon="@drawable/ic_event_black_24dp"
+                        android:icon="@drawable/ic_schedule_24dp"
                         android:title="@string/nav_alt_continuous"/>
                     <item
                         android:id="@+id/nav_modified"
-                        android:icon="@drawable/ic_event_black_24dp"
+                        android:icon="@drawable/ic_schedule_24dp"
                         android:title="@string/nav_modified"/>
                 </group>
             </menu>
@@ -57,15 +57,19 @@
         android:checkableBehavior="single">
         <item
             android:id="@+id/nav_policies"
-            android:icon="@drawable/ic_description_black_24dp"
+            android:icon="@drawable/ic_description_24dp"
             android:title="@string/nav_policies"/>
         <item
+            android:id="@+id/nav_faq"
+            android:icon="@drawable/ic_help_24dp"
+            android:title="@string/nav_faq"/>
+        <item
             android:id="@+id/nav_settings"
-            android:icon="@drawable/ic_settings_black_24dp"
+            android:icon="@drawable/ic_settings_24dp"
             android:title="@string/nav_settings"/>
         <item
             android:id="@+id/nav_about"
-            android:icon="@drawable/ic_info_black_24dp"
+            android:icon="@drawable/ic_info_24dp"
             android:title="@string/nav_about"/>
     </group>
 </menu>
