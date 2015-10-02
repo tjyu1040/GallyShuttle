@@ -27,8 +27,9 @@
             android:value="@integer/google_play_services_version"/>
 
         <activity
-            android:name=".ui.MainActivity"
-            android:label="@string/app_name">
+            android:name=".ui.ArrivalCountdownActivity"
+            android:label="@string/arrival_countdown_activity_label"
+            android:launchMode="singleTop">
             <intent-filter>
                 <action android:name="android.intent.action.MAIN"/>
 
@@ -37,13 +38,25 @@
         </activity>
 
         <activity
+            android:name=".ui.ScheduleActivity"
+            android:label="@string/schedule_activity_label"
+            android:parentActivityName=".ui.ArrivalCountdownActivity">
+        </activity>
+
+        <activity
+            android:name=".ui.AboutActivity"
+            android:label="@string/about_activity_label"
+            android:parentActivityName=".ui.ArrivalCountdownActivity"/>
+
+        <activity
             android:name=".ui.SettingsActivity"
-            android:label="@string/title_activity_settings"
+            android:label="@string/settings_activity_label"
+            android:launchMode="singleInstance"
             android:theme="@style/GallaudetTheme.PreferenceTheme"/>
 
         <activity
             android:name=".ui.WebViewActivity"
-            android:label="@string/title_activity_webview"/>
+            android:label="@string/webview_activity_label"/>
 
         <service
             android:name=".net.gcm.RegistrationIntentService"
@@ -75,11 +88,6 @@
             </intent-filter>
         </receiver>
 
-        <receiver android:name=".ui.receivers.NetworkStateBroadCastReceiver">
-            <intent-filter>
-                <action android:name="android.net.conn.CONNECTIVITY_CHANGE"/>
-            </intent-filter>
-        </receiver>
     </application>
 
 </manifest>
