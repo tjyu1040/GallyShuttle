@@ -26,7 +26,7 @@
 
     <!-- Navigation Drawer text -->
     <string name="nav_home">Home</string>
-    <string name="nav_arrival_countdown">Arrival Countdown</string>
+    <string name="nav_arrival_countdown">Arrival Countdown Timer</string>
     <string name="nav_schedules">Schedules</string>
     <string name="nav_continuous">Continuous</string>
     <string name="nav_alt_continuous">Alternate Continuous</string>
@@ -93,5 +93,8 @@
     <string name="underlined_terms_of_service"><u>Terms of Service</u></string>
     <string name="underlined_privacy_policy"><u>Privacy Policy</u></string>
     <string name="about_message">Gally Shuttle - Never miss a shuttle again!</string>
+
+    <!-- Accessibility content descriptions -->
+    <string name="add_alarm_content_desc">Add alarm</string>
 
 </resources>
