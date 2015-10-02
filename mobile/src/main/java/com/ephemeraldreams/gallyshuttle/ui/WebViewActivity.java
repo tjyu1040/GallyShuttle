@@ -43,6 +43,8 @@ public class WebViewActivity extends BaseActivity {
     @Bind(R.id.toolbar) Toolbar toolbar;
     @Bind(R.id.webview) WebView webView;
 
+    private String url;
+
     /**
      * @param activity The activity that wants to open the Uri.
      * @param uri      The uri to be opened.
@@ -59,7 +61,7 @@ public class WebViewActivity extends BaseActivity {
         setContentView(R.layout.activity_webview);
         ButterKnife.bind(this);
 
-        String url = getIntent().getStringExtra(EXTRA_URL);
+        url = getIntent().getStringExtra(EXTRA_URL);
         webView.setWebViewClient(new WebViewClient());
         WebSettings webSettings = webView.getSettings();
         webSettings.setJavaScriptEnabled(true);
@@ -73,13 +75,12 @@ public class WebViewActivity extends BaseActivity {
     }
 
     @Override
-    public boolean onOptionsItemSelected(MenuItem item) {
-        switch (item.getItemId()) {
-            case android.R.id.home:
-                finish();
-                return true;
-            default:
-                return super.onOptionsItemSelected(item);
-        }
+    protected int getSelfNavigationDrawerItemId() {
+        return INVALID_NAVIGATION_DRAWER_ITEM_ID;
+    }
+
+    @Override
+    protected String getActionBarTitle() {
+        return url;
     }
 }
