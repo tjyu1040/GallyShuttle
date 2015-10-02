@@ -17,10 +17,11 @@
 package com.ephemeraldreams.gallyshuttle.ui;
 
 import android.support.v4.app.Fragment;
-import android.support.v7.app.ActionBar;
+
+import butterknife.ButterKnife;
 
 /**
- * Base fragment for dagger injection and support action bar access.
+ * Base fragment for dagger injection and ButterKnife unbinding.
  */
 public class BaseFragment extends Fragment {
 
@@ -33,12 +34,9 @@ public class BaseFragment extends Fragment {
         return ((BaseActivity) getActivity()).getComponent();
     }
 
-    /**
-     * Retrieve support action bar.
-     *
-     * @return Support action bar.
-     */
-    public ActionBar getSupportActionBar() {
-        return ((BaseActivity) getActivity()).getSupportActionBar();
+    @Override
+    public void onDestroyView() {
+        super.onDestroyView();
+        ButterKnife.unbind(this);
     }
 }
