@@ -64,7 +64,6 @@ public class ScheduleActivity extends BaseScheduleActivity {
         super.onCreate(savedInstanceState);
         setContentView(R.layout.activity_schedule);
         getComponent().inject(this);
-        overridePendingTransition(0, 0);
 
         pathId = getIntent().getIntExtra(PATH_EXTRA, R.string.path_continuous);
     }

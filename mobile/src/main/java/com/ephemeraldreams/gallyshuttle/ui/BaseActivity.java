@@ -35,7 +35,7 @@ public abstract class BaseActivity extends AppCompatActivity implements Navigati
 
     // Fade in and out animations for main content while switching between different activities of
     // the app through the navigation drawer.
-    private static final int MAIN_CONTENT_FADE_OUT_DURATION = 150;
+    private static final int MAIN_CONTENT_FADE_OUT_DURATION = 250;
     private static final int MAIN_CONTENT_FADE_IN_DURATION = 250;
 
     private static final String POLICIES_URL = "http://www.gallaudet.edu/transportation/shuttle-bus-services.html";
@@ -53,6 +53,7 @@ public abstract class BaseActivity extends AppCompatActivity implements Navigati
     @Override
     protected void onCreate(Bundle savedInstanceState) {
         super.onCreate(savedInstanceState);
+        overridePendingTransition(0, 0);
 
         component = DaggerActivityComponent.builder()
                 .applicationComponent(GallyShuttleApplication.getComponent())
@@ -66,6 +67,12 @@ public abstract class BaseActivity extends AppCompatActivity implements Navigati
         navigationView.setCheckedItem(getSelfNavigationDrawerItemId());
         coordinatorLayout.setAlpha(0);
         coordinatorLayout.animate().alpha(1).setDuration(MAIN_CONTENT_FADE_IN_DURATION);
+    }
+
+    @Override
+    public void finish() {
+        super.finish();
+        overridePendingTransition(0, 0);
     }
 
     @Override
