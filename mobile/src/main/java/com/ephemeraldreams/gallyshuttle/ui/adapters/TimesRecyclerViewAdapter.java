@@ -24,6 +24,7 @@ import android.widget.TextView;
 
 import com.ephemeraldreams.gallyshuttle.R;
 
+import java.util.ArrayList;
 import java.util.List;
 
 import butterknife.Bind;
@@ -39,10 +40,14 @@ public class TimesRecyclerViewAdapter extends RecyclerView.Adapter<TimesRecycler
         void onTimeClick(String time);
     }
 
-    private final List<String> times;
+    private List<String> times;
     private OnTimeClickListener onTimeClickListener;
 
-    public TimesRecyclerViewAdapter(List<String> times) {
+    public TimesRecyclerViewAdapter() {
+        this(new ArrayList<String>());
+    }
+
+    public TimesRecyclerViewAdapter(ArrayList<String> times) {
         this.times = times;
     }
 
@@ -61,6 +66,32 @@ public class TimesRecyclerViewAdapter extends RecyclerView.Adapter<TimesRecycler
     @Override
     public int getItemCount() {
         return times.size();
+    }
+
+    public void addTime(int position, String time) {
+        times.add(position, time);
+        notifyItemInserted(position);
+    }
+
+    public void addTimes(List<String> times) {
+        int position = 0;
+        for (String time : times) {
+            addTime(position, time);
+            position++;
+        }
+    }
+
+    public void removeTime(int position) {
+        times.remove(position);
+        notifyItemRemoved(position);
+    }
+
+    public void clearTimes(){
+        int position = times.size() - 1;
+        while (!times.isEmpty()) {
+            removeTime(position);
+            position--;
+        }
     }
 
     public void setOnTimeClickListener(final OnTimeClickListener onTimeClickListener) {

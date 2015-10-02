@@ -28,7 +28,7 @@ import com.ephemeraldreams.gallyshuttle.ui.TimesFragment;
  */
 public class TimesFragmentPagerAdapter extends FragmentPagerAdapter {
 
-    private final Schedule schedule;
+    private Schedule schedule;
 
     public TimesFragmentPagerAdapter(FragmentManager fragmentManager, Schedule schedule) {
         super(fragmentManager);
