@@ -22,7 +22,8 @@ import android.content.Intent;
 import android.content.IntentFilter;
 import android.content.pm.PackageManager;
 import android.content.pm.ResolveInfo;
-import android.graphics.BitmapFactory;
+import android.graphics.Bitmap;
+import android.graphics.drawable.Drawable;
 import android.net.Uri;
 import android.support.customtabs.CustomTabsIntent;
 import android.support.customtabs.CustomTabsService;
@@ -57,10 +58,13 @@ public final class CustomTabsUtils {
      */
     public static void openCustomTab(Activity activity, String url) {
 
+        Drawable closeButtonIconDrawable = DrawableUtils.getTintedDrawable(activity, R.drawable.ic_arrow_back_24dp, R.color.white);
+        Bitmap closeButtonIconBitmap = BitmapUtils.decodeDrawable(closeButtonIconDrawable);
+
         CustomTabsIntent customTabsIntent = new CustomTabsIntent.Builder()
                 .setToolbarColor(ContextCompat.getColor(activity, R.color.blue))
                 .setShowTitle(true)
-                .setCloseButtonIcon(BitmapFactory.decodeResource(activity.getResources(), R.drawable.ic_arrow_back_white_24dp))
+                .setCloseButtonIcon(closeButtonIconBitmap)
                 .setStartAnimations(activity, R.anim.slide_in_right, R.anim.slide_out_left)
                 .setExitAnimations(activity, android.R.anim.slide_in_left, android.R.anim.slide_out_right)
                 .build();
