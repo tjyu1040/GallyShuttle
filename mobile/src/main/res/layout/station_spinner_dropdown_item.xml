@@ -1,3 +1,4 @@
+<?xml version="1.0" encoding="utf-8"?>
 <!--
   ~ Copyright 2014 Timothy Yu
   ~
@@ -14,12 +15,11 @@
   ~ limitations under the License.
   -->
 
-<menu xmlns:android="http://schemas.android.com/apk/res/android"
-      xmlns:app="http://schemas.android.com/apk/res-auto">
-
-    <item
-        android:id="@+id/action_settings"
-        android:orderInCategory="100"
-        android:title="@string/action_settings"
-        app:showAsAction="never"/>
-</menu>
+<TextView
+    xmlns:android="http://schemas.android.com/apk/res/android"
+    android:id="@+id/station_text_view"
+    android:layout_width="match_parent"
+    android:layout_height="match_parent"
+    android:textSize="14sp"
+    android:padding="16dp"
+    android:textAppearance="@style/Widget.AppCompat.TextView.SpinnerItem"/>
