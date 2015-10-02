@@ -16,6 +16,7 @@
 
 package com.ephemeraldreams.gallyshuttle.content;
 
+import org.joda.time.Duration;
 import org.joda.time.LocalDateTime;
 import org.joda.time.LocalTime;
 import org.joda.time.format.DateTimeFormat;
@@ -28,14 +29,19 @@ import java.util.concurrent.TimeUnit;
  */
 public final class DateUtils {
 
-    private DateUtils() {
-        // No instance.
-    }
+    /**
+     * Formatter to convert a String time into correct 12-hours time format for users to view.
+     */
+    private static final DateTimeFormatter TIME_TWELVE_HOURS_FORMATTER = DateTimeFormat.forPattern("h:mm aa");
 
     /**
      * Formatter to convert a String time into correct 24-hours time format for processing.
      */
     private static final DateTimeFormatter DATE_FORMAT = DateTimeFormat.forPattern("hh:mm aa");
+
+    private DateUtils() {
+        // No instance.
+    }
 
     /**
      * Parse a string time into a {@link LocalDateTime} object.
@@ -48,6 +54,28 @@ public final class DateUtils {
     }
 
     /**
+     * Format into "h:mm aa" date format.
+     *
+     * @param localDateTime LocalDateTime to format.
+     * @return String format in "h:mm aa"
+     */
+    public static String formatTime(LocalDateTime localDateTime) {
+        return TIME_TWELVE_HOURS_FORMATTER.print(localDateTime);
+    }
+
+    /**
+     * Calculate the duration between two {@link LocalDateTime}s.
+     *
+     * @param startDateTime Starting {@link LocalDateTime}.
+     * @param endDateTime   Ending {@link LocalDateTime}.
+     * @return Duration between start and end in milliseconds.
+     */
+    public static long calculateDuration(LocalDateTime startDateTime, LocalDateTime endDateTime) {
+        Duration duration = new Duration(startDateTime.toDateTime(), endDateTime.toDateTime());
+        return duration.getMillis();
+    }
+
+    /**
      * Convert milliseconds to "mm:ss" format.
      *
      * @param millis Milliseconds to convert.
@@ -57,6 +85,6 @@ public final class DateUtils {
         long hour = TimeUnit.MILLISECONDS.toHours(millis);
         long minute = TimeUnit.MILLISECONDS.toMinutes(millis) - TimeUnit.HOURS.toMinutes(TimeUnit.MILLISECONDS.toHours(millis));
         long second = TimeUnit.MILLISECONDS.toSeconds(millis) - TimeUnit.MINUTES.toSeconds(TimeUnit.MILLISECONDS.toMinutes(millis));
-        return String.format("%02d:%02d:%02d", hour, minute, second);
+        return String.format("%1d:%02d:%02d", hour, minute, second);
     }
 }
