@@ -19,6 +19,7 @@ package com.ephemeraldreams.gallyshuttle.ui;
 import android.os.Bundle;
 import android.support.annotation.Nullable;
 import android.support.design.widget.Snackbar;
+import android.support.v7.widget.DefaultItemAnimator;
 import android.support.v7.widget.LinearLayoutManager;
 import android.support.v7.widget.RecyclerView;
 import android.view.LayoutInflater;
@@ -27,16 +28,19 @@ import android.view.ViewGroup;
 
 import com.ephemeraldreams.gallyshuttle.R;
 import com.ephemeraldreams.gallyshuttle.ui.adapters.TimesRecyclerViewAdapter;
+import com.ephemeraldreams.gallyshuttle.ui.widget.decorator.DividerItemDecoration;
 
 import java.util.ArrayList;
-import java.util.List;
 
 import butterknife.Bind;
 import butterknife.ButterKnife;
 
 public class TimesFragment extends BaseFragment implements TimesRecyclerViewAdapter.OnTimeClickListener {
 
-    private static final String ARG_TIMES = "times";
+    private static final String TIMES_ARG = "times.arg";
+    private static final String TIMES_KEY = "times.key";
+    private static final String X_KEY = "times.x";
+    private static final String Y_KEY = "times.y";
 
     @Bind(R.id.times_recycler_view) RecyclerView timesRecyclerView;
     private TimesRecyclerViewAdapter adapter;
@@ -44,7 +48,7 @@ public class TimesFragment extends BaseFragment implements TimesRecyclerViewAdap
     public static TimesFragment newInstance(ArrayList<String> times) {
         TimesFragment fragment = new TimesFragment();
         Bundle args = new Bundle();
-        args.putStringArrayList(ARG_TIMES, times);
+        args.putStringArrayList(TIMES_ARG, times);
         fragment.setArguments(args);
         return fragment;
     }
@@ -52,16 +56,20 @@ public class TimesFragment extends BaseFragment implements TimesRecyclerViewAdap
     @Override
     public void onCreate(Bundle savedInstanceState) {
         super.onCreate(savedInstanceState);
-        getActivityComponent().inject(this);
-        List<String> times;
+        ArrayList<String> times;
         if (getArguments() != null) {
-            times = getArguments().getStringArrayList(ARG_TIMES);
+            times = getArguments().getStringArrayList(TIMES_ARG);
         } else {
             times = new ArrayList<>();
         }
-
         adapter = new TimesRecyclerViewAdapter(times);
         adapter.setOnTimeClickListener(this);
+    }
+
+    @Override
+    public void onActivityCreated(@Nullable Bundle savedInstanceState) {
+        super.onActivityCreated(savedInstanceState);
+        getActivityComponent().inject(this);
     }
 
     @Nullable
@@ -69,18 +77,11 @@ public class TimesFragment extends BaseFragment implements TimesRecyclerViewAdap
     public View onCreateView(LayoutInflater inflater, ViewGroup container, Bundle savedInstanceState) {
         View view = inflater.inflate(R.layout.fragment_times, container, false);
         ButterKnife.bind(this, view);
-
         timesRecyclerView.setHasFixedSize(true);
         timesRecyclerView.setLayoutManager(new LinearLayoutManager(getActivity()));
+        timesRecyclerView.addItemDecoration(new DividerItemDecoration(getActivity(), null));
         timesRecyclerView.setAdapter(adapter);
-
         return view;
-    }
-
-    @Override
-    public void onDestroyView() {
-        super.onDestroyView();
-        ButterKnife.unbind(this);
     }
 
     @Override
