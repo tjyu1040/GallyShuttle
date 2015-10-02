@@ -41,7 +41,7 @@
         android:background="?attr/selectableItemBackgroundBorderless"
         android:contentDescription="@string/add_alarm_content_desc"
         android:padding="@dimen/card_action_padding"
-        android:src="@drawable/ic_alarm_add_black_24dp"
+        android:src="@drawable/ic_alarm_add_24dp"
         android:tint="@color/vegas_gold"/>
 
 </LinearLayout>
