@@ -1,7 +1,6 @@
 package com.ephemeraldreams.gallyshuttle.ui;
 
 import android.app.Activity;
-import android.support.v7.app.AppCompatActivity;
 
 import com.ephemeraldreams.gallyshuttle.ApplicationComponent;
 import com.ephemeraldreams.gallyshuttle.annotations.scopes.ActivityScope;
@@ -17,12 +16,10 @@ import dagger.Component;
 @Component(dependencies = ApplicationComponent.class, modules = ActivityModule.class)
 public interface ActivityComponent {
 
-    void inject(MainActivity mainActivity);
-    void inject(SettingsActivity settingsActivity);
-    void inject(ScheduleFragment scheduleFragment);
-    void inject(CountDownFragment countDownFragment);
+    void inject(ArrivalCountdownActivity arrivalCountdownActivity);
+    void inject(ScheduleActivity scheduleActivity);
     void inject(TimesFragment timesFragment);
+    void inject(SettingsActivity settingsActivity);
     void inject(SettingsFragment settingsFragment);
-
-    AppCompatActivity activity();
+    void inject(AboutActivity aboutActivity);
 }

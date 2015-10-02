@@ -21,7 +21,6 @@ import com.ephemeraldreams.gallyshuttle.net.NetworkModule;
 import com.ephemeraldreams.gallyshuttle.net.api.GallyShuttleApiService;
 import com.ephemeraldreams.gallyshuttle.net.gcm.RegistrationApiService;
 import com.ephemeraldreams.gallyshuttle.net.gcm.RegistrationIntentService;
-import com.ephemeraldreams.gallyshuttle.ui.receivers.NetworkStateBroadCastReceiver;
 import com.google.gson.Gson;
 import com.squareup.okhttp.OkHttpClient;
 import com.squareup.otto.Bus;
@@ -37,16 +36,15 @@ public interface ApplicationComponent {
 
     void inject(GallyShuttleApplication gallyShuttleApplication);
     void inject(RegistrationIntentService registrationIntentService);
-    void inject(NetworkStateBroadCastReceiver networkStateBroadCastReceiver);
 
-    // Android system services dependencies made available to sub-graphs
+    // Android system services dependencies made available to sub-components
     Application getApplication();
     Bus getBus();
     ConnectivityManager getConnectivityManager();
     AlarmManager getAlarmManager();
     NotificationManager getNotificationManager();
 
-    // Content dependencies made available to sub-graphs
+    // Content dependencies made available to sub-components
     Resources getResources();
     SharedPreferences getSharedPreferences();
     @AlarmReminderLength StringPreference getAlarmReminderLengthStringPreference();
@@ -57,6 +55,7 @@ public interface ApplicationComponent {
     Gson getGson();
     CacheManager getCacheManager();
 
+    // Network dependencies made available to sub-components
     OkHttpClient getOkHttpClient();
     GallyShuttleApiService getGallyShuttleApiService();
     RegistrationApiService getRegistrationApiService();

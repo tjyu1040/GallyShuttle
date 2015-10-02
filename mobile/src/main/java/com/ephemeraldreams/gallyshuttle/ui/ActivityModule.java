@@ -1,11 +1,10 @@
 package com.ephemeraldreams.gallyshuttle.ui;
 
+import android.app.Activity;
 import android.support.v4.app.FragmentManager;
 import android.support.v7.app.AppCompatActivity;
 
 import com.ephemeraldreams.gallyshuttle.annotations.scopes.ActivityScope;
-import com.ephemeraldreams.gallyshuttle.net.NetworkModule;
-import com.squareup.otto.Bus;
 
 import dagger.Module;
 import dagger.Provides;
@@ -16,21 +15,21 @@ import dagger.Provides;
 @Module()
 public class ActivityModule {
 
-    private final AppCompatActivity activity;
+    private final Activity activity;
 
-    public ActivityModule(AppCompatActivity activity) {
+    public ActivityModule(Activity activity) {
         this.activity = activity;
     }
 
     @Provides
     @ActivityScope
-    AppCompatActivity activity() {
+    Activity getActivity() {
         return activity;
     }
 
     @Provides
     @ActivityScope
-    FragmentManager fragmentManager(AppCompatActivity activity) {
-        return activity.getSupportFragmentManager();
+    FragmentManager getFragmentManager(Activity activity) {
+        return ((AppCompatActivity) activity).getSupportFragmentManager();
     }
 }
