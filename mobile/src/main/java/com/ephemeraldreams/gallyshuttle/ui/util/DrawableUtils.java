@@ -26,7 +26,7 @@ import android.support.v4.graphics.drawable.DrawableCompat;
 /**
  * {@link Drawable} utility class.
  */
-public class DrawableUtils {
+public final class DrawableUtils {
 
     private DrawableUtils() {
         // No instance.

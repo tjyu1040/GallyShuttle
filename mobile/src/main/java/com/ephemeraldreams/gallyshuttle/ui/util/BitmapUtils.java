@@ -23,7 +23,7 @@ import android.graphics.drawable.Drawable;
 /**
  * {@link Bitmap} utility class.
  */
-public class BitmapUtils {
+public final class BitmapUtils {
 
     private BitmapUtils() {
         // No instance.
