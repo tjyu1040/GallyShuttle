@@ -16,13 +16,10 @@
 
 package com.ephemeraldreams.gallyshuttle.ui;
 
+import android.app.Activity;
 import android.content.Intent;
 import android.net.Uri;
 import android.os.Bundle;
-import android.support.annotation.Nullable;
-import android.view.LayoutInflater;
-import android.view.View;
-import android.view.ViewGroup;
 import android.widget.TextView;
 
 import com.ephemeraldreams.gallyshuttle.BuildConfig;
@@ -31,11 +28,10 @@ import com.ephemeraldreams.gallyshuttle.ui.services.CustomTabsWarmUpService;
 import com.ephemeraldreams.gallyshuttle.ui.util.CustomTabsUtils;
 
 import butterknife.Bind;
-import butterknife.ButterKnife;
 import butterknife.OnClick;
 import timber.log.Timber;
 
-public class AboutFragment extends BaseFragment implements CustomTabsWarmUpService.CustomTabsConnectionCallback {
+public class AboutActivity extends BaseActivity implements CustomTabsWarmUpService.CustomTabsConnectionCallback {
 
     private static final String BASE_URL = "https://gallyshuttle.appspot.com/";
     private static final String CREDITS_URL = "contributors.html";
@@ -46,43 +42,30 @@ public class AboutFragment extends BaseFragment implements CustomTabsWarmUpServi
     @Bind(R.id.version_text_view) TextView versionTextView;
     private CustomTabsWarmUpService warmUpService;
 
-    public static AboutFragment newInstance() {
-        return new AboutFragment();
+    public static void launch(Activity activity) {
+        Intent intent = new Intent(activity, AboutActivity.class);
+        activity.startActivity(intent);
     }
 
     @Override
-    public void onCreate(Bundle savedInstanceState) {
+    protected void onCreate(Bundle savedInstanceState) {
         super.onCreate(savedInstanceState);
-        setRetainInstance(true);
+        setContentView(R.layout.activity_about);
+        getComponent().inject(this);
         warmUpService = new CustomTabsWarmUpService();
-        warmUpService.setConnectionCallback(this);
-    }
-
-    @Nullable
-    @Override
-    public View onCreateView(LayoutInflater inflater, ViewGroup container, Bundle savedInstanceState) {
-        View view = inflater.inflate(R.layout.fragment_about, container, false);
-        ButterKnife.bind(this, view);
-        versionTextView.setText("Version " + BuildConfig.VERSION_NAME);
-        return view;
+        versionTextView.setText(getString(R.string.version_fmt, BuildConfig.VERSION_NAME));
     }
 
     @Override
-    public void onStart() {
-        super.onStart();
-        warmUpService.bindCustomTabsService(getActivity());
+    protected void onResume() {
+        super.onResume();
+        warmUpService.bindCustomTabsService(this, this);
     }
 
     @Override
-    public void onStop() {
-        super.onStop();
-        warmUpService.unbindCustomTabsService(getActivity());
-    }
-
-    @Override
-    public void onDestroyView() {
-        super.onDestroyView();
-        ButterKnife.unbind(this);
+    protected void onPause() {
+        super.onPause();
+        warmUpService.unbindCustomTabsService(this);
     }
 
     @Override
@@ -100,9 +83,19 @@ public class AboutFragment extends BaseFragment implements CustomTabsWarmUpServi
 
     }
 
+    @Override
+    protected int getSelfNavigationDrawerItemId() {
+        return R.id.nav_about;
+    }
+
+    @Override
+    protected String getActionBarTitle() {
+        return getString(R.string.nav_about);
+    }
+
     @OnClick(R.id.credits_text_view)
     public void displayCredits() {
-        CustomTabsUtils.openCustomTab(getActivity(), BASE_URL + CREDITS_URL);
+        CustomTabsUtils.openCustomTab(this, BASE_URL + CREDITS_URL);
     }
 
     @OnClick(R.id.rate_text_view)
@@ -125,16 +118,16 @@ public class AboutFragment extends BaseFragment implements CustomTabsWarmUpServi
 
     @OnClick(R.id.open_source_text_view)
     public void displayOpenSourceLicenses() {
-        CustomTabsUtils.openCustomTab(getActivity(), BASE_URL + OPEN_SOURCE_URL);
+        CustomTabsUtils.openCustomTab(this, BASE_URL + OPEN_SOURCE_URL);
     }
 
     @OnClick(R.id.tos_text_view)
     public void displayTermsOfServices() {
-        CustomTabsUtils.openCustomTab(getActivity(), BASE_URL + TOS_URL);
+        CustomTabsUtils.openCustomTab(this, BASE_URL + TOS_URL);
     }
 
     @OnClick(R.id.privacy_text_view)
     public void displayPrivacyPolicy() {
-        CustomTabsUtils.openCustomTab(getActivity(), BASE_URL + PRIVACY_URL);
+        CustomTabsUtils.openCustomTab(this, BASE_URL + PRIVACY_URL);
     }
 }
