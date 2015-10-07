@@ -29,6 +29,12 @@ public final class BitmapUtils {
         // No instance.
     }
 
+    /**
+     * Decode and convert a {@link Drawable} to a {@link Bitmap}.
+     *
+     * @param drawable Drawable to decode.
+     * @return Bitmap conversion.
+     */
     public static Bitmap decodeDrawable(Drawable drawable) {
         Bitmap bitmap = Bitmap.createBitmap(drawable.getIntrinsicWidth(), drawable.getIntrinsicHeight(), Bitmap.Config.ARGB_8888);
         Canvas canvas = new Canvas(bitmap);

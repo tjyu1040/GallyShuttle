@@ -32,6 +32,14 @@ public final class DrawableUtils {
         // No instance.
     }
 
+    /**
+     * Retrieve and tint a drawable.
+     *
+     * @param context    Parent context to provide drawable and color resources.
+     * @param drawableId Drawable resource id.
+     * @param colorId    Tint color resource id.
+     * @return Tinted drawable.
+     */
     public static Drawable getTintedDrawable(Context context, @DrawableRes int drawableId, @ColorRes int colorId) {
         Drawable drawable = ContextCompat.getDrawable(context, drawableId);
         DrawableCompat.setTint(drawable, ContextCompat.getColor(context, colorId));
