@@ -20,37 +20,29 @@ import android.app.Activity;
 import android.content.DialogInterface;
 import android.content.Intent;
 import android.content.SharedPreferences;
-import android.content.SharedPreferences.OnSharedPreferenceChangeListener;
-import android.media.Ringtone;
-import android.media.RingtoneManager;
+import android.content.res.Resources;
 import android.net.Uri;
 import android.os.Bundle;
-import android.preference.CheckBoxPreference;
 import android.preference.ListPreference;
 import android.preference.Preference;
-import android.preference.PreferenceFragment;
-import android.preference.PreferenceScreen;
-import android.provider.Settings;
-import android.support.annotation.NonNull;
-import android.support.annotation.StringRes;
+import android.preference.RingtonePreference;
 import android.support.design.widget.AppBarLayout;
 import android.support.design.widget.Snackbar;
-import android.support.v7.app.ActionBar;
+import android.support.v4.content.ContextCompat;
 import android.support.v7.app.AlertDialog;
 import android.support.v7.widget.Toolbar;
-import android.view.MenuItem;
+import android.view.View;
 
 import com.ephemeraldreams.gallyshuttle.R;
-import com.ephemeraldreams.gallyshuttle.annotations.qualifiers.AlarmRingtoneChoice;
-import com.ephemeraldreams.gallyshuttle.annotations.qualifiers.NotificationRingtoneChoice;
 import com.ephemeraldreams.gallyshuttle.content.CacheManager;
-import com.ephemeraldreams.gallyshuttle.content.preferences.StringPreference;
+import com.ephemeraldreams.gallyshuttle.util.GooglePlayServicesUtils;
 import com.google.android.gms.appinvite.AppInviteInvitation;
+import com.google.android.gms.common.GoogleApiAvailability;
+import com.google.android.gms.common.GooglePlayServicesUtil;
 
 import javax.inject.Inject;
 
 import butterknife.Bind;
-import butterknife.ButterKnife;
 import timber.log.Timber;
 
 /**
@@ -60,9 +52,11 @@ public class SettingsActivity extends BaseActivity {
 
     private static final int INVITE_REQUEST_CODE = 0;
 
-    @Bind(R.id.toolbar) Toolbar toolbar;
-    @Bind(R.id.app_bar_layout) AppBarLayout appBarLayout;
-
+    /**
+     * Launch a {@link SettingsActivity} instance.
+     *
+     * @param activity The activity opening the {@link SettingsActivity}.
+     */
     public static void launch(Activity activity) {
         Intent intent = new Intent(activity, SettingsActivity.class);
         activity.startActivity(intent);
@@ -88,277 +82,62 @@ public class SettingsActivity extends BaseActivity {
     @Override
     protected void onActivityResult(int requestCode, int resultCode, Intent data) {
         super.onActivityResult(requestCode, resultCode, data);
-        Timber.d("onActivityResult: requestCode=" + requestCode + ", resultCode=" + resultCode);
+        Timber.d("onActivityResult(): requestCode=" + requestCode + ", resultCode=" + resultCode);
         if (requestCode == INVITE_REQUEST_CODE) {
             if (resultCode == RESULT_OK) {
                 String[] ids = AppInviteInvitation.getInvitationIds(resultCode, data);
                 Timber.d(getString(R.string.sent_invitations_fmt, ids.length));
+                Snackbar.make(coordinatorLayout, getString(R.string.send_success), Snackbar.LENGTH_SHORT).show();
             } else {
-                Snackbar.make(appBarLayout, getString(R.string.send_failed), Snackbar.LENGTH_SHORT).show();
+                Snackbar.make(coordinatorLayout, getString(R.string.send_failed), Snackbar.LENGTH_SHORT).show();
             }
         }
     }
 
-    @Override
-    public boolean onOptionsItemSelected(MenuItem item) {
-        switch (item.getItemId()) {
-            case android.R.id.home:
-                finish();
-                return true;
-            default:
-                return super.onOptionsItemSelected(item);
-        }
-    }
+    public static class SettingsFragment extends BasePreferenceFragment {
 
-    /**
-     * Fragment to handle user's settings for the application.
-     */
-    public static class SettingsFragment extends PreferenceFragment implements OnSharedPreferenceChangeListener {
+        @Inject SharedPreferences sharedPreferences;
+        @Inject CacheManager cacheManager;
 
-        private static final int REQUEST_CODE_RINGTONE = 0;
-        private static final int REQUEST_CODE_ALARM_RINGTONE = 1;
-        private static final int REQUEST_CODE_NOTIFICATION_RINGTONE = 2;
+        private ListPreference reminderListPreference;
+        private RingtonePreference alarmRingtonePreference;
+        private RingtonePreference notificationRingtonePreference;
 
-        private ListPreference alarmReminderLengthPreference;
-        private Preference alarmRingtonePreference;
-        private CheckBoxPreference alarmVibrateCheckBoxPreference;
-        private Preference notificationRingtonePreference;
-        private CheckBoxPreference notificationVibrateCheckBoxPreference;
         private Preference cachePreference;
         private Preference sharePreference;
-
-        @Inject CacheManager cacheManager;
-        @Inject SharedPreferences sharedPreferences;
-        @Inject @AlarmRingtoneChoice StringPreference alarmRingtoneChoiceStringPreference;
-        @Inject @NotificationRingtoneChoice StringPreference notificationRingtoneChoiceStringPreference;
 
         @Override
         public void onCreate(Bundle savedInstanceState) {
             super.onCreate(savedInstanceState);
-            ((BaseActivity) getActivity()).getComponent().inject(this);
+            getActivityComponent().inject(this);
             addPreferencesFromResource(R.xml.preferences);
 
-            setAlarmReminderLengthPreference();
-            setAlarmRingtonePreference();
-            setAlarmVibrateCheckBoxPreference();
-            setNotificationRingtonePreference();
-            setNotificationVibrateCheckBoxPreference();
+            reminderListPreference = (ListPreference) findPreference(getString(R.string.pref_key_alarm_reminder));
+            bindOnPreferenceChange(reminderListPreference);
+
+            alarmRingtonePreference = (RingtonePreference) findPreference(getString(R.string.pref_key_alarm_ringtone));
+            bindOnPreferenceChange(alarmRingtonePreference);
+
+            notificationRingtonePreference = (RingtonePreference) findPreference(getString(R.string.pref_key_notification_ringtone));
+            bindOnPreferenceChange(notificationRingtonePreference);
+
             setCachePreference();
             setSharePreference();
         }
 
-        @Override
-        public void onResume() {
-            super.onResume();
-            sharedPreferences.registerOnSharedPreferenceChangeListener(this);
+        private void bindOnPreferenceChange(Preference preference) {
+            preference.setOnPreferenceChangeListener(this);
+            onPreferenceChange(preference, sharedPreferences.getString(preference.getKey(), ""));
         }
 
-        @Override
-        public void onPause() {
-            super.onPause();
-            sharedPreferences.unregisterOnSharedPreferenceChangeListener(this);
-        }
-
-        @Override
-        public void onSharedPreferenceChanged(SharedPreferences sharedPreferences, String key) {
-            if (key.equals(getString(R.string.key_alarm_reminder_length_preference))) {
-                updateAlarmReminderLengthSummary();
-            }
-        }
-
-        /**
-         * Set up alarm reminder length preference.
-         */
-        private void setAlarmReminderLengthPreference() {
-            alarmReminderLengthPreference = (ListPreference) findPreference(getString(R.string.key_alarm_reminder_length_preference));
-            updateAlarmReminderLengthSummary();
-        }
-
-        /**
-         * Update reminder length preference summary.
-         */
-        private void updateAlarmReminderLengthSummary() {
-            alarmReminderLengthPreference.setSummary(
-                    String.format(
-                            getString(R.string.summary_set_alarm_preference),
-                            alarmReminderLengthPreference.getEntry()
-                    )
-            );
-        }
-
-        /**
-         * Set up alarm ringtone preference.
-         */
-        private void setAlarmRingtonePreference() {
-            alarmRingtonePreference = findPreference(
-                    getString(R.string.key_alarm_ringtone_preference));
-            updateRingtoneSummary(alarmRingtonePreference, alarmRingtoneChoiceStringPreference);
-        }
-
-        /**
-         * Set up notification ringtone preference.
-         */
-        private void setNotificationRingtonePreference() {
-            notificationRingtonePreference = findPreference(
-                    getString(R.string.key_notification_ringtone_preference)
-            );
-            updateRingtoneSummary(notificationRingtonePreference, notificationRingtoneChoiceStringPreference);
-        }
-
-        /**
-         * Update ringtone name summary.
-         *
-         * @param ringtonePreference       Preference to update summary.
-         * @param ringtoneChoicePreference String preference to retrieve current ringtone choice.
-         */
-        private void updateRingtoneSummary(Preference ringtonePreference, StringPreference ringtoneChoicePreference) {
-            String ringtoneUriString = ringtoneChoicePreference.get("");
-            if (ringtoneUriString.length() == 0) {
-                ringtonePreference.setSummary("Silent");
-            } else {
-                Ringtone ringtone = RingtoneManager.getRingtone(getActivity(), Uri.parse(ringtoneUriString));
-                ringtonePreference.setSummary(ringtone.getTitle(getActivity()));
-            }
-        }
-
-        /**
-         * Overridden to handle ringtone preferences.
-         */
-        @Override
-        public boolean onPreferenceTreeClick(PreferenceScreen preferenceScreen, @NonNull Preference preference) {
-            if (preference.getKey().equals(getString(R.string.key_alarm_ringtone_preference))) {
-                startRingtonePickerActivity(R.string.key_alarm_ringtone_preference, alarmRingtoneChoiceStringPreference);
-                return true;
-            } else if (preference.getKey().equals(getString(R.string.key_notification_ringtone_preference))) {
-                startRingtonePickerActivity(R.string.key_notification_ringtone_preference, notificationRingtoneChoiceStringPreference);
-                return true;
-            } else {
-                return super.onPreferenceTreeClick(preferenceScreen, preference);
-            }
-        }
-
-        /**
-         * Start a ringtone activity to allow user to choose ringtone.
-         *
-         * @param keyPrefStringRes         Preference key string resource id.
-         * @param ringtoneChoicePreference String preference to retrieve current ringtone choice.
-         */
-        private void startRingtonePickerActivity(@StringRes int keyPrefStringRes, StringPreference ringtoneChoicePreference) {
-            Intent intent = new Intent(RingtoneManager.ACTION_RINGTONE_PICKER);
-            intent.putExtra(RingtoneManager.EXTRA_RINGTONE_SHOW_DEFAULT, true);
-            intent.putExtra(RingtoneManager.EXTRA_RINGTONE_SHOW_SILENT, true);
-
-            int requestCode;
-            Uri defaultUri;
-            switch (keyPrefStringRes) {
-                case R.string.key_alarm_ringtone_preference:
-                    intent.putExtra(RingtoneManager.EXTRA_RINGTONE_TYPE, RingtoneManager.TYPE_ALARM);
-                    requestCode = REQUEST_CODE_ALARM_RINGTONE;
-                    defaultUri = Settings.System.DEFAULT_ALARM_ALERT_URI;
-                    break;
-                case R.string.key_notification_ringtone_preference:
-                    intent.putExtra(RingtoneManager.EXTRA_RINGTONE_TYPE, RingtoneManager.TYPE_NOTIFICATION);
-                    requestCode = REQUEST_CODE_NOTIFICATION_RINGTONE;
-                    defaultUri = Settings.System.DEFAULT_NOTIFICATION_URI;
-                    break;
-                default:
-                    intent.putExtra(RingtoneManager.EXTRA_RINGTONE_TYPE, RingtoneManager.TYPE_RINGTONE);
-                    requestCode = REQUEST_CODE_RINGTONE;
-                    defaultUri = Settings.System.DEFAULT_RINGTONE_URI;
-                    break;
-            }
-            intent.putExtra(RingtoneManager.EXTRA_RINGTONE_DEFAULT_URI, defaultUri);
-
-            String currentRingtone = ringtoneChoicePreference.get(null);
-            if (currentRingtone != null) {
-                if (currentRingtone.length() == 0) {
-                    // Select "Silent" ringtone
-                    intent.putExtra(RingtoneManager.EXTRA_RINGTONE_EXISTING_URI, (Uri) null);
-                } else {
-                    intent.putExtra(RingtoneManager.EXTRA_RINGTONE_EXISTING_URI, Uri.parse(currentRingtone));
-                }
-            } else {
-                intent.putExtra(RingtoneManager.EXTRA_RINGTONE_DEFAULT_URI, defaultUri);
-            }
-            startActivityForResult(intent, requestCode);
-        }
-
-        @Override
-        public void onActivityResult(int requestCode, int resultCode, Intent data) {
-            if (data != null) {
-                switch (requestCode) {
-                    case REQUEST_CODE_ALARM_RINGTONE:
-                        saveRingtonePreference(alarmRingtonePreference, alarmRingtoneChoiceStringPreference, data);
-                        break;
-                    case REQUEST_CODE_NOTIFICATION_RINGTONE:
-                        saveRingtonePreference(notificationRingtonePreference, notificationRingtoneChoiceStringPreference, data);
-                        break;
-                    default:
-                        super.onActivityResult(requestCode, resultCode, data);
-                }
-            } else {
-                super.onActivityResult(requestCode, resultCode, null);
-            }
-        }
-
-        /**
-         * Store ringtone choice preference.
-         *
-         * @param ringtonePreference       Preference to update ringtone summary.
-         * @param ringtoneChoicePreference String preference to store ringtone choice.
-         * @param data                     Intent received from activity result.
-         */
-        private void saveRingtonePreference(Preference ringtonePreference, StringPreference ringtoneChoicePreference, Intent data) {
-            Uri ringtone = data.getParcelableExtra(RingtoneManager.EXTRA_RINGTONE_PICKED_URI);
-            if (ringtone != null) {
-                ringtoneChoicePreference.set(ringtone.toString());
-            } else {
-                // "Silent" selected.
-                ringtoneChoicePreference.set("");
-            }
-            updateRingtoneSummary(ringtonePreference, ringtoneChoicePreference);
-        }
-
-        /**
-         * Set up alarm vibrate preference.
-         */
-        private void setAlarmVibrateCheckBoxPreference() {
-            alarmVibrateCheckBoxPreference = (CheckBoxPreference) findPreference(getString(R.string.key_alarm_vibrate_preference));
-            toggleVibrateSummary(alarmVibrateCheckBoxPreference);
-        }
-
-        /**
-         * Set up notification vibrate preference.
-         */
-        private void setNotificationVibrateCheckBoxPreference() {
-            notificationVibrateCheckBoxPreference = (CheckBoxPreference) findPreference(getString(R.string.key_notification_vibrate_preference));
-            toggleVibrateSummary(notificationVibrateCheckBoxPreference);
-        }
-
-        /**
-         * Toggle vibration preference summary.
-         *
-         * @param vibratePreference Checkbox vibrate preference to update summary.
-         */
-        private void toggleVibrateSummary(CheckBoxPreference vibratePreference) {
-            if (vibratePreference.isChecked()) {
-                vibratePreference.setSummary(getString(R.string.summary_vibrate_enabled_preference));
-            } else {
-                vibratePreference.setSummary(getString(R.string.summary_vibrate_disabled_preference));
-            }
-        }
-
-        /**
-         * Set up click listener for cache clear preference.
-         */
         private void setCachePreference() {
-            cachePreference = findPreference(getString(R.string.key_clear_cache_preference));
+            cachePreference = findPreference(getString(R.string.pref_key_cache));
             cachePreference.setOnPreferenceClickListener(new Preference.OnPreferenceClickListener() {
                 @Override
                 public boolean onPreferenceClick(Preference preference) {
-                    AlertDialog.Builder builder = new AlertDialog.Builder(getActivity());
-                    builder.setTitle(getString(R.string.title_clear_cache_dialog))
-                            .setMessage(getString(R.string.message_clear_cache_dialog))
+                    new AlertDialog.Builder(getActivity())
+                            .setTitle(getString(R.string.dialog_title_clear_cache))
+                            .setMessage(getString(R.string.dialog_message_clear_cache))
                             .setPositiveButton(android.R.string.ok, new DialogInterface.OnClickListener() {
                                 @Override
                                 public void onClick(DialogInterface dialog, int which) {
@@ -371,38 +150,42 @@ public class SettingsActivity extends BaseActivity {
                                 public void onClick(DialogInterface dialog, int which) {
 
                                 }
-                            });
-                    builder.create().show();
+                            })
+                            .create()
+                            .show();
                     return true;
                 }
             });
             updateCacheSummary();
         }
 
-        /**
-         * Update cache file count and size.
-         */
         private void updateCacheSummary() {
-            String cacheSummary = cacheManager.getCachedFileCount() + " files (" +
-                    cacheManager.getCacheSize() + " bytes)";
+            int cacheFileCount = cacheManager.getCachedFileCount();
+            long cacheSize = cacheManager.getCacheSize() / 1000;
+            String cacheSummary = cacheFileCount + " files (" + cacheSize + " KB)";
             cachePreference.setSummary(cacheSummary);
         }
 
-        /**
-         * Set up click listener for share preference.
-         */
         private void setSharePreference() {
-            sharePreference = findPreference(getString(R.string.key_share_preference));
+            sharePreference = findPreference(getString(R.string.pref_key_share));
             sharePreference.setOnPreferenceClickListener(new Preference.OnPreferenceClickListener() {
                 @Override
                 public boolean onPreferenceClick(Preference preference) {
-                    Intent intent = new AppInviteInvitation.IntentBuilder(getString(R.string.invitation_title))
-                            .setMessage(getString(R.string.invitation_message))
-                            .setDeepLink(Uri.parse(getString(R.string.invitation_deep_link)))
-                            .setCallToActionText(getString(R.string.invitation_cta))
-                            .setCustomImage(Uri.parse(getString(R.string.invitation_custom_image)))
-                            .build();
-                    startActivityForResult(intent, SettingsActivity.INVITE_REQUEST_CODE);
+                    if (GooglePlayServicesUtils.isGooglePlayServicesAvailable(getActivity())){
+                        Intent intent = new AppInviteInvitation.IntentBuilder(getString(R.string.invitation_title))
+                                .setMessage(getString(R.string.invitation_message))
+                                .setDeepLink(Uri.parse(getString(R.string.invitation_deep_link)))
+                                .setCallToActionText(getString(R.string.invitation_cta))
+                                .setCustomImage(Uri.parse(getString(R.string.invitation_custom_image)))
+                                .build();
+                        startActivityForResult(intent, SettingsActivity.INVITE_REQUEST_CODE);
+                    } else {
+                        Intent shareIntent = new Intent(Intent.ACTION_SEND);
+                        shareIntent.putExtra(Intent.EXTRA_SUBJECT, getString(R.string.share_subject));
+                        shareIntent.putExtra(Intent.EXTRA_TEXT, getString(R.string.share_message));
+                        shareIntent.setType("text/plain");
+                        startActivity(Intent.createChooser(shareIntent, getString(R.string.pref_title_share)));
+                    }
                     return true;
                 }
             });
