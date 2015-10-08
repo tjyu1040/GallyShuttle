@@ -16,10 +16,11 @@
 
 package com.ephemeraldreams.gallyshuttle.ui;
 
+import android.app.AlarmManager;
+import android.content.SharedPreferences;
 import android.os.Bundle;
 import android.support.annotation.Nullable;
-import android.support.design.widget.Snackbar;
-import android.support.v7.widget.DefaultItemAnimator;
+import android.support.v4.app.NotificationManagerCompat;
 import android.support.v7.widget.LinearLayoutManager;
 import android.support.v7.widget.RecyclerView;
 import android.view.LayoutInflater;
@@ -28,22 +29,29 @@ import android.view.ViewGroup;
 
 import com.ephemeraldreams.gallyshuttle.R;
 import com.ephemeraldreams.gallyshuttle.ui.adapters.TimesRecyclerViewAdapter;
+import com.ephemeraldreams.gallyshuttle.ui.events.OnAlarmClickEvent;
 import com.ephemeraldreams.gallyshuttle.ui.widget.decorator.DividerItemDecoration;
+import com.squareup.otto.Bus;
 
 import java.util.ArrayList;
+
+import javax.inject.Inject;
 
 import butterknife.Bind;
 import butterknife.ButterKnife;
 
-public class TimesFragment extends BaseFragment implements TimesRecyclerViewAdapter.OnTimeClickListener {
+public class TimesFragment extends BaseFragment implements TimesRecyclerViewAdapter.OnAlarmClickListener {
 
     private static final String TIMES_ARG = "times.arg";
-    private static final String TIMES_KEY = "times.key";
-    private static final String X_KEY = "times.x";
-    private static final String Y_KEY = "times.y";
+    public static final String ALARM_REQUEST_CODE_KEY = "times.alarm.request.code";
 
     @Bind(R.id.times_recycler_view) RecyclerView timesRecyclerView;
     private TimesRecyclerViewAdapter adapter;
+
+    @Inject Bus bus;
+    @Inject SharedPreferences sharedPreferences;
+    @Inject AlarmManager alarmManager;
+    @Inject NotificationManagerCompat notificationManagerCompat;
 
     public static TimesFragment newInstance(ArrayList<String> times) {
         TimesFragment fragment = new TimesFragment();
@@ -63,7 +71,7 @@ public class TimesFragment extends BaseFragment implements TimesRecyclerViewAdap
             times = new ArrayList<>();
         }
         adapter = new TimesRecyclerViewAdapter(times);
-        adapter.setOnTimeClickListener(this);
+        adapter.setOnAlarmClickListener(this);
     }
 
     @Override
@@ -85,14 +93,7 @@ public class TimesFragment extends BaseFragment implements TimesRecyclerViewAdap
     }
 
     @Override
-    public void onTimeClick(final String time) {
-        Snackbar.make(timesRecyclerView, time, Snackbar.LENGTH_LONG)
-                .setAction("CLOSE", new View.OnClickListener() {
-                    @Override
-                    public void onClick(View v) {
-                        //TODO: handle alarm click
-                    }
-                })
-                .show();
+    public void onTimeClick(String time) {
+        bus.post(new OnAlarmClickEvent(time));
     }
 }

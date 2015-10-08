@@ -36,12 +36,12 @@ import butterknife.OnClick;
  */
 public class TimesRecyclerViewAdapter extends RecyclerView.Adapter<TimesRecyclerViewAdapter.TimeViewHolder> {
 
-    public interface OnTimeClickListener {
+    public interface OnAlarmClickListener {
         void onTimeClick(String time);
     }
 
     private List<String> times;
-    private OnTimeClickListener onTimeClickListener;
+    private OnAlarmClickListener onAlarmClickListener;
 
     public TimesRecyclerViewAdapter() {
         this(new ArrayList<String>());
@@ -94,8 +94,8 @@ public class TimesRecyclerViewAdapter extends RecyclerView.Adapter<TimesRecycler
         }
     }
 
-    public void setOnTimeClickListener(final OnTimeClickListener onTimeClickListener) {
-        this.onTimeClickListener = onTimeClickListener;
+    public void setOnAlarmClickListener(final OnAlarmClickListener onAlarmClickListener) {
+        this.onAlarmClickListener = onAlarmClickListener;
     }
 
     /**
@@ -112,8 +112,8 @@ public class TimesRecyclerViewAdapter extends RecyclerView.Adapter<TimesRecycler
 
         @OnClick(R.id.set_alarm_button)
         public void onClickAlarmButton() {
-            if (onTimeClickListener != null) {
-                onTimeClickListener.onTimeClick(times.get(getAdapterPosition()));
+            if (onAlarmClickListener != null) {
+                onAlarmClickListener.onTimeClick(times.get(getAdapterPosition()));
             }
         }
     }
