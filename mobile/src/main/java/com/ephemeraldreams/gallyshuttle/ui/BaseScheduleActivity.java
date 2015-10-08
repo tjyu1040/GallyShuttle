@@ -61,6 +61,13 @@ public abstract class BaseScheduleActivity extends BaseActivity implements Callb
     }
 
     /**
+     * Attempt to reload from cache first, then download from network if cache is not available.
+     */
+    public void reloadSchedule() {
+        loadSchedule(getSchedulePathId());
+    }
+
+    /**
      * Re-download schedule.
      */
     public void refresh() {
