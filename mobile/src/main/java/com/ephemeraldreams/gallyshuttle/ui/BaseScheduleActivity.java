@@ -95,7 +95,7 @@ public abstract class BaseScheduleActivity extends BaseActivity implements Callb
         try {
             schedule = cacheManager.loadScheduleCache(getString(schedulePathId));
         } catch (IOException e) {
-            Timber.e(e, "Error loading schedule " + getString(schedulePathId) + " from cache.");
+            Timber.e(e, "Error loading schedule %s from cache", getString(schedulePathId));
             schedule = null;
         }
         return schedule;
@@ -109,6 +109,7 @@ public abstract class BaseScheduleActivity extends BaseActivity implements Callb
     @Override
     public void onResponse(Response<Schedule> response, Retrofit retrofit) {
         schedule = response.body();
+        Timber.d("%s", schedule.toString());
         cacheManager.cacheSchedule(schedule);
         progressLayout.setVisibility(View.GONE);
         updateUiOnResponse(schedule);

@@ -28,39 +28,39 @@ import timber.log.Timber;
 public final class DebugActivityCallbacks implements Application.ActivityLifecycleCallbacks {
     @Override
     public void onActivityCreated(Activity activity, Bundle savedInstanceState) {
-        Timber.d("onCreate(): " + activity.getLocalClassName());
+        Timber.d("onCreate(): %s", activity.getLocalClassName());
     }
 
     @Override
     public void onActivityStarted(Activity activity) {
-        Timber.d("onStart(): " + activity.getLocalClassName());
+        Timber.d("onStart(): %s", activity.getLocalClassName());
     }
 
     @Override
     public void onActivityResumed(Activity activity) {
-        Timber.d("onResume(): " + activity.getLocalClassName());
+        Timber.d("onResume(): %s", activity.getLocalClassName());
     }
 
     @Override
     public void onActivityPaused(Activity activity) {
-        Timber.d("onPause(): " + activity.getLocalClassName());
+        Timber.d("onPause(): %s", activity.getLocalClassName());
     }
 
     @Override
     public void onActivityStopped(Activity activity) {
-        Timber.d("onStop(): " + activity.getLocalClassName());
+        Timber.d("onStop(): %s", activity.getLocalClassName());
     }
 
     @Override
     public void onActivitySaveInstanceState(Activity activity, Bundle outState) {
-        Timber.d("onSavedInstanceState(): " + activity.getLocalClassName());
+        Timber.d("onSavedInstanceState(): %s", activity.getLocalClassName());
         for (String key : outState.keySet()) {
-            Timber.d("----> " + key + " saved.");
+            Timber.d("----> %s saved", key);
         }
     }
 
     @Override
     public void onActivityDestroyed(Activity activity) {
-        Timber.d("onDestroy(): " + activity.getLocalClassName());
+        Timber.d("onDestroy(): %s", activity.getLocalClassName());
     }
 }

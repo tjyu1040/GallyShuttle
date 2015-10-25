@@ -20,29 +20,21 @@ import android.app.Activity;
 import android.content.DialogInterface;
 import android.content.Intent;
 import android.content.SharedPreferences;
-import android.content.res.Resources;
 import android.net.Uri;
 import android.os.Bundle;
 import android.preference.ListPreference;
 import android.preference.Preference;
 import android.preference.RingtonePreference;
-import android.support.design.widget.AppBarLayout;
 import android.support.design.widget.Snackbar;
-import android.support.v4.content.ContextCompat;
 import android.support.v7.app.AlertDialog;
-import android.support.v7.widget.Toolbar;
-import android.view.View;
 
 import com.ephemeraldreams.gallyshuttle.R;
 import com.ephemeraldreams.gallyshuttle.content.CacheManager;
 import com.ephemeraldreams.gallyshuttle.util.GooglePlayServicesUtils;
 import com.google.android.gms.appinvite.AppInviteInvitation;
-import com.google.android.gms.common.GoogleApiAvailability;
-import com.google.android.gms.common.GooglePlayServicesUtil;
 
 import javax.inject.Inject;
 
-import butterknife.Bind;
 import timber.log.Timber;
 
 /**
@@ -82,7 +74,7 @@ public class SettingsActivity extends BaseActivity {
     @Override
     protected void onActivityResult(int requestCode, int resultCode, Intent data) {
         super.onActivityResult(requestCode, resultCode, data);
-        Timber.d("onActivityResult(): requestCode=" + requestCode + ", resultCode=" + resultCode);
+        Timber.d("onActivityResult(): requestCode=%s, resultCode=%s", requestCode, resultCode);
         if (requestCode == INVITE_REQUEST_CODE) {
             if (resultCode == RESULT_OK) {
                 String[] ids = AppInviteInvitation.getInvitationIds(resultCode, data);
@@ -171,7 +163,7 @@ public class SettingsActivity extends BaseActivity {
             sharePreference.setOnPreferenceClickListener(new Preference.OnPreferenceClickListener() {
                 @Override
                 public boolean onPreferenceClick(Preference preference) {
-                    if (GooglePlayServicesUtils.isGooglePlayServicesAvailable(getActivity())){
+                    if (GooglePlayServicesUtils.isGooglePlayServicesAvailable(getActivity())) {
                         Intent intent = new AppInviteInvitation.IntentBuilder(getString(R.string.invitation_title))
                                 .setMessage(getString(R.string.invitation_message))
                                 .setDeepLink(Uri.parse(getString(R.string.invitation_deep_link)))
