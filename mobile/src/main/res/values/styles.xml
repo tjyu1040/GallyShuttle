@@ -24,6 +24,7 @@
         <item name="colorAccent">@color/vegas_gold</item>
         <item name="android:windowBackground">@color/white</item>
 
+        <item name="android:dialogTheme">@style/GallaudetTheme.AlertDialog</item>
         <item name="alertDialogTheme">@style/GallaudetTheme.AlertDialog</item>
         <item name="drawerArrowStyle">@style/GallaudetTheme.DrawerArrowStyle</item>
     </style>
@@ -33,8 +34,7 @@
     </style>
 
     <style name="GallaudetTheme.AlertDialog" parent="Theme.AppCompat.Light.Dialog.Alert">
-        <item name="colorAccent">@color/vegas_gold</item>
-        <item name="android:background">@color/white</item>
+        <item name="colorAccent">@color/blue</item>
     </style>
 
     <style name="GallaudetTheme.DrawerArrowStyle" parent="Widget.AppCompat.DrawerArrowToggle">
