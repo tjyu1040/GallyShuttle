@@ -1,6 +1,5 @@
 package com.ephemeraldreams.gallyshuttle.net;
 
-import com.ephemeraldreams.gallyshuttle.annotations.scopes.ActivityScope;
 import com.ephemeraldreams.gallyshuttle.annotations.scopes.ApplicationScope;
 import com.ephemeraldreams.gallyshuttle.net.api.GallyShuttleApiService;
 import com.ephemeraldreams.gallyshuttle.net.api.ListSchedulesDeserializer;
@@ -8,7 +7,6 @@ import com.ephemeraldreams.gallyshuttle.net.api.ListStationsDeserializer;
 import com.ephemeraldreams.gallyshuttle.net.api.StationsTimesMapDeserializer;
 import com.ephemeraldreams.gallyshuttle.net.api.models.Schedule;
 import com.ephemeraldreams.gallyshuttle.net.api.models.Station;
-import com.ephemeraldreams.gallyshuttle.net.gcm.RegistrationApiService;
 import com.google.gson.Gson;
 import com.google.gson.GsonBuilder;
 import com.google.gson.reflect.TypeToken;
@@ -23,7 +21,6 @@ import dagger.Module;
 import dagger.Provides;
 import retrofit.GsonConverterFactory;
 import retrofit.Retrofit;
-import retrofit.RxJavaCallAdapterFactory;
 
 /**
  * A module for network-specific dependencies.
@@ -60,21 +57,7 @@ public class NetworkModule {
                 .baseUrl(API_BASE_URL + GALLYSHUTTLE_API_URL)
                 .client(okHttpClient)
                 .addConverterFactory(GsonConverterFactory.create(gson))
-                .addCallAdapterFactory(RxJavaCallAdapterFactory.create())
                 .build()
                 .create(GallyShuttleApiService.class);
-    }
-
-    //TODO: update registration api url.
-    @Provides
-    @ApplicationScope
-    RegistrationApiService registrationApiService(OkHttpClient okHttpClient) {
-        return new Retrofit.Builder()
-                .baseUrl(API_BASE_URL + REGISTRATION__API_URL)
-                .client(okHttpClient)
-                .addConverterFactory(GsonConverterFactory.create())
-                .addCallAdapterFactory(RxJavaCallAdapterFactory.create())
-                .build()
-                .create(RegistrationApiService.class);
     }
 }
