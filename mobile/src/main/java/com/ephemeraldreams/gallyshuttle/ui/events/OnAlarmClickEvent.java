@@ -26,9 +26,9 @@ import org.joda.time.LocalDateTime;
  */
 public class OnAlarmClickEvent {
 
-    public LocalDateTime alarmTime;
+    public LocalDateTime arrivalTime;
 
     public OnAlarmClickEvent(String time) {
-        alarmTime = DateUtils.parseToLocalDateTime(time);
+        arrivalTime = DateUtils.parseToLocalDateTime(time);
     }
 }
