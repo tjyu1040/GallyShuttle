@@ -14,7 +14,7 @@
     <statePointEntry>
       <state      
         class = "com.android.tools.idea.editors.navigation.model.ActivityState"      
-        className = "com.ephemeraldreams.gallyshuttle.ui.ArrivalCountdownActivity"/>
+        className = "com.ephemeraldreams.gallyshuttle.ui.HomeActivity"/>
       <point      
         x = "176"      
         y = "744"/>
