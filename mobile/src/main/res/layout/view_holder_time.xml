@@ -15,7 +15,7 @@
   ~ limitations under the License.
   -->
 
-<LinearLayout
+<RelativeLayout
     xmlns:android="http://schemas.android.com/apk/res/android"
     android:layout_width="match_parent"
     android:layout_height="wrap_content"
@@ -24,11 +24,10 @@
 
     <TextView
         android:id="@+id/time_text_view"
-        android:layout_width="0dp"
+        android:layout_width="wrap_content"
         android:layout_height="wrap_content"
-        android:layout_weight="1"
+        android:layout_centerInParent="true"
         android:fontFamily="sans-serif-thin"
-        android:gravity="center"
         android:text="@string/timer_placeholder"
         android:textAppearance="@style/TextAppearance.AppCompat.Title"
         android:textSize="@dimen/time_view_holder_font_size"/>
@@ -37,11 +36,13 @@
         android:id="@+id/set_alarm_button"
         android:layout_width="wrap_content"
         android:layout_height="wrap_content"
-        android:layout_gravity="center"
+        android:layout_alignParentEnd="true"
+        android:layout_alignParentRight="true"
+        android:layout_centerVertical="true"
         android:background="?attr/selectableItemBackgroundBorderless"
         android:contentDescription="@string/add_alarm_content_desc"
         android:padding="@dimen/card_action_padding"
         android:src="@drawable/ic_alarm_add_24dp"
         android:tint="@color/vegas_gold"/>
 
-</LinearLayout>
+</RelativeLayout>
