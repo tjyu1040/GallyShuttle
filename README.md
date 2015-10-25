@@ -5,7 +5,7 @@ arrival/departure times. Gallaudet students, feel free to fork and contribute to
 the change log for this project [here] (CHANGELOG.md).
 
 [![Google Play link](https://developer.android.com/images/brand/en_generic_rgb_wo_60.png)]
-(https://play.google.com/store/apps/details?id=com.ephemeraldreams.gallyshuttle)
+(https://play.google.com/store/apps/details?id=com.ephemeraldreams.gallyshuttle&referrer=utm_source%3Dgithub%26utm_medium%3Dcpc)
 
 ## Building
 
