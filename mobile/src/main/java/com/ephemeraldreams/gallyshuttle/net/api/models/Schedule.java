@@ -92,11 +92,6 @@ public class Schedule {
 
     @Override
     public String toString() {
-        final StringBuilder sb = new StringBuilder("Schedule{");
-        sb.append("name='").append(name).append('\'');
-        sb.append(", path='").append(path).append('\'');
-        sb.append(", stationsTimes=").append(stationsTimes);
-        sb.append('}');
-        return sb.toString();
+        return "Schedule{" + "name='" + name + '\'' + ", path='" + path + '\'' + ", stationsTimes=" + stationsTimes + '}';
     }
 }
