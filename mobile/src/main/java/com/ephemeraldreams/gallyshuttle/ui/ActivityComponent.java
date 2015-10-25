@@ -16,7 +16,7 @@ import dagger.Component;
 @Component(dependencies = ApplicationComponent.class, modules = ActivityModule.class)
 public interface ActivityComponent {
 
-    void inject(ArrivalCountdownActivity arrivalCountdownActivity);
+    void inject(HomeActivity homeActivity);
     void inject(ScheduleActivity scheduleActivity);
     void inject(TimesFragment timesFragment);
     void inject(SettingsActivity settingsActivity);

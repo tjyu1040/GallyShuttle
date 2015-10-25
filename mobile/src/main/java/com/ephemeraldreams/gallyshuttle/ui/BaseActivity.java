@@ -65,8 +65,7 @@ public abstract class BaseActivity extends AppCompatActivity implements Navigati
     protected void onResume() {
         super.onResume();
         navigationView.setCheckedItem(getSelfNavigationDrawerItemId());
-        coordinatorLayout.setAlpha(0);
-        coordinatorLayout.animate().alpha(1).setDuration(MAIN_CONTENT_FADE_IN_DURATION);
+        fadeInTransition();
     }
 
     @Override
@@ -112,6 +111,15 @@ public abstract class BaseActivity extends AppCompatActivity implements Navigati
         return component;
     }
 
+    private void fadeInTransition() {
+        coordinatorLayout.setAlpha(0);
+        coordinatorLayout.animate().alpha(1).setDuration(MAIN_CONTENT_FADE_IN_DURATION);
+    }
+
+    private void fadeOutTransition() {
+        coordinatorLayout.animate().alpha(0).setDuration(MAIN_CONTENT_FADE_OUT_DURATION);
+    }
+
     private void setNavigationDrawer() {
         setSupportActionBar(toolbar);
         final ActionBar actionBar = getSupportActionBar();
@@ -132,8 +140,7 @@ public abstract class BaseActivity extends AppCompatActivity implements Navigati
             navigationView.setCheckedItem(getSelfNavigationDrawerItemId());
         }
         drawerHandler = new Handler();
-        coordinatorLayout.setAlpha(0);
-        coordinatorLayout.animate().alpha(1).setDuration(MAIN_CONTENT_FADE_IN_DURATION);
+        fadeInTransition();
     }
 
     @Override
@@ -149,7 +156,7 @@ public abstract class BaseActivity extends AppCompatActivity implements Navigati
             }
         }, NAV_DRAWER_LAUNCH_DELAY);
         if (menuItem.getItemId() != R.id.nav_policies && menuItem.getItemId() != R.id.nav_faq) {
-            coordinatorLayout.animate().alpha(0).setDuration(MAIN_CONTENT_FADE_OUT_DURATION);
+            fadeOutTransition();
         }
         if (drawerLayout.isDrawerOpen(GravityCompat.START)) {
             drawerLayout.closeDrawers();
@@ -160,7 +167,7 @@ public abstract class BaseActivity extends AppCompatActivity implements Navigati
     private void navigateTo(@IdRes int navigationItemId) {
         switch (navigationItemId) {
             case R.id.nav_home:
-                ArrivalCountdownActivity.launch(this);
+                HomeActivity.launch(this);
                 break;
             case R.id.nav_continuous:
                 ScheduleActivity.launch(this, R.string.path_continuous);

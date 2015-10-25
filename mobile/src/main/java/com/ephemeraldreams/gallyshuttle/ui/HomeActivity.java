@@ -25,6 +25,7 @@ import android.content.IntentFilter;
 import android.content.SharedPreferences;
 import android.os.Bundle;
 import android.os.CountDownTimer;
+import android.support.annotation.Nullable;
 import android.support.annotation.StringRes;
 import android.support.v4.content.LocalBroadcastManager;
 import android.support.v7.app.AlertDialog;
@@ -52,7 +53,8 @@ import javax.inject.Inject;
 import butterknife.Bind;
 import timber.log.Timber;
 
-public class ArrivalCountdownActivity extends BaseScheduleActivity implements AdapterView.OnItemSelectedListener {
+public class HomeActivity extends BaseScheduleActivity implements AdapterView.OnItemSelectedListener,
+        GoogleApiClient.ConnectionCallbacks, GoogleApiClient.OnConnectionFailedListener {
 
     // Keys to remember whether user has rated the application yet.
     private static final String APP_RATED_KEY = "base.app.rated";
@@ -61,16 +63,12 @@ public class ArrivalCountdownActivity extends BaseScheduleActivity implements Ad
     // Flag to open rate dialog on every 7th app opened count.
     private static final int APP_OPENED_COUNT_FLAG = 7;
 
-    // Days constants.
-    private static final int SATURDAY = 6;
-    private static final int SUNDAY = 7;
-
     // Count down interval of 1 second.
     private static final long COUNT_DOWN_INTERVAL = 1000;
 
-    @Bind(R.id.arrival_card_view) CardView arrivalCardView;
-    @Bind(R.id.card_title_text_view) TextView timerCardTitleTextView;
-    @Bind(R.id.timer_text_view) TextView timerTextView;
+    @Bind(R.id.countdown_card_view) CardView countdownCardView;
+    @Bind(R.id.schedule_title_text_view) TextView scheduleTitleTextView;
+    @Bind(R.id.countdown_timer_text_view) TextView countdownTimerTextView;
     @Bind(R.id.arrival_time_text_view) TextView arrivalTimeTextView;
     @Bind(R.id.station_spinner) Spinner stationSpinner;
     private StationsSpinnerAdapter adapter;
@@ -79,27 +77,26 @@ public class ArrivalCountdownActivity extends BaseScheduleActivity implements Ad
     private CountDownTimer countDownTimer;
 
     @Inject SharedPreferences sharedPreferences;
-    private GoogleApiClient googleApiClient;
+    @Inject GoogleApiClient googleApiClient;
     private Intent cachedInvitationIntent;
     private BroadcastReceiver referralReceiver;
 
-    public static void launch(Activity activity){
-        Intent intent = new Intent(activity, ArrivalCountdownActivity.class);
+    public static void launch(Activity activity) {
+        Intent intent = new Intent(activity, HomeActivity.class);
         activity.startActivity(intent);
     }
 
     @Override
     protected void onCreate(Bundle savedInstanceState) {
         super.onCreate(savedInstanceState);
-        setContentView(R.layout.activity_arrival_countdown);
+        setContentView(R.layout.activity_home);
         getComponent().inject(this);
 
         stationSpinner.setOnItemSelectedListener(this);
-        /*
+
         if (savedInstanceState == null) {
             processReferral(getIntent());
         }
-        */
     }
 
     @Override
@@ -107,6 +104,8 @@ public class ArrivalCountdownActivity extends BaseScheduleActivity implements Ad
         super.onStart();
         registerReferralReceiver();
         checkAppRated();
+        googleApiClient.registerConnectionCallbacks(this);
+        googleApiClient.registerConnectionFailedListener(this);
     }
 
     @Override
@@ -117,6 +116,12 @@ public class ArrivalCountdownActivity extends BaseScheduleActivity implements Ad
         }
         unregisterReferralReceiver();
         updateAppOpenedCount();
+        if (googleApiClient.isConnectionCallbacksRegistered(this)) {
+            googleApiClient.unregisterConnectionCallbacks(this);
+        }
+        if (googleApiClient.isConnectionFailedListenerRegistered(this)) {
+            googleApiClient.unregisterConnectionFailedListener(this);
+        }
     }
 
     @Override
@@ -126,7 +131,7 @@ public class ArrivalCountdownActivity extends BaseScheduleActivity implements Ad
 
     @Override
     protected String getActionBarTitle() {
-        return getString(R.string.nav_arrival_countdown);
+        return getString(R.string.nav_home);
     }
 
     @Override
@@ -135,7 +140,7 @@ public class ArrivalCountdownActivity extends BaseScheduleActivity implements Ad
     }
 
     @StringRes
-    private int getCurrentSchedulePathId(){
+    private int getCurrentSchedulePathId() {
         LocalDateTime now = LocalDateTime.now();
         int hour = now.getHourOfDay();
         int minute = now.getMinuteOfHour();
@@ -144,8 +149,8 @@ public class ArrivalCountdownActivity extends BaseScheduleActivity implements Ad
         } else {
             int day = now.getDayOfWeek();
             switch (day) {
-                case SATURDAY:
-                case SUNDAY:
+                case DateUtils.SATURDAY:
+                case DateUtils.SUNDAY:
                     return R.string.path_weekend;
                 default:
                     return R.string.path_continuous;
@@ -170,19 +175,19 @@ public class ArrivalCountdownActivity extends BaseScheduleActivity implements Ad
         adapter.notifyDataSetChanged();
         stationSpinner.setAdapter(adapter);
         updateUI(stationSpinner.getSelectedItemPosition());
-        arrivalCardView.setVisibility(View.VISIBLE);
+        countdownCardView.setVisibility(View.VISIBLE);
     }
 
     @Override
     protected void updateUiOnRefreshStart() {
-        arrivalCardView.setVisibility(View.GONE);
+        countdownCardView.setVisibility(View.GONE);
     }
 
-    private void updateUI(int stationIndex){
+    private void updateUI(int stationIndex) {
         if (countDownTimer != null) {
             countDownTimer.cancel();
         }
-        timerCardTitleTextView.setText(getString(R.string.schedule_name_fmt, schedule.name));
+        scheduleTitleTextView.setText(getString(R.string.schedule_name_fmt, schedule.name));
         LocalDateTime arrivalTime = getArrivalTimeAfterNow(stationIndex);
         if (arrivalTime != null) {
             arrivalTimeTextView.setText(getString(R.string.arrival_time_fmt, DateUtils.formatTime(arrivalTime)));
@@ -193,7 +198,8 @@ public class ArrivalCountdownActivity extends BaseScheduleActivity implements Ad
         }
     }
 
-    private LocalDateTime getArrivalTimeAfterNow(int stationIndex){
+    @Nullable
+    private LocalDateTime getArrivalTimeAfterNow(int stationIndex) {
         List<String> times = schedule.getTimes(stationIndex);
         LocalDateTime now = LocalDateTime.now();
         LocalDateTime arrivalTime;
@@ -213,22 +219,21 @@ public class ArrivalCountdownActivity extends BaseScheduleActivity implements Ad
         countDownTimer = new CountDownTimer(millisInFuture, COUNT_DOWN_INTERVAL) {
             @Override
             public void onTick(long millisUntilFinished) {
-                timerTextView.setText(DateUtils.convertMillisecondsToTime(millisUntilFinished));
+                countdownTimerTextView.setText(DateUtils.convertMillisecondsToTime(millisUntilFinished));
             }
 
             @Override
             public void onFinish() {
-                //TODO: handle finish
-                Timber.d("Completed.");
+                reloadSchedule();
             }
         }.start();
     }
 
-    private void checkAppRated(){
+    private void checkAppRated() {
         boolean isAppRated = sharedPreferences.getBoolean(APP_RATED_KEY, false);
         if (!isAppRated) {
             int appOpenedCount = sharedPreferences.getInt(APP_OPENED_COUNT_KEY, 1);
-            Timber.d("Opened app count:" + appOpenedCount);
+            Timber.d("Opened app count: %s", appOpenedCount);
             if (appOpenedCount % APP_OPENED_COUNT_FLAG == 0) {
                 new AlertDialog.Builder(this)
                         .setIcon(R.drawable.ic_launcher)
@@ -258,12 +263,34 @@ public class ArrivalCountdownActivity extends BaseScheduleActivity implements Ad
         }
     }
 
-    private void updateAppOpenedCount(){
+    private void updateAppOpenedCount() {
         boolean isAppRated = sharedPreferences.getBoolean(APP_RATED_KEY, false);
         if (!isAppRated) {
             int appOpenedCount = sharedPreferences.getInt(APP_OPENED_COUNT_KEY, 1);
             sharedPreferences.edit().putInt(APP_OPENED_COUNT_KEY, ++appOpenedCount).apply();
             Timber.d("Closed app count: " + appOpenedCount);
+        }
+    }
+
+    @Override
+    public void onConnected(Bundle bundle) {
+        Timber.d("googleApiClient#onConnected()");
+        if (cachedInvitationIntent != null) {
+            updateInvitationStatus(cachedInvitationIntent);
+            cachedInvitationIntent = null;
+        }
+    }
+
+    @Override
+    public void onConnectionSuspended(int i) {
+        Timber.d("googleApiClient#onConnectionSuspended()");
+    }
+
+    @Override
+    public void onConnectionFailed(ConnectionResult connectionResult) {
+        Timber.d("googleApiClient#onConnectionFailed(): %s", connectionResult.getErrorCode());
+        if (connectionResult.getErrorCode() == ConnectionResult.API_UNAVAILABLE) {
+            Timber.w("googleApiClient#onConnectionFailed() because an API was unavailable.");
         }
     }
 
@@ -273,35 +300,6 @@ public class ArrivalCountdownActivity extends BaseScheduleActivity implements Ad
      * @param intent Invitation intent to process.
      */
     private void processReferral(Intent intent) {
-
-        googleApiClient = new GoogleApiClient.Builder(this)
-                .addConnectionCallbacks(new GoogleApiClient.ConnectionCallbacks() {
-                    @Override
-                    public void onConnected(Bundle bundle) {
-                        Timber.d("googleApiClient#onConnected");
-                        if (cachedInvitationIntent != null) {
-                            updateInvitationStatus(cachedInvitationIntent);
-                            cachedInvitationIntent = null;
-                        }
-                    }
-
-                    @Override
-                    public void onConnectionSuspended(int i) {
-                        Timber.d("googleApiClient#onConnectionSuspended");
-                    }
-                })
-                .enableAutoManage(this, 0, new GoogleApiClient.OnConnectionFailedListener() {
-                    @Override
-                    public void onConnectionFailed(ConnectionResult connectionResult) {
-                        Timber.d("googleApiClient#onConnectionFailed:" + connectionResult.getErrorCode());
-                        if (connectionResult.getErrorCode() == ConnectionResult.API_UNAVAILABLE) {
-                            Timber.w("onConnectionFailed because an API was unavailable.");
-                        }
-                    }
-                })
-                .addApi(AppInvite.API)
-                .build();
-
         if (AppInviteReferral.hasReferral(intent)) {
 
             String invitationId = AppInviteReferral.getInvitationId(intent);

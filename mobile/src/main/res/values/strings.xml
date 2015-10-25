@@ -40,6 +40,11 @@
     <string name="nav_open_desc">Open navigation drawer</string>
     <string name="nav_close_desc">Close navigation drawer</string>
 
+    <!-- General text -->
+    <string name="refresh">Refresh</string>
+    <string name="retry">Retry</string>
+    <string name="dismiss">Dismiss</string>
+
     <!-- Path data entries -->
     <string name="path_continuous">continuous</string>
     <string name="path_alt_continuous">alt_continuous</string>
@@ -71,10 +76,11 @@
     <string name="invitation_custom_image">http://gallyshuttle.appspot.com/img/ic_launcher.png</string>
     <string name="invitation_cta">Install!</string>
     <string name="sent_invitations_fmt" formatted="false">Sent %d invitations</string>
+    <string name="send_success">Sent invitations!</string>
     <string name="send_failed">Sending invitations failed.</string>
     <string name="invite_dialog_title">You got an invitation!</string>
 
-    <!-- ArrivalCountdownActivity text -->
+    <!-- HomeActivity text -->
     <string name="schedule_title_placeholder">Schedule</string>
     <string name="schedule_name_fmt">%1$s Schedule</string>
     <string name="timer_placeholder">--:--:--</string>
