@@ -2,27 +2,19 @@ package com.ephemeraldreams.gallyshuttle;
 
 import android.app.AlarmManager;
 import android.app.Application;
-import android.app.NotificationManager;
 import android.content.SharedPreferences;
 import android.content.res.Resources;
-import android.net.ConnectivityManager;
+import android.support.v4.app.NotificationManagerCompat;
 
-import com.ephemeraldreams.gallyshuttle.annotations.qualifiers.AlarmReminderLength;
-import com.ephemeraldreams.gallyshuttle.annotations.qualifiers.AlarmRingtoneChoice;
-import com.ephemeraldreams.gallyshuttle.annotations.qualifiers.AlarmVibration;
-import com.ephemeraldreams.gallyshuttle.annotations.qualifiers.NotificationRingtoneChoice;
-import com.ephemeraldreams.gallyshuttle.annotations.qualifiers.NotificationVibration;
 import com.ephemeraldreams.gallyshuttle.annotations.scopes.ApplicationScope;
 import com.ephemeraldreams.gallyshuttle.content.CacheManager;
 import com.ephemeraldreams.gallyshuttle.content.ContentModule;
-import com.ephemeraldreams.gallyshuttle.content.preferences.BooleanPreference;
-import com.ephemeraldreams.gallyshuttle.content.preferences.StringPreference;
 import com.ephemeraldreams.gallyshuttle.net.NetworkModule;
 import com.ephemeraldreams.gallyshuttle.net.api.GallyShuttleApiService;
 import com.ephemeraldreams.gallyshuttle.net.gcm.RegistrationApiService;
 import com.ephemeraldreams.gallyshuttle.net.gcm.RegistrationIntentService;
+import com.google.android.gms.common.api.GoogleApiClient;
 import com.google.gson.Gson;
-import com.squareup.okhttp.OkHttpClient;
 import com.squareup.otto.Bus;
 
 import dagger.Component;
@@ -40,23 +32,17 @@ public interface ApplicationComponent {
     // Android system services dependencies made available to sub-components
     Application getApplication();
     Bus getBus();
-    ConnectivityManager getConnectivityManager();
     AlarmManager getAlarmManager();
-    NotificationManager getNotificationManager();
+    NotificationManagerCompat getNotificationManagerCompat();
+    GoogleApiClient getGoogleApiClient();
 
     // Content dependencies made available to sub-components
     Resources getResources();
     SharedPreferences getSharedPreferences();
-    @AlarmReminderLength StringPreference getAlarmReminderLengthStringPreference();
-    @AlarmRingtoneChoice StringPreference getAlarmRingtoneChoiceStringPreference();
-    @AlarmVibration BooleanPreference getAlarmVibrationBooleanPreference();
-    @NotificationRingtoneChoice StringPreference getNotificationRingtoneChoiceStringPreference();
-    @NotificationVibration BooleanPreference getNotificationVibrationBooleanPreference();
     Gson getGson();
     CacheManager getCacheManager();
 
     // Network dependencies made available to sub-components
-    OkHttpClient getOkHttpClient();
     GallyShuttleApiService getGallyShuttleApiService();
     RegistrationApiService getRegistrationApiService();
 }
