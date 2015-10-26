@@ -51,6 +51,7 @@
     <orderEntry type="library" exported="" name="appengine-api-1.0-sdk-1.9.27" level="project" />
     <orderEntry type="library" exported="" name="json-simple-1.1" level="project" />
     <orderEntry type="library" exported="" scope="TEST" name="junit-4.12" level="project" />
+    <orderEntry type="library" exported="" scope="TEST" name="assertj-core-3.2.0" level="project" />
     <orderEntry type="library" exported="" scope="TEST" name="appengine-api-labs-1.9.27" level="project" />
     <orderEntry type="library" exported="" scope="TEST" name="appengine-api-stubs-1.9.27" level="project" />
     <orderEntry type="library" exported="" scope="TEST" name="appengine-tools-sdk-1.9.27" level="project" />

@@ -33,6 +33,7 @@ import java.net.URL;
 import java.util.ArrayList;
 import java.util.LinkedHashMap;
 import java.util.List;
+import java.util.TreeSet;
 
 import static com.ephemeraldreams.gallyshuttle.backend.Constants.BENSON_HALL_STATION;
 import static com.ephemeraldreams.gallyshuttle.backend.Constants.KDES_STATION;
@@ -72,7 +73,15 @@ public class ScheduleScraper {
             String schedulePathName = SCHEDULES_PATH_NAMES[scheduleId];
             ArrayList<StationTimes> stationTimesList = new ArrayList<>();
             for (Station station : stationsTimesMap.keySet()) {
-                stationTimesList.add(new StationTimes(station, stationsTimesMap.get(station)));
+                ArrayList<String> times = stationsTimesMap.get(station);
+                if (scheduleId == Constants.LATE_NIGHT_ID) {
+                    // Workaround GAE issue where ArrayList sort is not supported. Uses TreeSet instead.
+                    TreeSet<String> timesSet = new TreeSet<>(new LateNightTimeComparator());
+                    timesSet.addAll(times);
+                    times.clear();
+                    times.addAll(timesSet);
+                }
+                stationTimesList.add(new StationTimes(station, times));
             }
 
             Schedule schedule = new Schedule(scheduleName, schedulePathName);
