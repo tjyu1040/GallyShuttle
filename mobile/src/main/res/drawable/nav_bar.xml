@@ -20,7 +20,7 @@
     <gradient
         android:angle="135"
         android:centerColor="@color/blue"
-        android:endColor="@color/darker_blue"
-        android:startColor="@color/light_blue"
+        android:endColor="@color/light_blue"
+        android:startColor="@color/darker_blue"
         android:type="linear"/>
 </shape>

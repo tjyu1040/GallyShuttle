@@ -5,7 +5,7 @@ apply plugin: 'io.fabric'
 
 def versionMajor = 3
 def versionMinor = 0
-def versionPatch = "0-SNAPSHOT"
+def versionPatch = "0"
 def versionNameCode = "${versionMajor}.${versionMinor}.${versionPatch}"
 
 android {

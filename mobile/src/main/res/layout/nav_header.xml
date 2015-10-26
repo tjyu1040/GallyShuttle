@@ -15,11 +15,10 @@
   ~ limitations under the License.
   -->
 
-<!--TODO: update nav header -->
 <LinearLayout
     xmlns:android="http://schemas.android.com/apk/res/android"
     android:layout_width="match_parent"
-    android:layout_height="160dp"
+    android:layout_height="150dp"
     android:background="@drawable/nav_bar"
     android:gravity="bottom"
     android:orientation="vertical"
@@ -35,8 +34,8 @@
     <TextView
         android:layout_width="match_parent"
         android:layout_height="wrap_content"
-        android:text="@string/app_name"
         android:paddingTop="16dp"
+        android:text="@string/app_name"
         android:textAppearance="@style/TextAppearance.AppCompat.Headline"/>
 
 </LinearLayout>
