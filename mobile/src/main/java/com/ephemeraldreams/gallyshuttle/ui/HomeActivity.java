@@ -43,6 +43,7 @@ import com.ephemeraldreams.gallyshuttle.content.DateUtils;
 import com.ephemeraldreams.gallyshuttle.net.api.models.Schedule;
 import com.ephemeraldreams.gallyshuttle.ui.adapters.StationsSpinnerAdapter;
 import com.ephemeraldreams.gallyshuttle.ui.receivers.ArrivalNotificationReceiver;
+import com.ephemeraldreams.gallyshuttle.util.GooglePlayServicesUtils;
 import com.google.android.gms.appinvite.AppInvite;
 import com.google.android.gms.appinvite.AppInviteReferral;
 import com.google.android.gms.common.ConnectionResult;
@@ -66,7 +67,7 @@ public class HomeActivity extends BaseScheduleActivity implements AdapterView.On
     private static final String APP_OPENED_COUNT_KEY = "base.app.opened.count";
 
     // Flag to open rate dialog on every 7th app opened count.
-    private static final int APP_OPENED_COUNT_FLAG = 7;
+    public static final int APP_OPENED_COUNT_FLAG = 7;
 
     // Count down interval of 1 second.
     private static final long COUNT_DOWN_INTERVAL = 1000;
@@ -154,7 +155,7 @@ public class HomeActivity extends BaseScheduleActivity implements AdapterView.On
         LocalDateTime now = LocalDateTime.now();
         int hour = now.getHourOfDay();
         int minute = now.getMinuteOfHour();
-        if (hour >= 21 || (hour == 0 && minute <= 15)) {
+        if (hour >= 21 || (hour == 0 && minute < 15)) {
             return R.string.path_late_night;
         } else {
             int day = now.getDayOfWeek();
@@ -214,12 +215,23 @@ public class HomeActivity extends BaseScheduleActivity implements AdapterView.On
     private LocalDateTime getArrivalTimeAfterNow(int stationIndex) {
         List<String> times = schedule.getTimes(stationIndex);
         LocalDateTime now = LocalDateTime.now();
+        Timber.d(now.toString());
         LocalDateTime arrivalTime;
         for (String time : times) {
             arrivalTime = DateUtils.parseToLocalDateTime(time);
-            if (arrivalTime.getHourOfDay() == 0 && now.getHourOfDay() != 0) {
+
+            if (now.getHourOfDay() != 0 && arrivalTime.getHourOfDay() == 0) {
                 arrivalTime = arrivalTime.plusDays(1);
             }
+
+            if (getSchedulePathId() == R.string.path_late_night) {
+                if (now.getHourOfDay() == 0 && arrivalTime.getHourOfDay() != 0) {
+                    arrivalTime = arrivalTime.minusDays(1);
+                }
+            }
+
+            Timber.d("Now: %s", now.toLocalTime().toString());
+            Timber.d("Arrival: %s", arrivalTime.toLocalTime().toString());
             if (now.isBefore(arrivalTime)) {
                 return arrivalTime;
             }
@@ -257,8 +269,11 @@ public class HomeActivity extends BaseScheduleActivity implements AdapterView.On
             alarmManager.set(AlarmManager.RTC_WAKEUP, notificationMillis, notificationPendingIntent);
             Timber.d("Arrival notification receiver set.");
         } else {
-            alarmManager.cancel(notificationPendingIntent);
-            Timber.d("Arrival notification receiver canceled.");
+            if (notificationPendingIntent != null) {
+                alarmManager.cancel(notificationPendingIntent);
+                notificationPendingIntent = null;
+                Timber.d("Arrival notification receiver canceled.");
+            }
         }
     }
 
@@ -275,12 +290,7 @@ public class HomeActivity extends BaseScheduleActivity implements AdapterView.On
                         .setPositiveButton(R.string.rate_now_dialog_button, new DialogInterface.OnClickListener() {
                             @Override
                             public void onClick(DialogInterface dialog, int which) {
-                                sharedPreferences.edit().putBoolean(APP_RATED_KEY, true).apply();
-                            }
-                        })
-                        .setNeutralButton(R.string.no_thanks_dialog_button, new DialogInterface.OnClickListener() {
-                            @Override
-                            public void onClick(DialogInterface dialog, int which) {
+                                GooglePlayServicesUtils.launchGooglePlayLink(HomeActivity.this);
                                 sharedPreferences.edit().putBoolean(APP_RATED_KEY, true).apply();
                             }
                         })
@@ -288,6 +298,12 @@ public class HomeActivity extends BaseScheduleActivity implements AdapterView.On
                             @Override
                             public void onClick(DialogInterface dialog, int which) {
                                 dialog.dismiss();
+                            }
+                        })
+                        .setNeutralButton(R.string.no_thanks_dialog_button, new DialogInterface.OnClickListener() {
+                            @Override
+                            public void onClick(DialogInterface dialog, int which) {
+                                sharedPreferences.edit().putBoolean(APP_RATED_KEY, true).apply();
                             }
                         })
                         .setCancelable(false)
@@ -301,7 +317,7 @@ public class HomeActivity extends BaseScheduleActivity implements AdapterView.On
         if (!isAppRated) {
             int appOpenedCount = sharedPreferences.getInt(APP_OPENED_COUNT_KEY, 1);
             sharedPreferences.edit().putInt(APP_OPENED_COUNT_KEY, ++appOpenedCount).apply();
-            Timber.d("Closed app count: " + appOpenedCount);
+            Timber.d("Closed app count: %s", appOpenedCount);
         }
     }
 
@@ -337,18 +353,19 @@ public class HomeActivity extends BaseScheduleActivity implements AdapterView.On
 
             String invitationId = AppInviteReferral.getInvitationId(intent);
             String deepLink = AppInviteReferral.getDeepLink(intent);
+            Timber.i("Invite referral: Invitation Id=%s, Deep link=%s", invitationId, deepLink);
 
-            //TODO: Update dialog message.
-            AlertDialog alertDialog = new AlertDialog.Builder(this)
+            new AlertDialog.Builder(this, R.style.GallaudetTheme_AlertDialog)
                     .setTitle(getString(R.string.invite_dialog_title))
-                    .setMessage("Invitation Id=" + invitationId + ", Deep link=" + deepLink)
+                    .setMessage(R.string.invite_dialog_message)
                     .setPositiveButton(android.R.string.ok, new DialogInterface.OnClickListener() {
                         @Override
                         public void onClick(DialogInterface dialog, int which) {
                             dialog.dismiss();
                         }
-                    }).create();
-            alertDialog.show();
+                    })
+                    .create()
+                    .show();
 
             if (googleApiClient.isConnected()) {
                 updateInvitationStatus(intent);

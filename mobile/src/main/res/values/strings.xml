@@ -16,6 +16,8 @@
 
 <resources>
     <string name="app_name">GallyShuttle</string>
+    <string name="google_play_link">market://details?id=com.ephemeraldreams.gallyshuttle</string>
+    <string name="web_google_play_link">https://play.google.com/store/apps/details?id=com.ephemeraldreams.gallyshuttle</string>
 
     <!-- Activity labels -->
     <string name="home_activity_label">HomeActivity</string>
@@ -79,6 +81,7 @@
     <string name="send_success">Sent invitations!</string>
     <string name="send_failed">Sending invitations failed.</string>
     <string name="invite_dialog_title">You got an invitation!</string>
+    <string name="invite_dialog_message">Enjoy using GallyShuttle!</string>
 
     <!-- HomeActivity text -->
     <string name="schedule_title_placeholder">Schedule</string>
@@ -89,6 +92,10 @@
     <string name="arrival_time_fmt">at %1$s.</string>
     <string name="notify_arrival_message">Notify me when shuttle arrives.</string>
     <string name="real_time_tracking_caption">Real-time tracking is not available, so shuttle may be early or late.</string>
+
+    <!-- ScheduleActivity text -->
+    <string name="alarm_dialog_title">Set Alarm</string>
+    <string name="alarm_dialog_message_fmt">Pick an alarm time to set before %s before arrival time.</string>
 
     <!-- AboutActivity text -->
     <string name="logo_description">Gally Shuttle logo</string>
@@ -101,6 +108,7 @@
     <string name="underlined_terms_of_service"><u>Terms of Service</u></string>
     <string name="underlined_privacy_policy"><u>Privacy Policy</u></string>
     <string name="about_message">Gally Shuttle - Never miss a shuttle again!</string>
+    <string name="send_to_chooser_title">Send email to developer</string>
 
     <!-- Accessibility content descriptions -->
     <string name="add_alarm_content_desc">Add alarm</string>

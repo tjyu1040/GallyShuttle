@@ -75,10 +75,10 @@ dependencies {
     }
 
     debugCompile 'com.squareup.leakcanary:leakcanary-android:1.3.1'
+    androidTestCompile 'com.squareup.leakcanary:leakcanary-android-no-op:1.3.1'
     releaseCompile 'com.squareup.leakcanary:leakcanary-android-no-op:1.3.1'
 
     testCompile 'junit:junit:4.12'
-    testCompile 'org.assertj:assertj-core:3.2.0'
     androidTestCompile ('com.squareup.assertj:assertj-android:1.1.1') {
         exclude module: 'support-annotations'
     }
@@ -91,16 +91,13 @@ dependencies {
         exclude module: 'recyclerview-v7'
         exclude module: 'support-annotations'
     }
-    androidTestCompile ('com.android.support.test.espresso:espresso-idling-resource:2.2.1') {
+    androidTestCompile ('com.android.support.test.espresso:espresso-intents:2.2.1') {
         exclude module: 'support-annotations'
     }
-    androidTestCompile ('com.android.support.test.espresso:espresso-web:2.2.1') {
+    androidTestCompile ('com.android.support.test:rules:0.4.1') {
         exclude module: 'support-annotations'
     }
-    androidTestCompile ('com.android.support.test:rules:0.4') {
-        exclude module: 'support-annotations'
-    }
-    androidTestCompile ('com.android.support.test:runner:0.4') {
+    androidTestCompile ('com.android.support.test:runner:0.4.1') {
         exclude module: 'support-annotations'
     }
 }

@@ -185,8 +185,8 @@ public class ScheduleActivity extends BaseScheduleActivity implements TimePicker
                 alarmTime.getMinuteOfHour(),
                 DateFormat.is24HourFormat(this)
         );
-        timePickerDialog.setTitle("Set Alarm");
-        timePickerDialog.setMessage("Pick an alarm time to set.");
+        timePickerDialog.setTitle(R.string.alarm_dialog_title);
+        timePickerDialog.setMessage(getString(R.string.alarm_dialog_message_fmt, DateUtils.formatTime(arrivalTime)));
         timePickerDialog.show();
     }
 

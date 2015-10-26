@@ -17,8 +17,12 @@
 package com.ephemeraldreams.gallyshuttle.util;
 
 import android.app.Activity;
+import android.content.ActivityNotFoundException;
 import android.content.Context;
+import android.content.Intent;
+import android.net.Uri;
 
+import com.ephemeraldreams.gallyshuttle.R;
 import com.google.android.gms.common.ConnectionResult;
 import com.google.android.gms.common.GoogleApiAvailability;
 
@@ -30,6 +34,22 @@ import timber.log.Timber;
 public class GooglePlayServicesUtils {
 
     private static final int PLAY_SERVICES_RESOLUTION_REQUEST_CODE = 9000;
+
+    /**
+     * Launch Google Play Store link to this app.
+     *
+     * @param context Context to launch link from.
+     */
+    public static void launchGooglePlayLink(Context context) {
+        Intent intent = new Intent(Intent.ACTION_VIEW);
+        try {
+            intent.setData(Uri.parse(context.getString(R.string.google_play_link)));
+            context.startActivity(intent);
+        } catch (ActivityNotFoundException exception) {
+            intent.setData(Uri.parse(context.getString(R.string.web_google_play_link)));
+            context.startActivity(intent);
+        }
+    }
 
     /**
      * Verify that Google Play services is installed and enabled on this device. If Google Play services

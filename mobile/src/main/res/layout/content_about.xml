@@ -54,29 +54,29 @@
             android:padding="@dimen/about_view_padding"
             android:text="@string/copyright"/>
 
-        <TextView
-            android:id="@+id/credits_text_view"
+        <Button
+            android:id="@+id/credits_button"
+            style="@style/Widget.AppCompat.Button.Borderless.Colored"
             android:layout_width="wrap_content"
             android:layout_height="wrap_content"
-            android:background="?android:attr/selectableItemBackground"
             android:clickable="true"
             android:padding="@dimen/about_view_padding"
             android:text="@string/underlined_credits"/>
 
-        <TextView
-            android:id="@+id/rate_text_view"
+        <Button
+            android:id="@+id/rate_button"
+            style="@style/Widget.AppCompat.Button.Borderless.Colored"
             android:layout_width="wrap_content"
             android:layout_height="wrap_content"
-            android:background="?android:attr/selectableItemBackground"
             android:clickable="true"
             android:padding="@dimen/about_view_padding"
             android:text="@string/underlined_rate_application"/>
 
-        <TextView
-            android:id="@+id/support_text_view"
+        <Button
+            android:id="@+id/support_button"
+            style="@style/Widget.AppCompat.Button.Borderless.Colored"
             android:layout_width="wrap_content"
             android:layout_height="wrap_content"
-            android:background="?android:attr/selectableItemBackground"
             android:clickable="true"
             android:padding="@dimen/about_view_padding"
             android:text="@string/underlined_support"/>
@@ -90,7 +90,7 @@
                 android:layout_width="wrap_content"
                 android:layout_height="wrap_content"
                 android:layout_gravity="center"
-                android:background="@color/buff"
+                android:background="@color/blue"
                 app:layout_heightPercent="5%"
                 app:layout_widthPercent="75%"/>
 
@@ -103,29 +103,29 @@
             android:padding="@dimen/about_view_padding"
             android:text="@string/about_message"/>
 
-        <TextView
-            android:id="@+id/open_source_text_view"
+        <Button
+            android:id="@+id/open_source_button"
+            style="@style/Widget.AppCompat.Button.Borderless.Colored"
             android:layout_width="wrap_content"
             android:layout_height="wrap_content"
-            android:background="?android:attr/selectableItemBackground"
             android:clickable="true"
             android:padding="@dimen/about_view_padding"
             android:text="@string/underlined_open_source_licenses"/>
 
-        <TextView
-            android:id="@+id/tos_text_view"
+        <Button
+            android:id="@+id/tos_button"
+            style="@style/Widget.AppCompat.Button.Borderless.Colored"
             android:layout_width="wrap_content"
             android:layout_height="wrap_content"
-            android:background="?android:attr/selectableItemBackground"
             android:clickable="true"
             android:padding="@dimen/about_view_padding"
             android:text="@string/underlined_terms_of_service"/>
 
-        <TextView
-            android:id="@+id/privacy_text_view"
+        <Button
+            android:id="@+id/privacy_button"
+            style="@style/Widget.AppCompat.Button.Borderless.Colored"
             android:layout_width="wrap_content"
             android:layout_height="wrap_content"
-            android:background="?android:attr/selectableItemBackground"
             android:clickable="true"
             android:padding="@dimen/about_view_padding"
             android:text="@string/underlined_privacy_policy"/>
