@@ -41,6 +41,10 @@ public class StationsSpinnerAdapter extends ArrayAdapter<Station> {
         super(context, R.layout.station_spinner_item, objects);
     }
 
+    public String getStationName(int position) {
+        return getItem(position).name;
+    }
+
     @Override
     public View getView(int position, View convertView, ViewGroup parent) {
         return getStationViewHolder(position, convertView, parent, R.layout.station_spinner_item);

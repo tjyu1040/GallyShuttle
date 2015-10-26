@@ -17,6 +17,8 @@
 package com.ephemeraldreams.gallyshuttle.ui;
 
 import android.app.Activity;
+import android.app.AlarmManager;
+import android.app.PendingIntent;
 import android.content.BroadcastReceiver;
 import android.content.Context;
 import android.content.DialogInterface;
@@ -30,6 +32,7 @@ import android.support.annotation.StringRes;
 import android.support.v4.content.LocalBroadcastManager;
 import android.support.v7.app.AlertDialog;
 import android.support.v7.widget.CardView;
+import android.support.v7.widget.SwitchCompat;
 import android.view.View;
 import android.widget.AdapterView;
 import android.widget.Spinner;
@@ -39,6 +42,7 @@ import com.ephemeraldreams.gallyshuttle.R;
 import com.ephemeraldreams.gallyshuttle.content.DateUtils;
 import com.ephemeraldreams.gallyshuttle.net.api.models.Schedule;
 import com.ephemeraldreams.gallyshuttle.ui.adapters.StationsSpinnerAdapter;
+import com.ephemeraldreams.gallyshuttle.ui.receivers.ArrivalNotificationReceiver;
 import com.google.android.gms.appinvite.AppInvite;
 import com.google.android.gms.appinvite.AppInviteReferral;
 import com.google.android.gms.common.ConnectionResult;
@@ -51,6 +55,7 @@ import java.util.List;
 import javax.inject.Inject;
 
 import butterknife.Bind;
+import butterknife.OnCheckedChanged;
 import timber.log.Timber;
 
 public class HomeActivity extends BaseScheduleActivity implements AdapterView.OnItemSelectedListener,
@@ -71,15 +76,18 @@ public class HomeActivity extends BaseScheduleActivity implements AdapterView.On
     @Bind(R.id.countdown_timer_text_view) TextView countdownTimerTextView;
     @Bind(R.id.arrival_time_text_view) TextView arrivalTimeTextView;
     @Bind(R.id.station_spinner) Spinner stationSpinner;
-    private StationsSpinnerAdapter adapter;
+    @Bind(R.id.arrival_notification_switch) SwitchCompat notificationSwitch;
+    private StationsSpinnerAdapter stationAdapter;
     private Schedule schedule;
-    private long millisInFuture;
+    private long currentArrivalTimeMillis;
     private CountDownTimer countDownTimer;
 
+    @Inject AlarmManager alarmManager;
     @Inject SharedPreferences sharedPreferences;
     @Inject GoogleApiClient googleApiClient;
     private Intent cachedInvitationIntent;
     private BroadcastReceiver referralReceiver;
+    private PendingIntent notificationPendingIntent;
 
     public static void launch(Activity activity) {
         Intent intent = new Intent(activity, HomeActivity.class);
@@ -171,9 +179,9 @@ public class HomeActivity extends BaseScheduleActivity implements AdapterView.On
     @Override
     protected void updateUiOnResponse(Schedule schedule) {
         this.schedule = schedule;
-        adapter = new StationsSpinnerAdapter(this, schedule.getStations());
-        adapter.notifyDataSetChanged();
-        stationSpinner.setAdapter(adapter);
+        stationAdapter = new StationsSpinnerAdapter(this, schedule.getStations());
+        stationAdapter.notifyDataSetChanged();
+        stationSpinner.setAdapter(stationAdapter);
         updateUI(stationSpinner.getSelectedItemPosition());
         countdownCardView.setVisibility(View.VISIBLE);
     }
@@ -188,11 +196,12 @@ public class HomeActivity extends BaseScheduleActivity implements AdapterView.On
             countDownTimer.cancel();
         }
         scheduleTitleTextView.setText(getString(R.string.schedule_name_fmt, schedule.name));
-        LocalDateTime arrivalTime = getArrivalTimeAfterNow(stationIndex);
-        if (arrivalTime != null) {
-            arrivalTimeTextView.setText(getString(R.string.arrival_time_fmt, DateUtils.formatTime(arrivalTime)));
-            millisInFuture = DateUtils.calculateDuration(LocalDateTime.now(), arrivalTime);
-            startCountDown();
+        LocalDateTime currentArrivalTime = getArrivalTimeAfterNow(stationIndex);
+        if (currentArrivalTime != null) {
+            arrivalTimeTextView.setText(getString(R.string.arrival_time_fmt, DateUtils.formatTime(currentArrivalTime)));
+            long millisInFuture = DateUtils.calculateDuration(LocalDateTime.now(), currentArrivalTime);
+            currentArrivalTimeMillis = currentArrivalTime.toDate().getTime();
+            startCountDown(millisInFuture);
         } else {
             Timber.e("Arrival time is null...");
         }
@@ -215,7 +224,7 @@ public class HomeActivity extends BaseScheduleActivity implements AdapterView.On
         return null;
     }
 
-    private void startCountDown() {
+    private void startCountDown(long millisInFuture) {
         countDownTimer = new CountDownTimer(millisInFuture, COUNT_DOWN_INTERVAL) {
             @Override
             public void onTick(long millisUntilFinished) {
@@ -227,6 +236,27 @@ public class HomeActivity extends BaseScheduleActivity implements AdapterView.On
                 reloadSchedule();
             }
         }.start();
+        setArrivalNotificationReceiver(currentArrivalTimeMillis, notificationSwitch.isChecked());
+    }
+
+    @OnCheckedChanged(R.id.arrival_notification_switch)
+    public void onNotificationSwitched(boolean switched) {
+        setArrivalNotificationReceiver(currentArrivalTimeMillis, switched);
+    }
+
+    private void setArrivalNotificationReceiver(long notificationMillis, boolean notificationsEnabled) {
+        if (notificationsEnabled) {
+            Intent notificationIntent = new Intent(this, ArrivalNotificationReceiver.class);
+            String stationName = stationAdapter.getStationName(stationSpinner.getSelectedItemPosition());
+            notificationIntent.putExtra(ArrivalNotificationReceiver.STATION_NAME_EXTRA, stationName);
+            notificationPendingIntent = PendingIntent.getBroadcast(this, 0, notificationIntent, PendingIntent.FLAG_CANCEL_CURRENT);
+
+            alarmManager.set(AlarmManager.RTC_WAKEUP, notificationMillis, notificationPendingIntent);
+            Timber.d("Arrival notification receiver set.");
+        } else {
+            alarmManager.cancel(notificationPendingIntent);
+            Timber.d("Arrival notification receiver canceled.");
+        }
     }
 
     private void checkAppRated() {

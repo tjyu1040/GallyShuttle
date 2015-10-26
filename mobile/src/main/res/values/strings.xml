@@ -105,4 +105,7 @@
     <!-- Accessibility content descriptions -->
     <string name="add_alarm_content_desc">Add alarm</string>
 
+    <!-- Notification text -->
+    <string name="notification_title">Gallaudet Shuttle Arriving Now!</string>
+    <string name="notification_content">Gallaudet shuttle is arriving now at %1$s.</string>
 </resources>

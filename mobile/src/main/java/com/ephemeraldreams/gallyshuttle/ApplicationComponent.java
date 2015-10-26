@@ -11,6 +11,7 @@ import com.ephemeraldreams.gallyshuttle.content.CacheManager;
 import com.ephemeraldreams.gallyshuttle.content.ContentModule;
 import com.ephemeraldreams.gallyshuttle.net.NetworkModule;
 import com.ephemeraldreams.gallyshuttle.net.api.GallyShuttleApiService;
+import com.ephemeraldreams.gallyshuttle.ui.receivers.ArrivalNotificationReceiver;
 import com.google.android.gms.common.api.GoogleApiClient;
 import com.google.gson.Gson;
 import com.squareup.otto.Bus;
@@ -25,6 +26,7 @@ import dagger.Component;
 public interface ApplicationComponent {
 
     void inject(GallyShuttleApplication gallyShuttleApplication);
+    void inject(ArrivalNotificationReceiver arrivalNotificationReceiver);
 
     // Android system services dependencies made available to sub-components
     Application getApplication();
