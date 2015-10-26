@@ -24,6 +24,7 @@
     android:layout_height="wrap_content"
     android:layout_gravity="center"
     android:layout_margin="@dimen/card_margin"
+    android:visibility="gone"
     app:cardBackgroundColor="@color/white"
     app:cardElevation="@dimen/card_resting_elevation"
     tools:context=".ui.HomeActivity">
