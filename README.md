@@ -13,7 +13,9 @@ Fork, clone or download this project and import this project using [Android Stud
 Rebuild your project (via "Build → Rebuild Project") and you're ready to get developing. There are
 still configurations to be modified for backend, mobile, and wear modules.
 
+<!--
 [![Build Status](https://travis-ci.org/tjyu1040/GallyShuttle.svg?branch=master)](https://travis-ci.org/tjyu1040/GallyShuttle)
+-->
 
 ### Building backend module
 
