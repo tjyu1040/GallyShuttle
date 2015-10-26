@@ -78,6 +78,7 @@ public class HomeActivity extends BaseScheduleActivity implements AdapterView.On
     @Bind(R.id.station_spinner) Spinner stationSpinner;
     @Bind(R.id.arrival_notification_switch) SwitchCompat notificationSwitch;
     private StationsSpinnerAdapter stationAdapter;
+    private int currentSelectedStationPosition = 0;
     private Schedule schedule;
     private long currentArrivalTimeMillis;
     private CountDownTimer countDownTimer;
@@ -112,6 +113,7 @@ public class HomeActivity extends BaseScheduleActivity implements AdapterView.On
         super.onStart();
         registerReferralReceiver();
         checkAppRated();
+        stationSpinner.setSelection(currentSelectedStationPosition);
         googleApiClient.registerConnectionCallbacks(this);
         googleApiClient.registerConnectionFailedListener(this);
     }
@@ -168,6 +170,7 @@ public class HomeActivity extends BaseScheduleActivity implements AdapterView.On
 
     @Override
     public void onItemSelected(AdapterView<?> parent, View view, int position, long id) {
+        currentSelectedStationPosition = position;
         updateUI(position);
     }
 
