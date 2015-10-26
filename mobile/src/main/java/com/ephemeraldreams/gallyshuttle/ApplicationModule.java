@@ -67,7 +67,7 @@ public class ApplicationModule {
 
     @Provides
     @ApplicationScope
-    NotificationManagerCompat notificationManager(Application application) {
+    NotificationManagerCompat notificationManagerCompat(Application application) {
         return NotificationManagerCompat.from(application);
     }
 
