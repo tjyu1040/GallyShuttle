@@ -18,7 +18,7 @@
     <string name="app_name">GallyShuttle</string>
 
     <!-- Activity labels -->
-    <string name="arrival_countdown_activity_label">ArrivalCountdownActivity</string>
+    <string name="home_activity_label">HomeActivity</string>
     <string name="schedule_activity_label">ScheduleActivity</string>
     <string name="settings_activity_label">SettingsActivity</string>
     <string name="about_activity_label">AboutActivity</string>

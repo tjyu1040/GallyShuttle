@@ -19,7 +19,7 @@
 
         <activity
             android:name=".ui.HomeActivity"
-            android:label="@string/arrival_countdown_activity_label">
+            android:label="@string/home_activity_label">
             <intent-filter>
                 <action android:name="android.intent.action.MAIN"/>
 
