@@ -40,10 +40,10 @@ Messaging for notifications, which will need to be configured.
 3. Add "Analytics", "App Invites", & "Cloud Messaging" services and generate your configuration file.
 4. Download `google-services.json` and move it to `mobile/` directory.
 
-##### Testing Google Cloud Messaging
+##### Integrating Google Analytics & Google Cloud Messaging
 
-This section is still under construction, as Google Cloud Messaging has not been fully integrated
-and tested yet.
+This section is still under construction, as Google Analytics and Google Cloud Messaging has not been 
+fully integrated and tested yet.
 
 ## Contributing to This Project
 
