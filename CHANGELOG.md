@@ -1,6 +1,13 @@
 Change Log
 ==========
 
+3.0.0 (October 26, 2015)
+------------------------
+* Cleaner Material Design UI.
+* Icon design changed!
+* Chrome Custom Tabs implemented!
+* Various bug fixes.
+
 2.0.0 (April 19, 2015)
 ----------------------
 * New navigation drawer style.

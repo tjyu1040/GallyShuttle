@@ -60,8 +60,6 @@ This project currently makes use of the following open-source libraries:
 - [Butterknife] (http://jakewharton.github.io/butterknife/) - View injection library for Android
 - [OkHttp] (http://square.github.io/okhttp/) - Networking library for Android and Java
 - [Retrofit] (http://square.github.io/retrofit/) - REST client for Android and Java
-- [RxJava] (https://github.com/ReactiveX/RxJava) - Reactive Extensions Java implementation.
-- [RxAndroid] (https://github.com/ReactiveX/RxAndroid) - Android-specific bindings for RxJava
 - [Otto] (http://square.github.io/otto/) - Event bus library for Android
 - [DiskLruCache](https://github.com/JakeWharton/DiskLruCache) - Android-compatible disk-based LRU cache
 - [Gson] (https://code.google.com/p/google-gson/) - Java library to convert Java Objects into JSON representations
